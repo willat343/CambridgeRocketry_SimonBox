@@ -429,7 +429,7 @@ private void FinsetSpanTextActionPerformed(java.awt.event.ActionEvent evt) {//GE
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Tips tDiag = new Tips(null,true);
-        tDiag.setTipTxt("Fin set Settings \n\n Use this window to specify the parameters of the Fin set. Position is the distance, along the rocket's axis, from the nose tip to the foremost edge of the part. Max Rocket body diameter is the diameter of the widest part of the entire rocket body (not including fins).");
+        tDiag.setTipTxt("Fin set Settings \n\n Use this window to specify the parameters of the Fin set. Position is the distance, along the rocket's axis, from the nose tip to the foremost edge of the part.");
         tDiag.setVisible(true);
 }//GEN-LAST:event_jButton1ActionPerformed
 

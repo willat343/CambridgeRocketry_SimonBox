@@ -48,6 +48,7 @@ public class TransitionDialog extends javax.swing.JDialog {
         SetConditionsButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -90,6 +91,13 @@ public class TransitionDialog extends javax.swing.JDialog {
 
         jLabel5.setText("s");
 
+        jButton1.setText("?");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -116,6 +124,10 @@ public class TransitionDialog extends javax.swing.JDialog {
                         .addGap(167, 167, 167)
                         .addComponent(SetConditionsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(80, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(371, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +146,9 @@ public class TransitionDialog extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addGap(63, 63, 63)
                 .addComponent(SetConditionsButton)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
         );
 
         pack();
@@ -169,6 +183,12 @@ public class TransitionDialog extends javax.swing.JDialog {
         ignitionDelay= ignitionTest.TestDouble();
         IgDelayField = ignitionTest.InputField;
     }//GEN-LAST:event_IgDelayFieldFocusLost
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Tips tDiag = new Tips(null,true);
+        tDiag.setTipTxt("Stage Transition\n\nWhen you add a booster you must specify some data about stage separation. The separation time is the number of seconds after launch that the booster stage separates. The ignition delay is the number of seconds after separation that the upper stage ignites its motor. In the case of no motor (i.e. for a boosted dart) set this to 0.");
+        tDiag.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
     * @param args the command line arguments
@@ -213,6 +233,7 @@ public class TransitionDialog extends javax.swing.JDialog {
     private javax.swing.JLabel SeparationLabel;
     private javax.swing.JButton SetConditionsButton;
     private javax.swing.JLabel igDelayLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

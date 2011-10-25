@@ -340,7 +340,7 @@ private void ConTranPosTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Tips tDiag = new Tips(null,true);
-        tDiag.setTipTxt("Conic Transition Settings \n\n Use this window to specify the parameters of the Conic Transition. Position is the distance, along the rocket's axis, from the nose tip to the foremost edge of the part. Max Rocket Body Diameter is the diameter of the widest part of the entire rocket body (not including fins).");
+        tDiag.setTipTxt("Conic Transition Settings \n\n Use this window to specify the parameters of the Conic Transition. Position is the distance, along the rocket's axis, from the nose tip to the foremost edge of the part.");
         tDiag.setVisible(true);
 }//GEN-LAST:event_jButton1ActionPerformed
 

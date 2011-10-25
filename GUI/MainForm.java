@@ -52,7 +52,7 @@ public class MainForm extends javax.swing.JFrame {
     private AtmosphereList Atmospheres;
     private AtmosphereData TheAtmosphere = new AtmosphereData();
     private LaunchData LaunchPadSet = new LaunchData();
-    public File InstallationDir;
+   
 
     /** Creates new form MainForm */
     public MainForm() {
@@ -210,7 +210,7 @@ public class MainForm extends javax.swing.JFrame {
         AtmosListMenu.add(AtmosDelete);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Cambridge Rocketry Simulator -- version 2.0 (beta)");
+        setTitle("Cambridge Rocketry Simulator -- version 2.1 (beta)");
         setBounds(new java.awt.Rectangle(0, 0, 20, 0));
 
         jTabbedPane2.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -656,6 +656,11 @@ public class MainForm extends javax.swing.JFrame {
         jLabel10.setText("Number of runs");
 
         AtmosphereComboBox.setModel(Atmospheres.AtmosListCombo);
+        AtmosphereComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AtmosphereComboBoxActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Choose Wind Profile");
 
@@ -1194,8 +1199,8 @@ private void ConfigSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//
             mIts = Integer.parseInt(MonteCarloField.getText());
         }
         boolean ballisticF = !TheRocket.Stages.elementAt(0).hasParachutes();//TODO this needs to be made more explicit for each stage.
-        PlotLauncher ThrowFigures = new PlotLauncher(InstallationDir.getPath() + File.separator +"RockPlot"+ File.separator +"FlightPlotter.py");
-        SimulatorInterface RocketCconnect = new SimulatorInterface((InstallationDir.getPath() + File.separator + "RocketC"),ThrowFigures);
+        PlotLauncher ThrowFigures = new PlotLauncher(PPL.InstallationDir.getPath() + File.separator +"RockPlot"+ File.separator +"FlightPlotter.py");
+        SimulatorInterface RocketCconnect = new SimulatorInterface((PPL.InstallationDir.getPath() + File.separator + "RocketC"),ThrowFigures);
         RocketCconnect.RunSim(TheRocket, TheAtmosphere, LaunchPadSet, MonteCarloRadio.isSelected(),ballisticF, mIts);
         if(RocketCconnect.Success){
             LoadOutPutData(RocketCconnect);
@@ -1494,6 +1499,10 @@ private void EditAtmosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void AtmosDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AtmosDeleteActionPerformed
     Atmospheres.RemoveFromList(jList2.getSelectedIndex());
 }//GEN-LAST:event_AtmosDeleteActionPerformed
+
+private void AtmosphereComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AtmosphereComboBoxActionPerformed
+   ReadLaunchData();
+}//GEN-LAST:event_AtmosphereComboBoxActionPerformed
 
 private void maybeShowPopup(java.awt.event.MouseEvent evt){
      if (evt.isPopupTrigger()){
