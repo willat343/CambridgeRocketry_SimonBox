@@ -53,11 +53,11 @@ public class ConicTransData extends RockPartsData {
     }
     
     //*function to populate class members    
-    public void PopulateConicTrans(double d1,double d2,double d3,double d4,double d5,double d6,double d7, String S1){
+    public void PopulateConicTrans(double d1,double d2,double d3,double d5,double d6,double d7, String S1){
         length =d1;
         UD = d2;
         DD = d3;
-        Dr = d4;
+        Dr = Math.max(UD, DD);
         Thickness = d5;
         Mass = d6;
         Xp = d7;
@@ -72,16 +72,16 @@ public class ConicTransData extends RockPartsData {
     }
     
     //*Class functions
-    private void BarrowmanConic(){
+    public void BarrowmanConic(){
         CN = 2*(Math.pow((DD/Dr),2) - Math.pow((UD/Dr), 2));
         
         double Drat = UD/DD;
         
-        Xcp = Xp + length/3*(1 + (1-Drat)/(1-Math.pow(Drat, 2)));
+        Xcp = length/3*(1 + (1-Drat)/(1-Math.pow(Drat, 2)));
     }
     
     private void XcomConic(){
-        Xcm = Xp + length/2; //Crude approximation, update later!
+        Xcm = length/2; //Crude approximation, update later!
     }
     
     private void InertiaConic(){
@@ -96,11 +96,11 @@ public class ConicTransData extends RockPartsData {
     public void EditMe(){
        ConicTransDialog CD = new ConicTransDialog(null,true);
         if (built == true){
-               CD.FillFields(length,UD,DD,Dr,Thickness,Mass,Xp,Name);
+               CD.FillFields(length,UD,DD,Thickness,Mass,Xp,Name);
         }
         CD.setVisible(true);
         if(CD.ReadOk == true){
-            PopulateConicTrans(CD.length,CD.UD,CD.DD,CD.RefDiameter,CD.Thickness,CD.Mass,CD.Position,CD.Name);
+            PopulateConicTrans(CD.length,CD.UD,CD.DD,CD.Thickness,CD.Mass,CD.Position,CD.Name);
             built = true;
         }
 
@@ -116,7 +116,6 @@ public class ConicTransData extends RockPartsData {
         PartNode.appendChild(design.CreateDataNode("length", Double.toString(length)));
         PartNode.appendChild(design.CreateDataNode("UD", Double.toString(UD)));
         PartNode.appendChild(design.CreateDataNode("DD", Double.toString(DD)));
-        PartNode.appendChild(design.CreateDataNode("Dr", Double.toString(Dr)));
         PartNode.appendChild(design.CreateDataNode("Thickness", Double.toString(Thickness)));
         PartNode.appendChild(design.CreateDataNode("Mass", Double.toString(Mass)));
         PartNode.appendChild(design.CreateDataNode("Xp", Double.toString(Xp)));
@@ -129,7 +128,7 @@ public class ConicTransData extends RockPartsData {
     public void BuildFromXML(Node Nin){
         XMLnodeParser Temp = new XMLnodeParser(Nin);
 
-        PopulateConicTrans(Temp.DbyName("length"),Temp.DbyName("UD"),Temp.DbyName("DD"),Temp.DbyName("Dr"),Temp.DbyName("Thickness"),Temp.DbyName("Mass"),Temp.DbyName("Xp"),Temp.SbyName("Name"));
+        PopulateConicTrans(Temp.DbyName("length"),Temp.DbyName("UD"),Temp.DbyName("DD"),Temp.DbyName("Thickness"),Temp.DbyName("Mass"),Temp.DbyName("Xp"),Temp.SbyName("Name"));
         built=true;
     }
 

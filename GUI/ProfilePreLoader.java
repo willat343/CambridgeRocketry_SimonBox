@@ -20,12 +20,12 @@ public class ProfilePreLoader {
             MotorDir,
             DesignDir;
 
-    public ProfilePreLoader(){
+    public ProfilePreLoader(File InstDir){
         try{
-            DataDir = new File("data");
-            AtmosDir = new File("data"+ File.separator +"Atmospheres");
-            MotorDir = new File("data" + File.separator + "Motors");
-            DesignDir = new File("data" + File.separator + "Designs");
+            DataDir = new File(InstDir.getPath() + File.separator +"data");
+            AtmosDir = new File(DataDir.getPath() + File.separator +"Atmospheres");
+            MotorDir = new File(DataDir.getPath() + File.separator + "Motors");
+            DesignDir = new File(DataDir.getPath() + File.separator + "Designs");
         }
         catch(Exception e){
             //throw(new Error("Could not determine the struncture  of the profile data files. System Message:" + e.getMessage()));

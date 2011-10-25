@@ -27,11 +27,16 @@
 
 package Rocket;
 
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import java.io.File;
+import java.net.URLDecoder;
 import javax.swing.ListModel;
 import javax.swing.JList;
 
@@ -49,12 +54,27 @@ public class MainForm extends javax.swing.JFrame {
     private AtmosphereList Atmospheres;
     private AtmosphereData TheAtmosphere = new AtmosphereData();
     private LaunchData LaunchPadSet = new LaunchData();
+    public File InstallationDir;
 
     /** Creates new form MainForm */
     public MainForm() {
-        PPL = new ProfilePreLoader();
+
+        String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath ="";
+        try {
+            decodedPath = URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        InstallationDir = new File(decodedPath);
+        //ClassLoader loader = MainForm.class.getClassLoader();
+        //InstallationDir = new File(loader.getResource("").getPath());
+        InstallationDir = InstallationDir.getParentFile().getParentFile();
+        //InstallationDir = new File("/home/sb4p07/Ubuntu One/NetBeansProject/RocketPartsBuild");
+        PPL = new ProfilePreLoader(InstallationDir);
         TheMotors = PPL.getMotors();
         Atmospheres = PPL.getAmospheres();
+        
         initComponents();
         UpdateTree();
     }
@@ -74,14 +94,10 @@ public class MainForm extends javax.swing.JFrame {
         ListRightClickMenu = new javax.swing.JPopupMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        AtmosListMenu = new javax.swing.JPopupMenu();
+        EditAtmos = new javax.swing.JMenuItem();
+        AtmosDelete = new javax.swing.JMenuItem();
         jPanel3 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         MotorDesignPanel = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -94,19 +110,23 @@ public class MainForm extends javax.swing.JFrame {
         MotorPaneTips = new javax.swing.JButton();
         RocketDesignPanel = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
-        BodyPartSet = new javax.swing.JButton();
-        BodyPartChoose = new javax.swing.JComboBox();
         DesignLoadButton = new javax.swing.JButton();
-        AddBodyLabel = new javax.swing.JLabel();
         PartSelectFrameTitle = new javax.swing.JLabel();
-        MassPartSet = new javax.swing.JButton();
-        AddMassLabel = new javax.swing.JLabel();
-        MassPartChoose = new javax.swing.JComboBox();
-        jLabel1 = new javax.swing.JLabel();
         WriteToFileButton = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        AddBodyLabel = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jButton1 = new javax.swing.JButton();
+        MassPartChoose = new javax.swing.JComboBox();
+        MassPartSet = new javax.swing.JButton();
+        AddMassLabel = new javax.swing.JLabel();
+        BodyPartChoose = new javax.swing.JComboBox();
+        BodyPartSet = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        StageComboBox = new javax.swing.JComboBox();
+        BoosterStageButton = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         AtmospherePanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -119,28 +139,42 @@ public class MainForm extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         SimulationPanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        AtmosphereComboBox = new javax.swing.JComboBox();
-        LaunchRailField = new javax.swing.JTextField();
-        AzimuthField = new javax.swing.JTextField();
-        DeclinationField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        MonteCarloField = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        AtmosphereComboBox = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        DeclinationField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        LaunchRailField = new javax.swing.JTextField();
+        MonteCarloField = new javax.swing.JTextField();
+        MonteCarloRadio = new javax.swing.JRadioButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        AzimuthField = new javax.swing.JTextField();
         ConfigSaveButton = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         PlotterPanel = new javax.swing.JPanel();
+        dataTable1 = new Rocket.DataTable();
+        jPanel9 = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
+        EditPartButton = new javax.swing.JButton();
+        DeletePartButton = new javax.swing.JButton();
 
         jMenuItem1.setText("Edit");
         jMenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 jMenuItem1MouseReleased(evt);
+            }
+        });
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
             }
         });
         TreeRightClickMenu.add(jMenuItem1);
@@ -149,6 +183,11 @@ public class MainForm extends javax.swing.JFrame {
         jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 jMenuItem2MouseReleased(evt);
+            }
+        });
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
             }
         });
         TreeRightClickMenu.add(jMenuItem2);
@@ -169,81 +208,31 @@ public class MainForm extends javax.swing.JFrame {
         });
         ListRightClickMenu.add(jMenuItem4);
 
+        EditAtmos.setText("Edit");
+        EditAtmos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditAtmosActionPerformed(evt);
+            }
+        });
+        AtmosListMenu.add(EditAtmos);
+
+        AtmosDelete.setText("Delete");
+        AtmosDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AtmosDeleteActionPerformed(evt);
+            }
+        });
+        AtmosListMenu.add(AtmosDelete);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Cambridge Rocketry Simulator -- version 1.1 (alpha)");
+        setTitle("Cambridge Rocketry Simulator -- version 2.0 (beta)");
         setBounds(new java.awt.Rectangle(0, 0, 20, 0));
 
-        jTree1.setModel(TheRocket.RocketTree);
-        jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTree1MouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jTree1MousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jTree1MouseReleased(evt);
+        jTabbedPane2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTabbedPane2FocusGained(evt);
             }
         });
-        jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                LeafIsSelected(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTree1);
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, 0, 0, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Rocket", jPanel1);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 192, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 462, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Stage1", jPanel3);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 192, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 462, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Stage2", jPanel2);
 
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -300,6 +289,13 @@ public class MainForm extends javax.swing.JFrame {
 
         jLabel12.setText("Loaded Motors");
 
+        MotorPaneTips.setText("?");
+        MotorPaneTips.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MotorPaneTipsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -309,12 +305,18 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
-                .addGap(124, 124, 124)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(MotorCreationButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2))
-                .addContainerGap(188, Short.MAX_VALUE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(124, 124, 124)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(MotorCreationButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2))
+                        .addContainerGap(188, Short.MAX_VALUE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(MotorPaneTips, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -331,63 +333,31 @@ public class MainForm extends javax.swing.JFrame {
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(MotorCreationButton)
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addComponent(MotorPaneTips)
+                .addContainerGap())
         );
-
-        MotorPaneTips.setText("?");
-        MotorPaneTips.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MotorPaneTipsActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout MotorDesignPanelLayout = new javax.swing.GroupLayout(MotorDesignPanel);
         MotorDesignPanel.setLayout(MotorDesignPanelLayout);
         MotorDesignPanelLayout.setHorizontalGroup(
             MotorDesignPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MotorDesignPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(MotorDesignPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(MotorPaneTips, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(54, 54, 54))
+                .addGap(49, 49, 49)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         MotorDesignPanelLayout.setVerticalGroup(
             MotorDesignPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MotorDesignPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(38, 38, 38)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
-                .addComponent(MotorPaneTips)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Motor Design", MotorDesignPanel);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jButton1.setText("Add");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jComboBox1.setModel(TheMotors.MotListCombo);
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        BodyPartSet.setText("Add");
-        BodyPartSet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BodyPartSetActionPerformed(evt);
-            }
-        });
-
-        BodyPartChoose.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Nose Cone", "Body Tube", "Conic Transition", "Fin Set" }));
 
         DesignLoadButton.setText("Load Design");
         DesignLoadButton.addActionListener(new java.awt.event.ActionListener() {
@@ -396,27 +366,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        AddBodyLabel.setText("Add Body Part");
-
         PartSelectFrameTitle.setText("Add Rocket Components");
-
-        MassPartSet.setText("Add");
-        MassPartSet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MassPartSetActionPerformed(evt);
-            }
-        });
-
-        AddMassLabel.setText("Add Internal Part");
-
-        MassPartChoose.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cylinder", "Tube", "Block", "Cone Section", "Point Mass", "Parachute" }));
-        MassPartChoose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MassPartChooseActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Add Motor");
 
         WriteToFileButton.setText("Save Design");
         WriteToFileButton.addActionListener(new java.awt.event.ActionListener() {
@@ -427,59 +377,120 @@ public class MainForm extends javax.swing.JFrame {
 
         jLabel11.setText("Load/Save Designs");
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(AddBodyLabel)
-                    .addComponent(AddMassLabel)
-                    .addComponent(jLabel1))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(PartSelectFrameTitle)
-                    .addComponent(BodyPartChoose, 0, 171, Short.MAX_VALUE)
-                    .addComponent(MassPartChoose, 0, 171, Short.MAX_VALUE)
-                    .addComponent(jComboBox1, 0, 171, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(MassPartSet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(BodyPartSet, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(132, 132, 132)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel11)
-                    .addComponent(DesignLoadButton, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                    .addComponent(WriteToFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
-                .addGap(74, 74, 74))
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        AddBodyLabel.setText("Add Body Part");
+
+        jComboBox1.setModel(TheMotors.MotListCombo);
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Add");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        MassPartChoose.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cylinder", "Tube", "Block", "Cone Section", "Point Mass", "Parachute" }));
+        MassPartChoose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MassPartChooseActionPerformed(evt);
+            }
+        });
+
+        MassPartSet.setText("Add");
+        MassPartSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MassPartSetActionPerformed(evt);
+            }
+        });
+
+        AddMassLabel.setText("Add Internal Part");
+
+        BodyPartChoose.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Nose Cone", "Body Tube", "Conic Transition", "Fin Set" }));
+
+        BodyPartSet.setText("Add");
+        BodyPartSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BodyPartSetActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Add Motor");
+
+        jLabel13.setText("Add Part To:");
+
+        StageComboBox.setModel(TheRocket.StageCombo);
+
+        BoosterStageButton.setText("Add Booster Stage");
+        BoosterStageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BoosterStageButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGap(166, 166, 166)
+                        .addComponent(BoosterStageButton))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel13)
+                            .addComponent(AddBodyLabel)
+                            .addComponent(AddMassLabel)
+                            .addComponent(jLabel1))
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                    .addComponent(BodyPartChoose, 0, 171, Short.MAX_VALUE)
+                                    .addComponent(MassPartChoose, 0, 171, Short.MAX_VALUE)
+                                    .addComponent(jComboBox1, 0, 171, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(MassPartSet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(BodyPartSet, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(StageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PartSelectFrameTitle)
-                    .addComponent(jLabel11))
-                .addGap(42, 42, 42)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(BoosterStageButton)
+                .addGap(29, 29, 29)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(StageComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BodyPartChoose, javax.swing.GroupLayout.PREFERRED_SIZE, 27, Short.MAX_VALUE)
                     .addComponent(AddBodyLabel)
-                    .addComponent(BodyPartSet, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DesignLoadButton))
+                    .addComponent(BodyPartSet, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(MassPartChoose, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
                     .addComponent(AddMassLabel)
                     .addComponent(MassPartSet, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1)
                     .addComponent(jLabel1)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(WriteToFileButton))
-                .addGap(99, 99, 99))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40))
         );
 
         jButton4.setText("?");
@@ -489,25 +500,63 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(130, 130, 130)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel11)
+                    .addComponent(DesignLoadButton, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                    .addComponent(WriteToFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
+                .addGap(99, 99, 99))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(PartSelectFrameTitle)
+                .addContainerGap(606, Short.MAX_VALUE))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(746, 746, 746)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(PartSelectFrameTitle)
+                .addGap(68, 68, 68)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(122, Short.MAX_VALUE)
+                .addComponent(jLabel11)
+                .addGap(42, 42, 42)
+                .addComponent(DesignLoadButton)
+                .addGap(40, 40, 40)
+                .addComponent(WriteToFileButton)
+                .addGap(128, 128, 128)
+                .addComponent(jButton4)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout RocketDesignPanelLayout = new javax.swing.GroupLayout(RocketDesignPanel);
         RocketDesignPanel.setLayout(RocketDesignPanelLayout);
         RocketDesignPanelLayout.setHorizontalGroup(
             RocketDesignPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(RocketDesignPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(RocketDesignPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(33, 33, 33)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         RocketDesignPanelLayout.setVerticalGroup(
             RocketDesignPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(RocketDesignPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(21, 21, 21)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
-                .addComponent(jButton4)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Rocket Design", RocketDesignPanel);
@@ -516,6 +565,11 @@ public class MainForm extends javax.swing.JFrame {
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jList2.setModel(Atmospheres.AtmosListMod);
+        jList2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jList2MousePressed(evt);
+            }
+        });
         jScrollPane3.setViewportView(jList2);
 
         jButton6.setText("Edit Selected Profile");
@@ -541,6 +595,13 @@ public class MainForm extends javax.swing.JFrame {
 
         jLabel4.setText("Loaded Wind Profiles");
 
+        jButton8.setText("?");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -556,6 +617,10 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                     .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
                 .addGap(210, 210, 210))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(734, Short.MAX_VALUE)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -571,54 +636,43 @@ public class MainForm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jButton5))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jButton8)
+                .addContainerGap())
         );
-
-        jButton8.setText("?");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout AtmospherePanelLayout = new javax.swing.GroupLayout(AtmospherePanel);
         AtmospherePanel.setLayout(AtmospherePanelLayout);
         AtmospherePanelLayout.setHorizontalGroup(
             AtmospherePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AtmospherePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(AtmospherePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         AtmospherePanelLayout.setVerticalGroup(
             AtmospherePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AtmospherePanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(30, 30, 30)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addComponent(jButton8)
-                .addContainerGap())
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Wind Conditions", AtmospherePanel);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jLabel3.setText("degs");
+
+        jLabel9.setText("Set Declination Angle");
+
+        jLabel7.setText("Set Launch Rail Lenth");
+
+        jLabel10.setText("Number of runs");
+
         AtmosphereComboBox.setModel(Atmospheres.AtmosListCombo);
 
-        LaunchRailField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                LaunchRailFieldFocusLost(evt);
-            }
-        });
-
-        AzimuthField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                AzimuthFieldFocusLost(evt);
-            }
-        });
+        jLabel6.setText("Choose Wind Profile");
 
         DeclinationField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -626,30 +680,32 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("m");
-
-        jLabel3.setText("degs");
-
         jLabel5.setText("degs");
 
-        jLabel6.setText("Choose Wind Profile");
-
-        jLabel7.setText("Set Launch Rail Lenth");
-
-        jLabel8.setText("Set Azimuth Angle");
-
-        jLabel9.setText("Set Declination Angle");
-
-        jRadioButton1.setText("Use Monte Carlo");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+        LaunchRailField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                LaunchRailFieldFocusLost(evt);
             }
         });
 
         MonteCarloField.setEnabled(false);
 
-        jLabel10.setText("Number of runs");
+        MonteCarloRadio.setText("Use Monte Carlo");
+        MonteCarloRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MonteCarloRadioActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Set Azimuth Angle");
+
+        jLabel2.setText("m");
+
+        AzimuthField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                AzimuthFieldFocusLost(evt);
+            }
+        });
 
         ConfigSaveButton.setText("LAUNCH");
         ConfigSaveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -658,73 +714,73 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel7)
                     .addComponent(jLabel6)
                     .addComponent(jLabel8)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jRadioButton1)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(MonteCarloRadio)
                         .addComponent(jLabel9)))
                 .addGap(34, 34, 34)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(DeclinationField, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(AzimuthField, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(LaunchRailField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2))
-                        .addGap(140, 140, 140)
+                        .addGap(127, 127, 127)
                         .addComponent(ConfigSaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(AtmosphereComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(MonteCarloField, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel10)))
-                .addGap(91, 91, 91))
+                .addContainerGap())
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(AtmosphereComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(LaunchRailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
                             .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(AzimuthField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)
                             .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(DeclinationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
                             .addComponent(jLabel9))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jRadioButton1)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(MonteCarloRadio)
                             .addComponent(MonteCarloField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10)))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(84, 84, 84)
-                        .addComponent(ConfigSaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(80, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(ConfigSaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         jButton9.setText("?");
@@ -734,25 +790,44 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 658, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(33, 33, 33))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(283, Short.MAX_VALUE)
+                .addComponent(jButton9)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout SimulationPanelLayout = new javax.swing.GroupLayout(SimulationPanel);
         SimulationPanel.setLayout(SimulationPanelLayout);
         SimulationPanelLayout.setHorizontalGroup(
             SimulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SimulationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(SimulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 791, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(152, 152, 152))
+                .addGap(67, 67, 67)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(39, Short.MAX_VALUE))
         );
         SimulationPanelLayout.setVerticalGroup(
             SimulationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SimulationPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(32, 32, 32)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                .addComponent(jButton9)
-                .addGap(44, 44, 44))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Launcher", SimulationPanel);
@@ -761,14 +836,126 @@ public class MainForm extends javax.swing.JFrame {
         PlotterPanel.setLayout(PlotterPanelLayout);
         PlotterPanelLayout.setHorizontalGroup(
             PlotterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 815, Short.MAX_VALUE)
+            .addGroup(PlotterPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dataTable1, javax.swing.GroupLayout.PREFERRED_SIZE, 843, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PlotterPanelLayout.setVerticalGroup(
             PlotterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 462, Short.MAX_VALUE)
+            .addComponent(dataTable1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
         );
 
         jTabbedPane2.addTab("Data Viewer", PlotterPanel);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 859, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 528, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane2.getAccessibleContext().setAccessibleName("Main Tabs");
+
+        jPanel1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jPanel1FocusLost(evt);
+            }
+        });
+
+        jTree1.setModel(TheRocket.RocketTree);
+        jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTree1MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTree1MouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTree1MouseClicked(evt);
+            }
+        });
+        jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                LeafIsSelected(evt);
+            }
+        });
+        jTree1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTree1FocusLost(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTree1);
+
+        EditPartButton.setText("Edit part");
+        EditPartButton.setEnabled(false);
+        EditPartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditPartButtonActionPerformed(evt);
+            }
+        });
+
+        DeletePartButton.setText("Delete Part");
+        DeletePartButton.setEnabled(false);
+        DeletePartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeletePartButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(EditPartButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(DeletePartButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(EditPartButton)
+                    .addComponent(DeletePartButton))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("The Rocket", jPanel1);
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -776,22 +963,20 @@ public class MainForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 823, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
-
-        jTabbedPane2.getAccessibleContext().setAccessibleName("Main Tabs");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -802,29 +987,29 @@ private void BodyPartSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         case 0:
            NoseConeData Ndat = new NoseConeData();
            if (Ndat.built == true){
-                TheRocket.addBodyPart(Ndat);
-                UpdateTree();
+                BodyAdder(Ndat);
+                
            }
             break;
         case 1:
             BodyTubeData BTdat = new BodyTubeData();
             if (BTdat.built == true){
-                TheRocket.addBodyPart(BTdat);
-                UpdateTree();
+                BodyAdder(BTdat);
+                
             }
             break;
         case 2: 
             ConicTransData CTdat = new ConicTransData();
             if (CTdat.built == true){
-                TheRocket.addBodyPart(CTdat);
-                UpdateTree();
+                BodyAdder(CTdat);
+                
             }
             break;
         case 3:
             FinsetData FSdata = new FinsetData();
             if (FSdata.built == true){
-                TheRocket.addBodyPart(FSdata);
-                UpdateTree();
+                BodyAdder(FSdata);
+                
             }
             break;
         default : jLabel4.setText("Error!"); break;
@@ -834,126 +1019,68 @@ private void BodyPartSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     jLabel4.setText(("Index is: " + i));*/
 }//GEN-LAST:event_BodyPartSetActionPerformed
 
+private void BodyAdder(RockPartsData part){
+    TheRocket.addBodyPart(part,StageComboBox.getSelectedIndex());
+    UpdateTree();
+}
 private void MassPartSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MassPartSetActionPerformed
 // When specs button is pressed launch new specs window
     switch (MassPartChoose.getSelectedIndex()){
         case 0:
             CylinderData Cydat = new CylinderData();
             if (Cydat.built == true){
-                TheRocket.addMassPart(Cydat);
-                UpdateTree();
+                MassAdder(Cydat);
+                
             }
             break;
         case 1:
             TubeData Tdat = new TubeData();
             if(Tdat.built == true)
             {
-                TheRocket.addMassPart(Tdat);
-                UpdateTree();
+                MassAdder(Tdat);
+                
             }
             break;
         case 2: 
             BlockData Bdat = new BlockData();
             if (Bdat.built == true){
-                TheRocket.addMassPart(Bdat);
-                UpdateTree();
+                MassAdder(Bdat);
+                
             }
             break;
         case 3:
             ConeSecData Cdat = new ConeSecData();
             if (Cdat.built == true){
-                TheRocket.addMassPart(Cdat);
-                UpdateTree();
+                MassAdder(Cdat);
+                
             }
             break;
         case 4:
             PointMassData Pdat = new PointMassData();
             if (Pdat.built == true){
-                TheRocket.addMassPart(Pdat);
-                UpdateTree();
+                MassAdder(Pdat);
+                
             }
             break;
         case 5:
             ParachuteData Padat = new ParachuteData();
             if (Padat.built == true){
-                TheRocket.addMassPart(Padat);
-                UpdateTree();
+                MassAdder(Padat);
+                
             }
             break;
     }
 }//GEN-LAST:event_MassPartSetActionPerformed
-
-private void LeafIsSelected(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_LeafIsSelected
-// TODO add your handling code here:
- try{
-    DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
-    
-    if (TheLeaf.isLeaf()){
-        Object PartInfo = TheLeaf.getUserObject();
-        //RocketDescription.InfoString TheInfo = (RocketDescription.InfoString)PartInfo;
-        RockPartsData TheData = (RockPartsData)PartInfo;
-        jTextArea1.setText("Centre of Mass = " + Double.toString(TheData.Xcm));
-        }
-     else{
-        jTextArea1.setText("");
-    }
- }
- catch(Exception e){
-     jTextArea1.setText(e.getMessage());
- }
-}//GEN-LAST:event_LeafIsSelected
-
-private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
-// TODO add your handling code here:4
-}//GEN-LAST:event_jTree1MouseClicked
-
-private void jTree1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MousePressed
-    // TODO add your handling code here:
-    int SelNum = jTree1.getRowForLocation(evt.getX(), evt.getY());
-    javax.swing.tree.TreePath TP = jTree1.getPathForRow(SelNum);
-    try{
-        DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
-        RockPartsData ThePart = (RockPartsData)TheLeaf.getUserObject();
-        LastTreeRow = SelNum;
-
-       if (SelNum != -1){
-           maybeShowPopup(evt);
-        }
-    }
-    catch(Exception e){}
-}//GEN-LAST:event_jTree1MousePressed
-
-private void jTree1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseReleased
-    int SelNum = jTree1.getRowForLocation(evt.getX(), evt.getY());
-    javax.swing.tree.TreePath TP = jTree1.getPathForRow(SelNum);
-    try{
-        DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
-        RockPartsData ThePart = (RockPartsData)TheLeaf.getUserObject();
-
-       if (SelNum != -1){
-           maybeShowPopup(evt);
-        }
-    }
-    catch(Exception e){}
-}//GEN-LAST:event_jTree1MouseReleased
-
+private void MassAdder(RockPartsData part){
+    TheRocket.addMassPart(part,StageComboBox.getSelectedIndex());
+    UpdateTree();
+}
 private void jMenuItem1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseReleased
 
-    javax.swing.tree.TreePath TP = jTree1.getPathForRow(LastTreeRow);
-    DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
-    RockPartsData ThePart = (RockPartsData)TheLeaf.getUserObject();
-    ThePart.EditMe();
 }//GEN-LAST:event_jMenuItem1MouseReleased
 
 private void jMenuItem2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MouseReleased
-    
-    javax.swing.tree.TreePath TP = jTree1.getPathForRow(LastTreeRow);
-    DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
-    javax.swing.tree.MutableTreeNode Parent = (javax.swing.tree.MutableTreeNode)(TheLeaf.getParent());
-    if (Parent != null){
-        TheRocket.RemovePart(TheLeaf);
-    }
-    UpdateTree();
+   
 
 }//GEN-LAST:event_jMenuItem2MouseReleased
 
@@ -1055,17 +1182,50 @@ private void jList1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:even
 private void ConfigSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigSaveButtonActionPerformed
 
     if(CheckForLaunch()){
-        JFileChooser fc = new JFileChooser();
+        /*JFileChooser fc = new JFileChooser();
         int RetVal = fc.showSaveDialog(null);
         if(RetVal == fc.APPROVE_OPTION)
         {
-            GenerateSimData GSD = new GenerateSimData(TheRocket,TheAtmosphere,LaunchPadSet);
-            RWsiminXML WriteSim = new RWsiminXML(fc.getSelectedFile().getPath());//TODO unhardcode this filename?
-            WriteSim.WriteSimDataToXML(GSD);
+            RWsiminXML WriteSim = new RWsiminXML(fc.getSelectedFile().getPath());
+            int mIts=1;
+            if(MonteCarloRadio.isSelected()){
+                mIts = Integer.parseInt(MonteCarloField.getText());
+            }
+            WriteSim.WriteSimDataToXML(TheRocket,TheAtmosphere,LaunchPadSet,MonteCarloRadio.isSelected(),mIts,ParachuteFailChk.isSelected());
+            String[] Command = {"/home/simon/Ubuntu One/NetBeansProject/RocketC/dist/Debug/GNU-Linux-x86/rocketc", fc.getSelectedFile().getPath()};
+            try{
+                Process p = Runtime.getRuntime().exec(Command);
+                p.waitFor();
+            }
+            catch(Exception e){
+                JOptionPane.showMessageDialog(null,("Error running the rocket simulator. System message:" + e.getMessage()));
+            }
+
+            LoadOutPutData();
+        }*/
+        int mIts=1;
+        if(MonteCarloRadio.isSelected()){
+            mIts = Integer.parseInt(MonteCarloField.getText());
         }
+        boolean ballisticF = !TheRocket.Stages.elementAt(0).hasParachutes();//TODO this needs to be made more explicit for each stage.
+        PlotLauncher ThrowFigures = new PlotLauncher(InstallationDir.getPath() + File.separator +"RockPlot"+ File.separator +"FlightPlotter.py");
+        SimulatorInterface RocketCconnect = new SimulatorInterface((InstallationDir.getPath() + File.separator + "RocketC"),ThrowFigures);
+        RocketCconnect.RunSim(TheRocket, TheAtmosphere, LaunchPadSet, MonteCarloRadio.isSelected(),ballisticF, mIts);
+        if(RocketCconnect.Success){
+            LoadOutPutData(RocketCconnect);
+        }
+
+
     }
 }//GEN-LAST:event_ConfigSaveButtonActionPerformed
 
+private void LoadOutPutData(SimulatorInterface rcon){
+    String fname = rcon.SimulationOut.getPath();
+    dataTable1.LoadDataFile(fname);
+    dataTable1.MakeDataTable();
+    dataTable1.MakeSummaryData();
+    jTabbedPane2.setSelectedIndex(4);
+}
 private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
     AtmosphereData AD1 = new AtmosphereData();
     AD1.EditMeRaw();
@@ -1084,9 +1244,8 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     RocketMotor rMot = new RocketMotor(MdNow,0);
     rMot.EditMe();
     if(rMot.built){
-        TheRocket.addMotor(rMot);
+        TheRocket.addMotor(rMot, StageComboBox.getSelectedIndex());
         UpdateTree();
-
     }
 }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1150,11 +1309,11 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     AD.EditMeRaw();
 }//GEN-LAST:event_jButton6ActionPerformed
 
-private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+private void MonteCarloRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MonteCarloRadioActionPerformed
 
-        MonteCarloField.setEnabled(jRadioButton1.isSelected());
+        MonteCarloField.setEnabled(MonteCarloRadio.isSelected());
     
-}//GEN-LAST:event_jRadioButton1ActionPerformed
+}//GEN-LAST:event_MonteCarloRadioActionPerformed
 
 private void LaunchRailFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_LaunchRailFieldFocusLost
     ReadLaunchData();
@@ -1192,6 +1351,164 @@ private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     tDiag.setVisible(true);
 }//GEN-LAST:event_jButton9ActionPerformed
 
+private void LeafIsSelected(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_LeafIsSelected
+    // TODO add your handling code here:
+
+}//GEN-LAST:event_LeafIsSelected
+
+private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
+    // TODO add your handling code here:4
+}//GEN-LAST:event_jTree1MouseClicked
+
+private void jTree1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseReleased
+    EditPartButton.setEnabled(false);
+    DeletePartButton.setEnabled(false);
+    int SelNum = jTree1.getRowForLocation(evt.getX(), evt.getY());
+    javax.swing.tree.TreePath TP = jTree1.getPathForRow(SelNum);
+    try{
+        DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
+        if(TheLeaf.toString().contains("Booster"))
+        {
+            DeletePartButton.setEnabled(true);
+            jMenuItem1.setEnabled(false);
+            jMenuItem2.setEnabled(true);
+            if (SelNum != -1){
+                maybeShowPopup(evt);
+            }
+            
+        }
+        else{
+            jMenuItem1.setEnabled(true);
+            RockPartsData ThePart = (RockPartsData)TheLeaf.getUserObject();
+            EditPartButton.setEnabled(true);
+            if(ThePart.toString().contains("Stage Transition")){
+                jMenuItem2.setEnabled(false);
+
+            }else{
+                jMenuItem2.setEnabled(true);
+                DeletePartButton.setEnabled(true);
+            }
+            if (SelNum != -1){
+                maybeShowPopup(evt);
+            }
+        }
+    } catch(Exception e){}
+}//GEN-LAST:event_jTree1MouseReleased
+
+private void jTree1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MousePressed
+   EditPartButton.setEnabled(false);
+    DeletePartButton.setEnabled(false);
+    int SelNum = jTree1.getRowForLocation(evt.getX(), evt.getY());
+    javax.swing.tree.TreePath TP = jTree1.getPathForRow(SelNum);
+    try{
+        DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
+        if(TheLeaf.toString().contains("Booster"))
+        {
+            DeletePartButton.setEnabled(true);
+            jMenuItem1.setEnabled(false);
+            jMenuItem2.setEnabled(true);
+            if (SelNum != -1){
+                maybeShowPopup(evt);
+            }
+
+        }
+        else{
+            jMenuItem1.setEnabled(true);
+            RockPartsData ThePart = (RockPartsData)TheLeaf.getUserObject();
+            EditPartButton.setEnabled(true);
+            if(ThePart.toString().contains("Stage Transition")){
+                jMenuItem2.setEnabled(false);
+
+            }else{
+                jMenuItem2.setEnabled(true);
+                DeletePartButton.setEnabled(true);
+            }
+            if (SelNum != -1){
+                maybeShowPopup(evt);
+            }
+        }
+    } catch(Exception e){}
+    LastTreeRow = SelNum;
+}//GEN-LAST:event_jTree1MousePressed
+
+private void BoosterStageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BoosterStageButtonActionPerformed
+    if(StageComboBox.getItemCount() <2 ){
+        TheRocket.addTransition();
+        TheRocket.addNewStage();
+        UpdateTree();
+    }
+ else{
+        JOptionPane.showMessageDialog(null, "Three+ stage rocket simulation is not yet available, but is under development.");
+ }
+}//GEN-LAST:event_BoosterStageButtonActionPerformed
+
+private void jTabbedPane2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane2FocusGained
+    
+}//GEN-LAST:event_jTabbedPane2FocusGained
+
+private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    DeletePart();
+}//GEN-LAST:event_jMenuItem2ActionPerformed
+
+private void DeletePart(){
+    if(jMenuItem2.isEnabled()){
+    javax.swing.tree.TreePath TP = jTree1.getPathForRow(LastTreeRow);
+    DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
+    javax.swing.tree.MutableTreeNode Parent = (javax.swing.tree.MutableTreeNode)(TheLeaf.getParent());
+    if (Parent != null){
+        if(TheLeaf.toString().contains("Booster")){
+            TheRocket.RemoveStage(TheLeaf);
+        }else{
+            TheRocket.RemovePart(TheLeaf);
+        }
+    }
+    UpdateTree();
+    }
+}
+
+private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    EditPart();
+}//GEN-LAST:event_jMenuItem1ActionPerformed
+
+private void EditPart(){
+    if(jMenuItem1.isEnabled()){
+        javax.swing.tree.TreePath TP = jTree1.getPathForRow(LastTreeRow);
+        DefaultMutableTreeNode TheLeaf = (DefaultMutableTreeNode)TP.getLastPathComponent();
+        RockPartsData ThePart = (RockPartsData)TheLeaf.getUserObject();
+        ThePart.EditMe();
+    }
+}
+
+private void jPanel1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPanel1FocusLost
+    //TODO
+}//GEN-LAST:event_jPanel1FocusLost
+
+private void jTree1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTree1FocusLost
+    //EditPartButton.setEnabled(false);
+    //EditPartButton.setEnabled(true);
+}//GEN-LAST:event_jTree1FocusLost
+
+private void EditPartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditPartButtonActionPerformed
+    EditPart();
+}//GEN-LAST:event_EditPartButtonActionPerformed
+
+private void DeletePartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeletePartButtonActionPerformed
+    DeletePart();
+}//GEN-LAST:event_DeletePartButtonActionPerformed
+
+private void jList2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MousePressed
+   MaybeShowPopupAtmos(evt);
+}//GEN-LAST:event_jList2MousePressed
+
+private void EditAtmosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditAtmosActionPerformed
+    AtmosphereData AD = (AtmosphereData)jList2.getSelectedValue();
+    AD.EditMeRaw();
+}//GEN-LAST:event_EditAtmosActionPerformed
+
+private void AtmosDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AtmosDeleteActionPerformed
+    Atmospheres.RemoveFromList(jList2.getSelectedIndex());
+}//GEN-LAST:event_AtmosDeleteActionPerformed
+
 private void maybeShowPopup(java.awt.event.MouseEvent evt){
      if (evt.isPopupTrigger()){
 
@@ -1207,6 +1524,12 @@ private void maybeShowPopup2(java.awt.event.MouseEvent evt){
     }
 }
 
+private void MaybeShowPopupAtmos(java.awt.event.MouseEvent evt){
+    if (evt.isPopupTrigger()){
+        AtmosListMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+    }
+}
+
 private void ReadLaunchData(){
     TheAtmosphere = (AtmosphereData)AtmosphereComboBox.getSelectedItem();
     LaunchPadSet.SetData(LaunchRailField, AzimuthField, DeclinationField);
@@ -1214,13 +1537,13 @@ private void ReadLaunchData(){
 
 private boolean CheckForLaunch(){
     boolean OK;
-    if(TheRocket.ReturnBodyParts().isEmpty()){
+    if(TheRocket.Stages.firstElement().isEmpty()){
         OK = false;
-        JOptionPane.showMessageDialog(null,("No Rocket Design Found"));
+        JOptionPane.showMessageDialog(null,("No Main Stage design found"));
     }
-    else if(!TheRocket.ReturnMotorData().built){
+    else if(!TheRocket.Stages.lastElement().hasMotor()){
         OK = false;
-        JOptionPane.showMessageDialog(null,("Rocket contains no motor"));
+        JOptionPane.showMessageDialog(null,("The Rocket needs a motor"));
     }
     else if(!LaunchPadSet.Built){
         OK = false;
@@ -1271,19 +1594,26 @@ private boolean CheckForLaunch(){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AddBodyLabel;
     private javax.swing.JLabel AddMassLabel;
+    private javax.swing.JMenuItem AtmosDelete;
+    private javax.swing.JPopupMenu AtmosListMenu;
     private javax.swing.JComboBox AtmosphereComboBox;
     private javax.swing.JPanel AtmospherePanel;
     private javax.swing.JTextField AzimuthField;
     private javax.swing.JComboBox BodyPartChoose;
     private javax.swing.JButton BodyPartSet;
+    private javax.swing.JButton BoosterStageButton;
     private javax.swing.JButton ConfigSaveButton;
     private javax.swing.JTextField DeclinationField;
+    private javax.swing.JButton DeletePartButton;
     private javax.swing.JButton DesignLoadButton;
+    private javax.swing.JMenuItem EditAtmos;
+    private javax.swing.JButton EditPartButton;
     private javax.swing.JTextField LaunchRailField;
     private javax.swing.JPopupMenu ListRightClickMenu;
     private javax.swing.JComboBox MassPartChoose;
     private javax.swing.JButton MassPartSet;
     private javax.swing.JTextField MonteCarloField;
+    private javax.swing.JRadioButton MonteCarloRadio;
     private javax.swing.JButton MotorCreationButton;
     private javax.swing.JPanel MotorDesignPanel;
     private javax.swing.JButton MotorPaneTips;
@@ -1291,8 +1621,10 @@ private boolean CheckForLaunch(){
     private javax.swing.JPanel PlotterPanel;
     private javax.swing.JPanel RocketDesignPanel;
     private javax.swing.JPanel SimulationPanel;
+    private javax.swing.JComboBox StageComboBox;
     private javax.swing.JPopupMenu TreeRightClickMenu;
     private javax.swing.JButton WriteToFileButton;
+    private Rocket.DataTable dataTable1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -1307,6 +1639,7 @@ private boolean CheckForLaunch(){
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1328,14 +1661,13 @@ private boolean CheckForLaunch(){
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 
@@ -1348,6 +1680,8 @@ private boolean CheckForLaunch(){
     private void UpdateTree()
     {
         jTree1.setModel(TheRocket.RocketTree);
+        StageComboBox.setModel(TheRocket.StageCombo);
+
     }
 
 }

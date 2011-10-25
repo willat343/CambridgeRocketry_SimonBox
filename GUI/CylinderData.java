@@ -43,6 +43,10 @@ public class CylinderData extends RockPartsData{
     public CylinderData(){
         EditMe();
     }
+    public CylinderData(boolean t)
+    {
+        
+    }
 
     public CylinderData(Node Nin){
         BuildFromXML(Nin);
@@ -56,11 +60,12 @@ public class CylinderData extends RockPartsData{
         
         XcomCylinder();
         InertiaCylinder();
+        built =true;
     }
     
     //*Class functions
     private void XcomCylinder(){
-        Xcm = Xp + length/2;
+        Xcm = length/2;
     }
     
     private void InertiaCylinder(){

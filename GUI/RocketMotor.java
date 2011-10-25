@@ -67,6 +67,24 @@ public class RocketMotor extends RockPartsData{
 
     }
 
+    public CylinderData asFullCylinder(){
+        CylinderData FullMot = new CylinderData(true);
+
+        FullMot.PopulateCylinder(Mot.Length, Mot.Diameter, Mot.LoadedMass, MountX, 0.0, Mot.Name);
+
+        return(FullMot);
+
+    }
+
+    public CylinderData asEmptyCylinder(){
+        CylinderData FullMot = new CylinderData(true);
+
+        FullMot.PopulateCylinder(Mot.Length, Mot.Diameter, Mot.DryMass, MountX, 0.0, Mot.Name);
+
+        return(FullMot);
+
+    }
+
     public void WriteToXML(RWdesignXML design){
         Node PartNode = design.CreateNode("Motor");
         PartNode.appendChild(design.CreateDataNode("Length", Double.toString(Mot.Length)));
@@ -80,7 +98,7 @@ public class RocketMotor extends RockPartsData{
         design.MotorNode.appendChild(PartNode);
     }
 
-    public void BuildFromXML(Node Nin){
+    public final void BuildFromXML(Node Nin){
         Mot = new MotorData();
         XMLnodeParser Temp = new XMLnodeParser(Nin);
 

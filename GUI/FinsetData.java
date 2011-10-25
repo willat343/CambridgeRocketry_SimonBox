@@ -55,7 +55,7 @@ public class FinsetData extends RockPartsData{
     public FinsetData(Node Nin){
         BuildFromXML(Nin);
     }
-    public void PopulateFinset(int i1, double d1,double d2,double d4,double d5,double d6,double d7,double d8,double d9,double d10,String s1){
+    public void PopulateFinset(int i1, double d1,double d2,double d4,double d5,double d6,double d7,double d9,double d10,String s1){
         NoOfFins = i1;
         RootChord = d1;
         TipChord = d2;
@@ -63,7 +63,7 @@ public class FinsetData extends RockPartsData{
         Sweep = d5;
         Thickness = d6;
         BodyDiam = d7;
-        RefDiam = d8;
+        RefDiam = BodyDiam;
         Mass = d9;
         Xp = d10;
         Name = s1;
@@ -76,7 +76,7 @@ public class FinsetData extends RockPartsData{
     }
     
     //*Class Functions
-    private void BarrowmanFinset(){
+    public void BarrowmanFinset(){
         MidChord = Math.sqrt(Math.pow(Sweep+(0.5*TipChord)-(0.5*RootChord),2) + Math.pow(Span, 2));
         double Kfb = 1+(BodyDiam/2)/(Span + (BodyDiam/2));
 
@@ -87,13 +87,13 @@ public class FinsetData extends RockPartsData{
         double t2 = 3*rpt;
         double t3 = rpt - (RootChord*TipChord/rpt);
 
-        Xcp = Xp + t1/t2 + t3/6;
+        Xcp = t1/t2 + t3/6;
 
         
     }
     
     private void XcomFinset(){
-        Xcm = Xp + RootChord/2;//Crude, improve
+        Xcm = RootChord/2;//TODO Crude, improve
     }
     
     private void InertialFinset(){
@@ -128,11 +128,11 @@ public class FinsetData extends RockPartsData{
      public void EditMe(){
         FinsetDialog FD = new FinsetDialog(null,true);
         if (built == true){
-               FD.FillFields(NoOfFins,RootChord,TipChord,Span,Sweep,Thickness,BodyDiam,RefDiam,Mass,Xp,Name);
+               FD.FillFields(NoOfFins,RootChord,TipChord,Span,Sweep,Thickness,BodyDiam,Mass,Xp,Name);
         }
         FD.setVisible(true);
         if(FD.ReadOk == true){
-            PopulateFinset(FD.FinNum,FD.RootChord,FD.TipChord,FD.Span,FD.Sweep,FD.Thickness,FD.BodyDiam,FD.RefDiam,FD.Mass,FD.Position,FD.Name);
+            PopulateFinset(FD.FinNum,FD.RootChord,FD.TipChord,FD.Span,FD.Sweep,FD.Thickness,FD.BodyDiam,FD.Mass,FD.Position,FD.Name);
             built = true;
         }
 
@@ -148,7 +148,6 @@ public class FinsetData extends RockPartsData{
         PartNode.appendChild(design.CreateDataNode("Sweep", Double.toString(Sweep)));
         PartNode.appendChild(design.CreateDataNode("Thickness", Double.toString(Thickness)));
         PartNode.appendChild(design.CreateDataNode("BodyDiam", Double.toString(BodyDiam)));
-        PartNode.appendChild(design.CreateDataNode("RefDiam", Double.toString(RefDiam)));
         PartNode.appendChild(design.CreateDataNode("Mass", Double.toString(Mass)));
         PartNode.appendChild(design.CreateDataNode("Xp", Double.toString(Xp)));
         PartNode.appendChild(design.CreateDataNode("Name", Name));
@@ -159,7 +158,7 @@ public class FinsetData extends RockPartsData{
     public void BuildFromXML(Node Nin){
         XMLnodeParser Temp = new XMLnodeParser(Nin);
 
-        PopulateFinset(Temp.IbyName("NoOfFins"),Temp.DbyName("RootChord"),Temp.DbyName("TipChord"),Temp.DbyName("Span"),Temp.DbyName("Sweep"),Temp.DbyName("Thickness"),Temp.DbyName("BodyDiam"),Temp.DbyName("RefDiam"),Temp.DbyName("Mass"),Temp.DbyName("Xp"),Temp.SbyName("Name"));
+        PopulateFinset(Temp.IbyName("NoOfFins"),Temp.DbyName("RootChord"),Temp.DbyName("TipChord"),Temp.DbyName("Span"),Temp.DbyName("Sweep"),Temp.DbyName("Thickness"),Temp.DbyName("BodyDiam"),Temp.DbyName("Mass"),Temp.DbyName("Xp"),Temp.SbyName("Name"));
         built=true;
     }
 }

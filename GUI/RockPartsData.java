@@ -31,7 +31,7 @@ import org.w3c.dom.*;
  *
  * @author simon
  */
-public abstract class RockPartsData {
+public abstract class RockPartsData implements Cloneable{
     //*Class Members
     public double 
             Xp, //part position (distance from nose tip)
@@ -52,10 +52,16 @@ public abstract class RockPartsData {
         Mass = d2;
         Body = b1;
     }*/
+
     public abstract void EditMe();
 
     public abstract void WriteToXML(RWdesignXML design);
     public abstract void BuildFromXML(Node Nin);
+
+    @Override
+    public Object clone()throws CloneNotSupportedException {
+        return super.clone();
+    }
 
 
 }

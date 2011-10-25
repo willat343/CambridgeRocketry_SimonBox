@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat;
  * @author simon
  */
 public class RWsiminXML extends RWXML{
-    GenerateSimData SimDataStruct;
+    //GenerateSimData SimDataStruct;
 
     //*Class constructor
     public RWsiminXML(String fn){
@@ -45,50 +45,90 @@ public class RWsiminXML extends RWXML{
         
     }
 
-    public void WriteSimDataToXML(GenerateSimData gsd){
-        SimDataStruct = gsd;
+    public void WriteSimDataToXML(RocketDescription TheRocket,AtmosphereData TheAtmosphere, LaunchData LaunchPadSet, boolean Monte, int mIts, boolean fail){
         WriteInit();
         
         Node RootNode = Doc.appendChild(CreateNode("SimulationInput"));
         RootNode.appendChild(CreateDataNode("Time",tStamp.DateTimeNow()));
-        RootNode.appendChild(CreateDataNode("Function","OneStageFlight"));//TODO unhardcode this
 
-        RootNode.appendChild(GenerateSimSettings());
-        RootNode.appendChild(GenerateLaunchSettings());
-        RootNode.appendChild(GenerateIntabTR());
+        if(TheRocket.Stages.size() == 1){
+            if(Monte){
+                RootNode.appendChild(CreateDataNode("Function","OneStageMonte"));
+            }
+            else{
+                RootNode.appendChild(CreateDataNode("Function","OneStageFlight"));
+            }
+        }
+        else if(TheRocket.Stages.size() == 2){
+            if(Monte){
+                RootNode.appendChild(CreateDataNode("Function","TwoStageMonte"));
+            }
+            else{
+                RootNode.appendChild(CreateDataNode("Function","TwoStageFlight"));
+            }
+        }
 
-        
+        RootNode.appendChild(GenerateSimSettings(Monte,mIts,fail));
+        RootNode.appendChild(GenerateLaunchSettings(LaunchPadSet));
+        RootNode.appendChild(GenerateStageTransition(TheRocket));
+
+        Vector<StageDescription> SimulationStages = TheRocket.buildSimulationStages();
+        for(StageDescription stage : SimulationStages){
+            String stageName = "NoName";
+            if(stage.RootNode.toString().contains("TotalRocket")){
+                stageName="INTAB_TR";
+            }
+            else if(stage.RootNode.toString().contains("Upper")){
+                stageName="INTAB_US";
+            }
+            else if(stage.RootNode.toString().contains("Booster")){
+                stageName="INTAB_BS";
+            }
+
+            GenerateSimData gsd = new GenerateSimData(stage,TheAtmosphere);
+            RootNode.appendChild(GenerateIntabTR(stageName,gsd));
+        }
         WriteOutput();
 
     }
 
-    private Node GenerateSimSettings()
+    private Node GenerateSimSettings(boolean Monte, int mIts, boolean fail)
     {
         Node RootNode = Doc.createElement("SimulationSettings");
-        RootNode.appendChild(CreateDataNode("BallisticFailure","true"));//TODO unhardcode this
-        RootNode.appendChild(CreateDataNode("ShortData","true"));//TODO unhardcode this
-        RootNode.appendChild(CreateDataNode("NumberOfIterations","1"));//TODO unhardcode this
-        RootNode.appendChild(CreateDataNode("MaxTimeSpan","2000"));//TODO unhardcode this
+        RootNode.appendChild(CreateDataNode("BallisticFailure",Boolean.toString(fail)));
+        RootNode.appendChild(CreateDataNode("ShortData",Boolean.toString(Monte)));
+        RootNode.appendChild(CreateDataNode("NumberOfIterations",Integer.toString(mIts)));//TODO unhardcode this
+        RootNode.appendChild(CreateDataNode("MaxTimeSpan","2000"));//TODO maybe unhardcode this
         return(RootNode);
     }
 
-    private Node GenerateLaunchSettings()
+    private Node GenerateLaunchSettings(LaunchData LD)
     {
         Node RootNode = Doc.createElement("LaunchSettings");
         RootNode.appendChild(CreateDataNode("Eastings","0.0"));//TODO unhardcode this
         RootNode.appendChild(CreateDataNode("Northings","0.0"));//TODO unhardcode this
         RootNode.appendChild(CreateDataNode("Altitude","0.0"));//TODO unhardcode this
-        RootNode.appendChild(CreateDataNode("LaunchRailLength",Double.toString(SimDataStruct.RailLength)));
-        RootNode.appendChild(CreateDataNode("LaunchAzimuth",Double.toString(SimDataStruct.Azimuth)));
-        RootNode.appendChild(CreateDataNode("LaunchDeclination",Double.toString(SimDataStruct.Declination)));
+        RootNode.appendChild(CreateDataNode("LaunchRailLength",Double.toString(LD.RailLength)));
+        RootNode.appendChild(CreateDataNode("LaunchAzimuth",Double.toString(LD.Azimuth)));
+        RootNode.appendChild(CreateDataNode("LaunchDeclination",Double.toString(LD.Declination)));
 
         return(RootNode);
 
     }
 
-    private Node GenerateIntabTR()
+    private Node GenerateStageTransition(RocketDescription Rocket){
+        Node RootNode = Doc.createElement("StageTransition");
+        StageDescription TempS = Rocket.Stages.firstElement();
+        if(TempS.isUpper()){
+            RootNode.appendChild(CreateDataNode("SeparationTime",Double.toString(TempS.ReturnTransitionData().separationTime)));
+            RootNode.appendChild(CreateDataNode("IgnitionDelay",Double.toString(TempS.ReturnTransitionData().ignitionDelay)));
+        }
+        return(RootNode);
+    }
+
+    private Node GenerateIntabTR(String Name, GenerateSimData SimDataStruct)
     {
-        Node RootNode = Doc.createElement("INTAB_TR");
+        Node RootNode = Doc.createElement(Name);
         Node intab1N = RootNode.appendChild(CreateNode("intab1"));
         intab1N.appendChild(CreateDataNode("time",VectorToDstring(SimDataStruct.Time) + ";"));
         intab1N.appendChild(CreateDataNode("Thrust",VectorToDstring(SimDataStruct.Thrust) + ";"));

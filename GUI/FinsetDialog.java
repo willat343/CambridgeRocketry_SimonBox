@@ -42,7 +42,6 @@ public class FinsetDialog extends javax.swing.JDialog {
             Span,
             Sweep,
             BodyDiam,
-            RefDiam,
             Thickness,
             Mass,
             Position;
@@ -95,9 +94,6 @@ public class FinsetDialog extends javax.swing.JDialog {
         FinsetSweepUnit = new javax.swing.JLabel();
         FinsetAddButton = new javax.swing.JButton();
         FinsetCancelButton = new javax.swing.JButton();
-        FinsetRefDiam = new javax.swing.JLabel();
-        FinsetRefDiamBox = new javax.swing.JTextField();
-        FinsetRefDiamUnit = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -215,16 +211,6 @@ public class FinsetDialog extends javax.swing.JDialog {
             }
         });
 
-        FinsetRefDiam.setText("Max Rocket Body Diameter");
-
-        FinsetRefDiamBox.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                FinsetRefDiamBoxFocusLost(evt);
-            }
-        });
-
-        FinsetRefDiamUnit.setText("m");
-
         jButton1.setText("?");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -254,14 +240,12 @@ public class FinsetDialog extends javax.swing.JDialog {
                                     .addComponent(FinsetThickLabel)
                                     .addComponent(FinsetMassLabel)
                                     .addComponent(FinsetPosLabel)
-                                    .addComponent(FinsetRefDiam)
                                     .addComponent(FinsetNameLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(47, 47, 47)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(FinsetPosText, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(FinsetMassText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-                                        .addComponent(FinsetRefDiamBox, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(FinsetFinNumComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(FinsetTCText, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(FinsetSpanText, javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,7 +256,6 @@ public class FinsetDialog extends javax.swing.JDialog {
                                     .addComponent(FinsetNameText, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(FinsetRefDiamUnit)
                                     .addComponent(FinsetRCUnit, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
                                     .addComponent(FinsetTCUnit, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
                                     .addComponent(FinsetSpanUnit, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
@@ -343,17 +326,12 @@ public class FinsetDialog extends javax.swing.JDialog {
                     .addComponent(FinsetPosText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(FinsetPosLabel)
                     .addComponent(FinsetPosUnit))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(FinsetRefDiamBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(FinsetRefDiam)
-                    .addComponent(FinsetRefDiamUnit))
-                .addGap(56, 56, 56)
+                .addGap(86, 86, 86)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(FinsetAddButton)
                     .addComponent(FinsetCancelButton)
                     .addComponent(jButton1))
-                .addGap(44, 44, 44))
+                .addGap(54, 54, 54))
         );
 
         pack();
@@ -445,13 +423,6 @@ private void FinsetThickTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRS
     FinsetThickText = ThickTest.InputField;
 }//GEN-LAST:event_FinsetThickTextFocusLost
 
-private void FinsetRefDiamBoxFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_FinsetRefDiamBoxFocusLost
-//Function to test the validity of the user input
-    TestUserTextInput RefDiamTest = new TestUserTextInput(FinsetRefDiamBox);
-    RefDiam = RefDiamTest.TestDouble();
-    FinsetRefDiamBox = RefDiamTest.InputField;
-}//GEN-LAST:event_FinsetRefDiamBoxFocusLost
-
 private void FinsetSpanTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FinsetSpanTextActionPerformed
     // TODO add your handling code here:
 }//GEN-LAST:event_FinsetSpanTextActionPerformed
@@ -496,7 +467,7 @@ private boolean CheckValidity(){
         });
     }
 
-    public void FillFields(int i1, double d1,double d2,double d4,double d5,double d6,double d7,double d8,double d9,double d10,String s1){
+    public void FillFields(int i1, double d1,double d2,double d4,double d5,double d6,double d7,double d9,double d10,String s1){
         FinNum = i1;
         RootChord = d1;
         TipChord = d2;
@@ -504,7 +475,6 @@ private boolean CheckValidity(){
         Sweep = d5;
         Thickness = d6;
         BodyDiam = d7;
-        RefDiam = d8;
         Mass = d9;
         Position = d10;
         Name = s1;
@@ -516,7 +486,6 @@ private boolean CheckValidity(){
         FinsetSweepText.setText(Double.toString(Sweep));
         FinsetThickText.setText(Double.toString(Thickness));
         FinsetBDText.setText(Double.toString(BodyDiam));
-        FinsetRefDiamBox.setText(Double.toString(RefDiam));
         FinsetMassText.setText(Double.toString(Mass));
         FinsetPosText.setText(Double.toString(Position));
         FinsetNameText.setText(Name);
@@ -543,9 +512,6 @@ private boolean CheckValidity(){
     private javax.swing.JLabel FinsetRCLabel;
     private javax.swing.JTextField FinsetRCText;
     private javax.swing.JLabel FinsetRCUnit;
-    private javax.swing.JLabel FinsetRefDiam;
-    private javax.swing.JTextField FinsetRefDiamBox;
-    private javax.swing.JLabel FinsetRefDiamUnit;
     private javax.swing.JLabel FinsetSpanLable;
     private javax.swing.JTextField FinsetSpanText;
     private javax.swing.JLabel FinsetSpanUnit;

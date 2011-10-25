@@ -33,7 +33,7 @@ import java.util.Vector;
  */
 public class GenerateSimData {
     //*class Members
-    RocketDescription RocD;
+    StageDescription RocD;
     //INTAB1
     Vector<Double>
             Time,
@@ -75,11 +75,7 @@ public class GenerateSimData {
             Length,
             Xarea;
     //****************
-    //LaunchPad
-    double
-            RailLength,
-            Azimuth,
-            Declination;
+    
     //******************
     //Miscelaneous constants
     double Rec;//critical reynolds number
@@ -87,7 +83,7 @@ public class GenerateSimData {
     //**********************
 
     //Constructor
-    public GenerateSimData(RocketDescription RD, AtmosphereData AD, LaunchData LD)
+    public GenerateSimData(StageDescription RD, AtmosphereData AD)
     {
         //Define some Constants
         Rec = 500000;
@@ -122,7 +118,6 @@ public class GenerateSimData {
         Intab3Dat();
         ParachuteData();
         Intab4Dat(AD);
-        LaunchSet(LD);
     }
 
     private void Intab1Dat()
@@ -136,12 +131,12 @@ public class GenerateSimData {
 
         for(RockPartsData rpd : MassParts)
         {
-            rMoment += rpd.Xcm*rpd.Mass;
+            rMoment += (rpd.Xp+rpd.Xcm)*rpd.Mass;
             rMass += rpd.Mass;
         }
         for(RockPartsData rpd : BodyParts)
         {
-            rMoment += rpd.Xcm*rpd.Mass;
+            rMoment += (rpd.Xp+rpd.Xcm)*rpd.Mass;
             rMass += rpd.Mass;
         }
 
@@ -153,61 +148,91 @@ public class GenerateSimData {
 
         for(RockPartsData rpd : MassParts)
         {
-            double sep = Math.abs(rpd.Xcm - rCoM);
+            double sep = Math.abs((rpd.Xp+rpd.Xcm) - rCoM);
             rIx += rpd.Ixx + rpd.Mass*Math.pow(sep, 2.0);//parallel axis
             rIy += rpd.Iyy + rpd.Mass*Math.pow(sep, 2.0);//parallel axis
             rIz += rpd.Izz;
         }
         for(RockPartsData rpd : BodyParts)
         {
-            double sep = Math.abs(rpd.Xcm - rCoM);
+            double sep = Math.abs((rpd.Xp+rpd.Xcm) - rCoM);
             rIx += rpd.Ixx + rpd.Mass*Math.pow(sep, 2.0);//parallel axis
             rIy += rpd.Iyy + rpd.Mass*Math.pow(sep, 2.0);//parallel axis
             rIz += rpd.Izz;
         }
         //***************************************************************
 
-        //Combine With Motor*********************************************
-        RocketMotor Mot = RocD.ReturnMotorData();
 
-        Time = Mot.Mot.Time;
-        Thrust = Mot.Mot.Thrust;
+        if(RocD.hasMotor()){
+            //Combine With Motor*********************************************
+            RocketMotor Mot = RocD.ReturnMotorData();
 
-        double dist = Mot.MountX + Mot.Mot.CoM;
-        double NozX = Mot.MountX + Mot.Mot.Length;
+            Time = Mot.Mot.Time;
+            Thrust = Mot.Mot.Thrust;
 
-        Mass = new Vector<Double>();
-        CoM = new Vector<Double>();
-        for(double M : Mot.Mot.Mass)
-        {
-            Mass.add(M + rMass);
-            CoM.add((rMoment + M*dist)/(rMass + M));
+            double dist = Mot.MountX + Mot.Mot.CoM;
+            double NozX = Mot.MountX + Mot.Mot.Length;
+
+            Mass = new Vector<Double>();
+            CoM = new Vector<Double>();
+            for(double M : Mot.Mot.Mass)
+            {
+                Mass.add(M + rMass);
+                CoM.add((rMoment + M*dist)/(rMass + M));
+            }
+
+
+            Ixx = new Vector<Double>();
+            Iyy = new Vector<Double>();
+            Izz = new Vector<Double>();
+            TDC = new Vector<Double>();
+
+            for(int i = 0; i < Time.size(); i++)
+            {
+                double dr = Math.abs(CoM.get(i) - rCoM);
+                double dm = Math.abs(dist - CoM.get(i));
+
+                Ixx.add(rIx + rMass*Math.pow(dr, 2.0) + Mot.Mot.Ixx.get(i) + Mot.Mot.Mass.get(i)*Math.pow(dm, 2.0));
+                Iyy.add(rIy + rMass*Math.pow(dr, 2.0) + Mot.Mot.Iyy.get(i) + Mot.Mot.Mass.get(i)*Math.pow(dm, 2.0));
+                Izz.add(rIz + Mot.Mot.Izz.get(i));
+
+                double lcn = Math.abs(NozX - CoM.get(i));
+                double lcc = Math.abs(dist - CoM.get(i));
+
+                /*double a1 = Mot.Mot.MassFlow.get(i);
+                double a2 = Math.pow(lcn, 2);
+                double a3 = Math.pow(lcc, 2);
+                double a4 = a1*(a2-a3);*/
+                TDC.add(Mot.Mot.MassFlow.get(i) * Math.pow((lcn-lcc), 2.0));
+                //TDC.add(a4);
+            }
         }
-
-
-        Ixx = new Vector<Double>();
-        Iyy = new Vector<Double>();
-        Izz = new Vector<Double>();
-        TDC = new Vector<Double>();
-
-        for(int i = 0; i < Time.size(); i++)
-        {
-            double dr = Math.abs(CoM.get(i) - rCoM);
-            double dm = Math.abs(dist - CoM.get(i));
-
-            Ixx.add(rIx + rMass*Math.pow(dr, 2.0) + Mot.Mot.Ixx.get(i) + Mot.Mot.Mass.get(i)*Math.pow(dm, 2.0));
-            Iyy.add(rIy + rMass*Math.pow(dr, 2.0) + Mot.Mot.Iyy.get(i) + Mot.Mot.Mass.get(i)*Math.pow(dm, 2.0));
-            Izz.add(rIz + Mot.Mot.Izz.get(i));
-
-            double lcn = Math.abs(NozX - CoM.get(i));
-            double lcc = Math.abs(dist - CoM.get(i));
+        else{
+            Time = new Vector<Double>();
+            Time.add(0.0);
             
-            /*double a1 = Mot.Mot.MassFlow.get(i);
-            double a2 = Math.pow(lcn, 2);
-            double a3 = Math.pow(lcc, 2);
-            double a4 = a1*(a2-a3);*/
-            TDC.add(Mot.Mot.MassFlow.get(i) * Math.pow((lcn-lcc), 2.0));
-            //TDC.add(a4);
+            Thrust = new Vector<Double>();
+            Thrust.add(0.0);
+            
+            Mass = new Vector<Double>();
+            Mass.add(rMass);
+            
+            CoM = new Vector<Double>();
+            CoM.add(rCoM);
+            
+            Ixx = new Vector<Double>();
+            Ixx.add(rIx);
+            
+            Iyy = new Vector<Double>();
+            Iyy.add(rIy);
+            
+            Izz = new Vector<Double>();
+            Izz.add(rIz);
+            
+            TDC = new Vector<Double>();
+            TDC.add(0.0);
+            
+
         }
 
     }
@@ -267,7 +292,7 @@ public class GenerateSimData {
             else if(Part.toString().contains("[Conic Trans]"))
             {
                 ConicTransData ctd = (ConicTransData)Part;
-                double l = ctd.Xcp + ctd.length;
+                double l = ctd.Xp + ctd.length;
                 if(l > pRTL){pRTL = l; pBd = ctd.DD;}
                 if(l > pRBL){pRBL = l; pBTL = ctd.length;}
                 double d1 = ctd.DD;
@@ -281,6 +306,23 @@ public class GenerateSimData {
         Length = pRTL;
         Xarea = Math.PI*Math.pow(pRd, 2.0)/4.0;
         ///***************************************
+
+        ///*GetMaxArea as RefArea.
+        for(RockPartsData Part : BodyParts){
+            if(Part.toString().contains("[Conic Trans]"))
+            {
+                ConicTransData TheTrans = (ConicTransData)Part;
+                TheTrans.Dr = pRd;
+                TheTrans.BarrowmanConic();
+
+            }
+            else if(Part.toString().contains("[Finset]"))
+            {
+                FinsetData TheFins = (FinsetData)Part;
+                TheFins.RefDiam = pRd;
+                TheFins.BarrowmanFinset();
+            }
+        }
 
 
         int i =0;
@@ -403,7 +445,7 @@ public class GenerateSimData {
         for(RockPartsData Part : BodyParts)
         {
             pCN += Part.CN;
-            nXcp += Part.CN*Part.Xcp;
+            nXcp += Part.CN*(Part.Xcp+Part.Xp);
         }
 
         Cn = new Vector<Double>();
@@ -478,7 +520,7 @@ public class GenerateSimData {
 
         //if no parachutes are found add zeros as place holders
         SwitchAlt.add(0.0);
-        CDA.add(0.0);
+        CDA.add(0.007);
 
         }
     }
@@ -490,12 +532,6 @@ public class GenerateSimData {
         Zwind = AD.Zwind;
         rho = AD.rho;
         Theta = AD.Theta;
-    }
-
-    private void LaunchSet(LaunchData LD){
-        RailLength = LD.RailLength;
-        Azimuth = LD.Azimuth;
-        Declination = LD.Declination;
     }
 
 

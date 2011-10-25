@@ -59,7 +59,7 @@ public class PointMassData  extends RockPartsData{
     
     //*Class Functions
     private void XcomPointMass(){
-        Xcm = Xp;
+        Xcm = 0;
     }
     
     private void InertialPointMass(){

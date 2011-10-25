@@ -40,15 +40,13 @@
                                   <Component id="FinsetThickLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="FinsetMassLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="FinsetPosLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="FinsetRefDiam" min="-2" max="-2" attributes="0"/>
                                   <Component id="FinsetNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                       <Component id="FinsetPosText" alignment="0" max="32767" attributes="1"/>
                                       <Component id="FinsetMassText" alignment="0" pref="134" max="32767" attributes="1"/>
-                                      <Component id="FinsetRefDiamBox" alignment="0" max="32767" attributes="1"/>
                                       <Component id="FinsetFinNumComboBox" alignment="0" max="32767" attributes="1"/>
                                       <Component id="FinsetTCText" alignment="0" max="32767" attributes="1"/>
                                       <Component id="FinsetSpanText" alignment="0" max="32767" attributes="1"/>
@@ -61,7 +59,6 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="FinsetRefDiamUnit" min="-2" max="-2" attributes="1"/>
                                   <Component id="FinsetRCUnit" alignment="0" pref="97" max="32767" attributes="1"/>
                                   <Component id="FinsetTCUnit" alignment="0" pref="97" max="32767" attributes="1"/>
                                   <Component id="FinsetSpanUnit" alignment="0" pref="97" max="32767" attributes="1"/>
@@ -150,19 +147,13 @@
                   <Component id="FinsetPosLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="FinsetPosUnit" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="FinsetRefDiamBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="FinsetRefDiam" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="FinsetRefDiamUnit" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="86" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="FinsetAddButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="FinsetCancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -334,21 +325,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="FinsetCancelButtonActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="FinsetRefDiam">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Max Rocket Body Diameter"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="FinsetRefDiamBox">
-      <Events>
-        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="FinsetRefDiamBoxFocusLost"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="FinsetRefDiamUnit">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="m"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>

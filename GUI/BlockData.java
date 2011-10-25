@@ -68,7 +68,7 @@ public class BlockData extends RockPartsData {
     //*Class functions
     
     private void XcomBlock(){
-        Xcm = Xp + lengthZ/2;
+        Xcm = lengthZ/2;
     }
     private void InertialBlock(){
         Ixx= Mass/12*(Math.pow(lengthY, 2) + Math.pow(lengthZ, 2));

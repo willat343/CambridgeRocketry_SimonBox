@@ -41,8 +41,7 @@ public class ConicTransDialog extends javax.swing.JDialog {
             DD,
             Thickness,
             Mass,
-            Position,
-            RefDiameter;
+            Position;
     boolean ReadOk;
     String Name;
 
@@ -84,9 +83,6 @@ public class ConicTransDialog extends javax.swing.JDialog {
         ConTranThickUnit = new javax.swing.JLabel();
         ConTranAddButton = new javax.swing.JButton();
         ConTranCancelButton = new javax.swing.JButton();
-        ConTranRefDLabel = new javax.swing.JLabel();
-        ConTranRefDText = new javax.swing.JTextField();
-        ConTranRefDUnit = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -175,16 +171,6 @@ public class ConicTransDialog extends javax.swing.JDialog {
             }
         });
 
-        ConTranRefDLabel.setText("Max Rocket Body Diameter");
-
-        ConTranRefDText.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                ConTranRefDTextFocusLost(evt);
-            }
-        });
-
-        ConTranRefDUnit.setText("m");
-
         jButton1.setText("?");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -212,16 +198,14 @@ public class ConicTransDialog extends javax.swing.JDialog {
                                     .addComponent(ConTranMassLabel)
                                     .addComponent(ConTranPosLabel))
                                 .addGap(49, 49, 49)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(ConTranPosText)
-                                        .addComponent(ConTranNameText, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
-                                        .addComponent(ConTranLengthText)
-                                        .addComponent(ConTranUDText)
-                                        .addComponent(ConTranDDText)
-                                        .addComponent(ConTranThickText)
-                                        .addComponent(ConTranMassText))
-                                    .addComponent(ConTranRefDText, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ConTranPosText)
+                                    .addComponent(ConTranNameText, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                                    .addComponent(ConTranLengthText)
+                                    .addComponent(ConTranUDText)
+                                    .addComponent(ConTranDDText)
+                                    .addComponent(ConTranThickText)
+                                    .addComponent(ConTranMassText))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(ConTranThickUnit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -230,18 +214,14 @@ public class ConicTransDialog extends javax.swing.JDialog {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(ConTranDDUnit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(ConTranUDUnit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(ConTranLengthUnit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(ConTranRefDUnit)))))
+                                        .addComponent(ConTranLengthUnit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(74, 74, 74)
                         .addComponent(ConTranAddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(ConTranCancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(ConTranRefDLabel)))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -283,17 +263,12 @@ public class ConicTransDialog extends javax.swing.JDialog {
                     .addComponent(ConTranPosLabel)
                     .addComponent(ConTranPosText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ConTranPosUnit))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ConTranRefDLabel)
-                    .addComponent(ConTranRefDUnit)
-                    .addComponent(ConTranRefDText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(79, 79, 79)
+                .addGap(103, 103, 103)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ConTranAddButton)
                     .addComponent(ConTranCancelButton)
                     .addComponent(jButton1))
-                .addGap(29, 29, 29))
+                .addGap(39, 39, 39))
         );
 
         pack();
@@ -363,13 +338,6 @@ private void ConTranPosTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST
     ConTranPosText = PosTest.InputField;
 }//GEN-LAST:event_ConTranPosTextFocusLost
 
-private void ConTranRefDTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ConTranRefDTextFocusLost
-    // TODO add your handling code here:
-    TestUserTextInput RefDTest = new TestUserTextInput( ConTranRefDText);
-    RefDiameter = RefDTest.TestDouble();
-    ConTranPosText = RefDTest.InputField;
-}//GEN-LAST:event_ConTranRefDTextFocusLost
-
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Tips tDiag = new Tips(null,true);
         tDiag.setTipTxt("Conic Transition Settings \n\n Use this window to specify the parameters of the Conic Transition. Position is the distance, along the rocket's axis, from the nose tip to the foremost edge of the part. Max Rocket Body Diameter is the diameter of the widest part of the entire rocket body (not including fins).");
@@ -409,11 +377,10 @@ private boolean CheckValidity(){
         });
     }
 
-    public void FillFields(double d1,double d2,double d3,double d4,double d5,double d6,double d7, String S1){
+    public void FillFields(double d1,double d2,double d3,double d5,double d6,double d7, String S1){
         length = d1;
         UD = d2;
         DD = d3;
-        RefDiameter = d4;
         Thickness = d5;
         Mass = d6;
         Position = d7;
@@ -426,7 +393,6 @@ private boolean CheckValidity(){
         ConTranMassText.setText(Double.toString(Mass));
         ConTranPosText.setText(Double.toString(Position));
         ConTranNameText.setText(Name);
-        ConTranRefDText.setText(Double.toString(RefDiameter));
         
     }
 
@@ -447,9 +413,6 @@ private boolean CheckValidity(){
     private javax.swing.JLabel ConTranPosLabel;
     private javax.swing.JTextField ConTranPosText;
     private javax.swing.JLabel ConTranPosUnit;
-    private javax.swing.JLabel ConTranRefDLabel;
-    private javax.swing.JTextField ConTranRefDText;
-    private javax.swing.JLabel ConTranRefDUnit;
     private javax.swing.JLabel ConTranSpecTitle;
     private javax.swing.JLabel ConTranThickLabel;
     private javax.swing.JTextField ConTranThickText;

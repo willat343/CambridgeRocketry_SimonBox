@@ -62,11 +62,11 @@ public class BodyTubeData extends RockPartsData {
     //*Class functions
     private void BarrowmanBody(){
         CN = 0;
-        Xcp = Xp + length/2;
+        Xcp = length/2;
     }
     
     private void XcomBody(){
-        Xcm = Xp + length/2;
+        Xcm = length/2;
     }
     
     private void InertiaBody(){

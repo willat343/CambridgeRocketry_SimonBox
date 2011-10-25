@@ -58,7 +58,7 @@ public class ConeData extends RockPartsData{
     private void XCoMCone(){
         double iXcm;
         iXcm = 2*Lc/3;
-        Xcm = Xp+iXcm;
+        Xcm = iXcm;
     }
     private void InertiaCone(){
         double rn = Dc/2;

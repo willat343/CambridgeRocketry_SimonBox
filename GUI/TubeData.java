@@ -61,7 +61,7 @@ public class TubeData extends RockPartsData {
     
     //*Class functions
     private void XcomTube(){
-        Xcm = Xp + length/2;
+        Xcm = length/2;
     }
     
     private void InertiaTube(){

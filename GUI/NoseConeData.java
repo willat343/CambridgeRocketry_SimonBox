@@ -77,12 +77,12 @@ public class NoseConeData extends RockPartsData{
                 break;
             
         }
-        Xcp = Xp+iXcp;
+        Xcp = iXcp;
     }
     private void XCoMNose(){
         double iXcm;
         iXcm = 3*Ln/4;
-        Xcm = Xp+iXcm;
+        Xcm = iXcm;
     }
     private void InertiaNose(){
         double rn = Dn/2;

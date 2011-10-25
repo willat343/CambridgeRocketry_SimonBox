@@ -71,7 +71,7 @@ public class ConeSecData extends RockPartsData {
     //*Class functions
 
     private void XcomConic(){
-        Xcm = Xp + length/2; //Crude approximation, update later!
+        Xcm = length/2; //Crude approximation, update later!
     }
 
     private void InertiaConic(){

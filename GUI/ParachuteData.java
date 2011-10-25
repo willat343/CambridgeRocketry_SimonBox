@@ -64,7 +64,7 @@ public class ParachuteData extends RockPartsData{
 
     //*Class functions
     private void XcomCylinder(){
-        Xcm = Xp + PackedLength/2;
+        Xcm = PackedLength/2;
     }
 
     private void InertiaCylinder(){
