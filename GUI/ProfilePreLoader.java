@@ -5,9 +5,10 @@
 
 package Rocket;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FilenameFilter;
-import java.util.Vector;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.net.URLDecoder;
 
 /**
  *
@@ -15,14 +16,25 @@ import java.util.Vector;
  */
 public class ProfilePreLoader {
 
-    File DataDir,
+    File InstallationDir,
+            DataDir,
             AtmosDir,
             MotorDir,
             DesignDir;
 
-    public ProfilePreLoader(File InstDir){
+    public ProfilePreLoader(){
+        String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath ="";
+        try {
+            decodedPath = URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        InstallationDir = new File(decodedPath);
+        InstallationDir = InstallationDir.getParentFile().getParentFile();
+
         try{
-            DataDir = new File(InstDir.getPath() + File.separator +"data");
+            DataDir = new File(InstallationDir.getPath() + File.separator +"data");
             AtmosDir = new File(DataDir.getPath() + File.separator +"Atmospheres");
             MotorDir = new File(DataDir.getPath() + File.separator + "Motors");
             DesignDir = new File(DataDir.getPath() + File.separator + "Designs");

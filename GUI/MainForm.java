@@ -27,16 +27,14 @@
 
 package Rocket;
 
-import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.io.File;
-import java.net.URLDecoder;
+
 import javax.swing.ListModel;
 import javax.swing.JList;
 
@@ -58,20 +56,7 @@ public class MainForm extends javax.swing.JFrame {
 
     /** Creates new form MainForm */
     public MainForm() {
-
-        String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        String decodedPath ="";
-        try {
-            decodedPath = URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        InstallationDir = new File(decodedPath);
-        //ClassLoader loader = MainForm.class.getClassLoader();
-        //InstallationDir = new File(loader.getResource("").getPath());
-        InstallationDir = InstallationDir.getParentFile().getParentFile();
-        //InstallationDir = new File("/home/sb4p07/Ubuntu One/NetBeansProject/RocketPartsBuild");
-        PPL = new ProfilePreLoader(InstallationDir);
+        PPL = new ProfilePreLoader();
         TheMotors = PPL.getMotors();
         Atmospheres = PPL.getAmospheres();
         
@@ -936,7 +921,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(EditPartButton)
                     .addComponent(DeletePartButton))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("The Rocket", jPanel1);
@@ -952,8 +937,9 @@ public class MainForm extends javax.swing.JFrame {
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
