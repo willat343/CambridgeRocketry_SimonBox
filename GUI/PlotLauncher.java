@@ -36,10 +36,17 @@ public class PlotLauncher {
     //class memberts
     public File FilePath;
     private File DataFile;
+    boolean isWindows;
 
     //class constructor
     public PlotLauncher(String path){
-        FilePath = new File(path);
+        isWindows = false;
+        FilePath = new File(path + File.separator +"RockPlot"+ File.separator +"FlightPlotter.py");
+        if(!FilePath.exists())
+        {
+            FilePath = new File(path + File.separator +"RockPlot"+ File.separator +"FlightPlotter.exe");
+            isWindows = true;
+        }
     }
 
     public void MakePlots(File dF){
@@ -60,7 +67,13 @@ public class PlotLauncher {
             String OutputRecord = "";
             try{
                 Runtime rtime = Runtime.getRuntime();
-                String[] Command = new String[]{"python", FilePath.getPath(), "-f", DataFile.getPath()};
+                String[] Command = new String[]{""};
+                if(isWindows){
+                    Command = new String[]{FilePath.getPath(), "-f", DataFile.getPath()};
+                    
+                }else{
+                    Command = new String[]{"python", FilePath.getPath(), "-f", DataFile.getPath()};
+                }
                 Process Pr2 = rtime.exec(Command);
                 BufferedReader errors2 = new BufferedReader(new InputStreamReader(Pr2.getErrorStream()));
                 String line = null;

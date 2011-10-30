@@ -1199,7 +1199,7 @@ private void ConfigSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//
             mIts = Integer.parseInt(MonteCarloField.getText());
         }
         boolean ballisticF = !TheRocket.Stages.elementAt(0).hasParachutes();//TODO this needs to be made more explicit for each stage.
-        PlotLauncher ThrowFigures = new PlotLauncher(PPL.InstallationDir.getPath() + File.separator +"RockPlot"+ File.separator +"FlightPlotter.py");
+        PlotLauncher ThrowFigures = new PlotLauncher(PPL.InstallationDir.getPath());
         SimulatorInterface RocketCconnect = new SimulatorInterface((PPL.InstallationDir.getPath() + File.separator + "RocketC"),ThrowFigures);
         RocketCconnect.RunSim(TheRocket, TheAtmosphere, LaunchPadSet, MonteCarloRadio.isSelected(),ballisticF, mIts);
         if(RocketCconnect.Success){
