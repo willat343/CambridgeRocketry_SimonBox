@@ -210,7 +210,7 @@ public class MainForm extends javax.swing.JFrame {
         AtmosListMenu.add(AtmosDelete);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Cambridge Rocketry Simulator -- version 2.1 (beta)");
+        setTitle("Cambridge Rocketry Simulator -- version 2.2 (beta)");
         setBounds(new java.awt.Rectangle(0, 0, 20, 0));
 
         jTabbedPane2.addFocusListener(new java.awt.event.FocusAdapter() {
