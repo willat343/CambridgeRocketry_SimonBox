@@ -293,8 +293,10 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
     Cn=Cn/sqrt(1-pow(pgl,2));
   }
   else if (Ma>=pgu){
-    Cd=Cd/sqrt((pow(Ma,2))-1);
-    Cn=Cn/sqrt((pow(Ma,2))-1);
+    //Cd=Cd/sqrt((pow(Ma,2))-1);
+    //Cn=Cn/sqrt((pow(Ma,2))-1);
+    Cd=Cd/sqrt(1-pow(pgl,2));
+    Cn=Cn/sqrt(1-pow(pgl,2));//High drag model of supersonic drag 
   }
   else {
     cout<<"Error in prandtl glauert calculation\n";
