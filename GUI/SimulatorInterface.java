@@ -52,6 +52,9 @@ public class SimulatorInterface {
         MultiSimOut = genFile("MultiSimOut.xml");
         SimulationIn = genFile("SimulationInput.xml");
         TheSimulator = genFile("rocketc");
+        if (!TheSimulator.exists()){
+            TheSimulator = genFile("rocketc.exe");
+        }
     }
 
     public void RunSim(RocketDescription TheRocket, AtmosphereData TheAtmos, LaunchData LaunchPadSet, boolean Monte, boolean Para, int iterations){
