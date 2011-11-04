@@ -172,7 +172,7 @@ public class SimulationOutputData {
                 + "\tDescent time: " + Double.toString(DescentTime) + "s.\n\n"
                 + "Maximum values\n"
                 + "\tVelocity: " + Double.toString(MaxV) + "m/s.\n"
-                + "\tAccelleration: " + Double.toString(MaxA) + "m/s2.\n"
+                + "\tAcceleration: " + Double.toString(MaxA) + "m/s2.\n"
                 + "\tForce: " + Double.toString(MaxF) + "N.";
 
 

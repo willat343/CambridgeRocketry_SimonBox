@@ -29,11 +29,12 @@
  */
 
 package Rocket;
-import java.io.File;
+import java.io.*;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.net.URLDecoder;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -45,7 +46,8 @@ public class ProfilePreLoader {
             DataDir,
             AtmosDir,
             MotorDir,
-            DesignDir;
+            DesignDir,
+            AppDatDir;
 
     public ProfilePreLoader(){
         String path = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -57,9 +59,8 @@ public class ProfilePreLoader {
         }
         InstallationDir = new File(decodedPath);
         InstallationDir = InstallationDir.getParentFile().getParentFile();
-
+        readUsefulpaths();
         try{
-            DataDir = new File(InstallationDir.getPath() + File.separator +"data");
             AtmosDir = new File(DataDir.getPath() + File.separator +"Atmospheres");
             MotorDir = new File(DataDir.getPath() + File.separator + "Motors");
             DesignDir = new File(DataDir.getPath() + File.separator + "Designs");
@@ -112,6 +113,29 @@ public class ProfilePreLoader {
         }
         catch(Exception e){
             return(Motors);
+        }
+    }
+
+    private void readUsefulpaths(){
+        try{
+            FileInputStream fStream = new FileInputStream(InstallationDir.toString() + File.separator + "UsefulPaths");
+            DataInputStream in = new DataInputStream(fStream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+            //Read File Line By Line
+            while ((strLine = br.readLine()) != null)   {
+                // Print the content on the console
+                String[] splitstr = strLine.split("= ");
+                if(splitstr[0].contains("App")){
+                    AppDatDir = new File(splitstr[1]);
+                }else if(splitstr[0].contains("docs")){
+                    DataDir = new File(splitstr[1]);
+                }
+            }
+            //Close the input stream
+            in.close();
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null,("Unable to locate important data files. System msg: " + e.getMessage()));
         }
     }
 

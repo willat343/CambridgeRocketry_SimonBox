@@ -210,7 +210,7 @@ public class MainForm extends javax.swing.JFrame {
         AtmosListMenu.add(AtmosDelete);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Cambridge Rocketry Simulator -- version 2.2 (beta)");
+        setTitle("Cambridge Rocketry Simulator -- version 2.3(beta)");
         setBounds(new java.awt.Rectangle(0, 0, 20, 0));
 
         jTabbedPane2.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -1200,7 +1200,7 @@ private void ConfigSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//
         }
         boolean ballisticF = !TheRocket.Stages.elementAt(0).hasParachutes();//TODO this needs to be made more explicit for each stage.
         PlotLauncher ThrowFigures = new PlotLauncher(PPL.InstallationDir.getPath());
-        SimulatorInterface RocketCconnect = new SimulatorInterface((PPL.InstallationDir.getPath() + File.separator + "RocketC"),ThrowFigures);
+        SimulatorInterface RocketCconnect = new SimulatorInterface(PPL,ThrowFigures);
         RocketCconnect.RunSim(TheRocket, TheAtmosphere, LaunchPadSet, MonteCarloRadio.isSelected(),ballisticF, mIts);
         if(RocketCconnect.Success){
             LoadOutPutData(RocketCconnect);

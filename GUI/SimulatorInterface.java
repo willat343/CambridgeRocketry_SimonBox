@@ -40,20 +40,22 @@ public class SimulatorInterface {
     File SimulationIn;
     File MultiSimOut;
     File TheSimulator;
+    ProfilePreLoader PPL;
     PlotLauncher ThrowFigs;
     public boolean Success;
 
     //constructor
-    public SimulatorInterface(String Path, PlotLauncher tF){
+    public SimulatorInterface(ProfilePreLoader ppl, PlotLauncher tF){
         Success = false;
         ThrowFigs = tF;
-        SimPath = new File(Path);
+        PPL = ppl;
+        SimPath = new File(ppl.InstallationDir.getPath() + File.separator + "RocketC");
         SimulationOut = genFile("SimulationOutput.xml");
         MultiSimOut = genFile("MultiSimOut.xml");
         SimulationIn = genFile("SimulationInput.xml");
-        TheSimulator = genFile("rocketc");
+        TheSimulator = new File(SimPath.getPath() + File.separator + "rocketc");
         if (!TheSimulator.exists()){
-            TheSimulator = genFile("rocketc.exe");
+            TheSimulator = new File(SimPath.getPath() + File.separator + "rocketc.exe");
         }
     }
 
@@ -87,7 +89,7 @@ public class SimulatorInterface {
     }
 
     private File genFile(String fName){
-        return(new File(SimPath.getAbsolutePath() + File.separator + fName));
+        return(new File(PPL.AppDatDir.getPath() + File.separator + fName));
 
     }
 

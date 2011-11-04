@@ -203,7 +203,7 @@ public class DataTable extends javax.swing.JPanel {
                         .addContainerGap())))
         );
 
-        jTabbedPane1.addTab("Data Summarry", jPanel1);
+        jTabbedPane1.addTab("Data Summary", jPanel1);
 
         jTable1.setModel(DTM);
         jScrollPane1.setViewportView(jTable1);

@@ -68,6 +68,7 @@
                 <EtchetBorder/>
               </Border>
             </Property>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
       </SubComponents>

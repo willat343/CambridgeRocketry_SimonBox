@@ -69,6 +69,7 @@ public class Tips extends javax.swing.JDialog {
         });
 
         TipTextArea.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        TipTextArea.setEditable(false);
         jScrollPane1.setViewportView(TipTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
