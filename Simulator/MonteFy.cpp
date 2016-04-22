@@ -107,11 +107,12 @@ INTAB MonteFy::Wiggle(void){
 		Wxp = prod(gsamp(),trans(PHI));
 		Wyp = prod(gsamp(),trans(PHI));
 		
-		double CDc = SampleNormal(1,CDm);
-		double CoPc = SampleNormal(0,CoPm);
-		double CNc = SampleNormal(1,CNm);
-		double CDdc = SampleNormal(1,CDdm);
-		double CDpc = SampleNormal(1,CDpm);
+		double CDc = SampleNormal(1, CDm);
+		double CoPc = SampleNormal(0, CoPm);
+		double CNc = SampleNormal(0, CNm);
+		// parachute 
+		double CDdc = SampleNormal(1, CDdm);
+		double CDpc = SampleNormal(1, CDpm);
 		
 		
 		std::vector<double> Wx,Wy,hscale,X,Y;
@@ -120,27 +121,29 @@ INTAB MonteFy::Wiggle(void){
 		hscale = ToStdVec(HScale);
 
 		INTAB TempTab = SinTab;
-		interp interper;
 
+		interp interper;
+		int CD_it;
+
+		// vary wind conditions
 		BOOST_FOREACH(double Height,TempTab.intab4.Alt){
-			X.push_back(interper.one(hscale,Wx,Height));
-			Y.push_back(interper.one(hscale,Wy,Height));
+			X.push_back(interper.one(hscale, Wx, Height));
+			Y.push_back(interper.one(hscale, Wy, Height));
 		}
 
 		vecop Vop;
-
-		TempTab.intab4.Wx = Vop.vecadd(TempTab.intab4.Wx,X);
-		TempTab.intab4.Wy = Vop.vecadd(TempTab.intab4.Wy,Y);
+		TempTab.intab4.Wx = Vop.vecadd(TempTab.intab4.Wx, X);
+		TempTab.intab4.Wy = Vop.vecadd(TempTab.intab4.Wy, Y);
 		
-		int CD_it = 0;
+		CD_it = 0;
 		BOOST_FOREACH(std::vector<double> row,TempTab.intab2.CD){
 			TempTab.intab2.CD[CD_it] = Vop.scalmult(row,CDc);
 			CD_it++;
 		}
 
-		TempTab.intab3.CNa = TempTab.intab3.CNa*CNc;
+		TempTab.intab3.CNa = TempTab.intab3.CNa+CNc;
 		TempTab.intab3.Xcp = TempTab.intab3.Xcp+CoPc;
-
+		
 		CD_it = 0;
 		BOOST_FOREACH(double pcd,TempTab.paratab.CdA){
 			if(CD_it == 0){
@@ -156,6 +159,14 @@ INTAB MonteFy::Wiggle(void){
 	}
 
 	
+}
+
+INTAB MonteFy::WiggleProtect(INTAB thisIntab){
+	// do a check on parameters to make sure they are not non-negative
+
+	// TODO: create this function
+	return thisIntab;
+
 }
 
 boost::numeric::ublas::vector<double> MonteFy::gsamp(void){

@@ -142,10 +142,12 @@ RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
 
 					
 		stopper = pint->stop_flag(x,y);
-	}while (x<xs[1] && itnum< max_it && stopper==false);
+	}while ((x<xs[1] && itnum < max_it && stopper == false) || (sucstep == 0));
 
-		cout<<"total number of iterations: "<<itnum<<endl;
-		cout<<"number of successful steps: "<<sucstep<<endl;
+	/*
+	cout<<"total number of iterations: "<<itnum<<endl;
+	cout<<"number of successful steps: "<<sucstep<<endl;
+	*/
 
 	RKF_data output(num,ttab,ztab,etab);
 return(output);

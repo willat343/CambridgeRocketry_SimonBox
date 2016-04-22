@@ -48,7 +48,7 @@ int main(int argc, char* argv[]){
 		cout<<"Unrecognized command line options"<<endl;
 	}
 	
-	cout<<filename<<endl;
+	// cout<<filename<<endl;
 	HandleInputFile HI(filename);
 	return(0);
 }

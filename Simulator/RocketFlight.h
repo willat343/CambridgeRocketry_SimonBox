@@ -38,9 +38,9 @@
 class Rocket_Flight{
 public:
 	INTAB
-		IntabTR,
-		IntabBS,
-		IntabUS;
+		IntabTR, // first stage
+		IntabBS, // booster stage
+		IntabUS; // second stage
 	vector<double>
 		tt,
 		z0;
@@ -66,10 +66,14 @@ public:
 	OutputData TwoStageFlight(void);
 	OutputData OneStageMonte(int);
 	OutputData TwoStageMonte(int);
-	void StageTransfer(vector<double>*,vector<double>*,vector<double>*,RKF_data);
-	void ParachuteTransfer(vector<double>*,vector<double>*,RKF_data);
+	//void StageTransfer(vector<double>*,vector<double>*,vector<double>*,RKF_data);
+	//void ParachuteTransfer(vector<double>*,vector<double>*,RKF_data);
+	void TimeTransfer(vector<double>* ttp, RKF_data Stage);
+	void StateTransferRocket(vector<double>* zp, RKF_data Stage, INTAB IntabPrevious, INTAB IntabNext);
+	void StateTransferParachute(vector<double>* zp, RKF_data Stage);
 	void BallisticSwitch(ascent *);
-        void setFilePath(string path);
+    void setFilePath(string path);
+    double getDeploymentAltitude(INTAB thisINTAB);
 };
 
 #endif

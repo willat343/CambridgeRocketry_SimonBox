@@ -108,7 +108,11 @@ EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
 	double CdA=0.0;
 	cd_it=paratab.CdA.begin();
 	for (alt_it = paratab.AltPd.begin(); alt_it != paratab.AltPd.end(); alt_it++){
-		if (zn > *alt_it){CdA=*cd_it;}
+		if (zn < *alt_it) {
+			if (*cd_it > 0) {
+				CdA+=*cd_it;
+			}
+		}
 		cd_it++;
 	}
 	//**************************************************************

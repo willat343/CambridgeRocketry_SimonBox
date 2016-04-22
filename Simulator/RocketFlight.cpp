@@ -34,7 +34,7 @@ Rocket_Flight::Rocket_Flight()
 	RL=2.0;                         //default rail length
 	Az=0.0;                         //default rail azimuth
 	De=0.0;							//default rail declination
-	Tspan=1000;						//default maximum simulation time
+	Tspan=2000;						//default maximum simulation time
 	ballisticfailure=false;			//default setting flight terminates at apogee
 	ShortData=false;			    //default output data format is long
 }
@@ -46,7 +46,7 @@ Rocket_Flight::Rocket_Flight(INTAB IT1)
 	RL=2.0;                         //default rail length
 	Az=0.0;                         //default rail azimuth
 	De=0.0;							//default rail declination
-	Tspan=1000;						//default maximum simulation time
+	Tspan=2000;						//default maximum simulation time
 	ballisticfailure=false;			//default setting flight terminates at apogee
 	ShortData=false;			    //default output data format is long
 }
@@ -62,7 +62,7 @@ Rocket_Flight::Rocket_Flight(INTAB IT1, INTAB IT2, INTAB IT3, double d1, double 
 	RL=2.0;                         //default rail length
 	Az=0.0;                         //default rail azimuth
 	De=0.0;							//default rail declination
-	Tspan=1000;						//default maximum simulation time
+	Tspan=2000;						//default maximum simulation time
 	ballisticfailure=false;			//default setting flight terminates at apogee
 	ShortData=false;			    //default output data format is long
 }
@@ -85,7 +85,7 @@ void Rocket_Flight::InitialConditionsCalc(void)
 	z0.push_back(X0.e2);
 	z0.push_back(X0.e3);
 
-	//Calculate the initial quaternion
+	// Calculate the initial quaternion
 	De=De*PI/180.0;
 	bearing AzOrth((Az-90.0),1.0);
 	vector2 AzVec=AzOrth.to_vector();
@@ -108,42 +108,69 @@ void Rocket_Flight::InitialConditionsCalc(void)
 
 OutputData Rocket_Flight::OneStageFlight(void){
 
-	//Create the initial conditions 
+	// Create the initial conditions 
 	InitialConditionsCalc();
 	
-	//Initialize rocket ascent simulation
-	ascent as1(tt,z0,IntabTR,RL);
+	// Initialize rocket ascent simulation
+	ascent as1(tt, z0, IntabTR, RL);
 
-	BallisticSwitch(&as1);
-	
-	//Fly the rocket!
-	RKF_data updata=as1.fly();
+	/*
+		Note: default killswitch in "as1" is set to apogee by negative vertical speed
+		index = 9 (vertical speed)
+		value = -0.001 (negative)
+	*/
 
+	// fly! launch to apogee
+	RKF_data rocketLaunchToApogee = as1.fly();
 
-	//Take the final state of the rocket to define the 
-	//initial conditions for the parachute
+	// Simulate descent stages [ROCKET]
+
+	// take final state of previous stage (rocket) to next stage (rocket)
 	vector<double> tt2, z02;
-	ParachuteTransfer(&tt2,&z02,updata);
 
+	TimeTransfer(&tt2, rocketLaunchToApogee);
 
-	//Initialize parachute descent simulation
-	descent ds1(tt2,z02,IntabTR);
-	RKF_data downdata=ds1.fall();
+	StateTransferRocket(&z02, rocketLaunchToApogee, IntabTR, IntabTR);
+
+	// initialize rocket descent simulation
+	ascent ds1(tt2, z02, IntabTR, 0.0);
+
+	// change kill switch to enable at set altitude
+	// index 2 = state altitude, value = deployment
+	ds1.Kill = KillSwitch(2, getDeploymentAltitude(IntabTR));
+
+	// fly! descent to deployment of parachute
+	RKF_data rocketApogeeToDeployment = ds1.fly();
+
+	// Simulate descent [PARACHUTE]
+
+	// take final state of previous stage (rocket) to next stage (parachute)
+	vector<double> tt3, z03;
+	TimeTransfer(&tt3, rocketApogeeToDeployment);
+	StateTransferParachute(&z03, rocketApogeeToDeployment);
+
+	// initialize parachute descent simulation
+	descent ds2(tt3, z03, IntabTR);
+
+	// fly! deployment of parachute to ground
+	RKF_data parachuteDeploymentToGround = ds2.fall();
+
+	// write all information to output
 
 	OutputData OD;
 	OD.InitializePropertyTree("OneStageFlight");
 	
 	if (ShortData == true){
-		FlightDataShort FDS = (as1.getShortData() + ds1.getShortData());
-		OD.FillPropertyTree(&FDS,1);
+		FlightDataShort FDS = (as1.getShortData() + ds1.getShortData() + ds2.getShortData());
+		OD.FillPropertyTree(&FDS, 1);
 	}
 	else{
-		FlightDataLong FDL = (as1.getLongData() + ds1.getLongData());
-		OD.FillPropertyTree(&FDL,1);  
+		FlightDataLong FDL = (as1.getLongData() + ds1.getLongData() + ds2.getLongData());
+		OD.FillPropertyTree(&FDL, 1);  
 	}
 
-        return(OD);
-        //OD.WriteToXML("SimulationOutput.xml");
+    return(OD);
+    //OD.WriteToXML("SimulationOutput.xml");
 
 }
 
@@ -152,78 +179,113 @@ OutputData Rocket_Flight::TwoStageFlight(){
 	//Create the initial conditions
 	InitialConditionsCalc();
 
-	//Initialize the simulation from launch to separation
-	tt[1]=Tsep;
+	// Initialize the simulation from launch to separation
+	tt[1] = Tsep;
 
-	ascent as1(tt,z0,IntabTR,RL);
+	ascent as1(tt, z0, IntabTR, RL);
 
-	//Fly the first stage
-	RKF_data StageTR = as1.fly();
+	// fly! launch to separation (rocket, complete)
+	RKF_data rocketLaunchToSeparation = as1.fly();
 
+	// copy states (rocket, complete) to (rocket, upper stage)
+	vector<double> tt1, z01;
+	TimeTransfer(&tt1, rocketLaunchToSeparation);
+	StateTransferRocket(&z01, rocketLaunchToSeparation, IntabTR, IntabUS);
 
-	//Take the final state of StageTR to define
-	//the initial conditions for the post separation
-	//stages
-	vector<double>tt2, z02_BS, z02_US;
-	StageTransfer(&tt2,&z02_BS,&z02_US,StageTR);
-
-	//Initialize the simulation of the booster stage
-	ascent as2(tt2,z02_BS,IntabBS,0.0);
-
-	//Fly the booster stage
-	RKF_data StageBR = as2.fly();
-
-	//Add ignition delay to upper stage
+	// Add ignition delay to (rocket, upper stage)
 	INTAB IntabUS_t = IntabUS;
 	IntabUS_t.intab1.addDelay(Tsep+IgDelay);
 
-	ascent as3(tt2,z02_US,IntabUS_t,0.0);
+	// initialize, IntabUS_t = second stage +delay, 0,0 = rail length
+	ascent as2(tt1, z01, IntabUS_t, 0.0);
 
-	//Fly the upper stage
-	RKF_data StageUS = as3.fly();
+	// fly! separation to apogee (rocket, upper stage)
+	RKF_data rocketSeparationToApogee = as2.fly();
 
+	// copy states (rocket, upper stage) to (rocket, upper stage)
+	vector<double> tt2, z02;
+	TimeTransfer(&tt2, rocketSeparationToApogee);
+	StateTransferRocket(&z02, rocketSeparationToApogee, IntabUS_t, IntabUS_t);
 
-	//Take the final flight states for the two flight stages
-	//and use them to prepare the parachute stages
+	// initialize
+	ascent ds1(tt2, z02, IntabUS_t, 0.0);
 
-	//Booster Stage
-	vector<double>tt3, z03;
-	ParachuteTransfer(&tt3,&z03,StageBR);
+	// change kill switch to enable at set altitude
+	ds1.Kill = KillSwitch(2, getDeploymentAltitude(IntabUS_t));
 
-	//Upper Stage
-	vector<double>tt4, z04;
-	ParachuteTransfer(&tt4,&z04,StageUS);
-	
-	//Simulate the descent stages************************
-	//Booster stage
-	descent ds1(tt3,z03,IntabBS);
+	// fly! descent to deployment of parachute (rocket, upper stage)
+	RKF_data rocketApogeeToParachute = ds1.fly();
 
-	RKF_data RecoverBS = ds1.fall();
+	// copy states (rocket) to (parachute)
+	vector<double> tt3, z03;
+	TimeTransfer(&tt3, rocketApogeeToParachute);
+	StateTransferParachute(&z03, rocketApogeeToParachute);
 
-	//Upper stage
-	descent ds2(tt4,z04,IntabUS);
+	// initialize parachute descent simulation
+	descent ds2(tt3, z03, IntabUS_t);
 
-	RKF_data RecoverUS = ds2.fall();
+	// fly! deployment of parachute to ground (rocket, upper stage)
+	RKF_data rocketParachuteToGround = ds2.fall();
 
-	///Package and output
+	// *** booster stage
 
+	// copy states (rocket, complete) to (rocket, booster)
+	vector<double> tt4, z04;
+	TimeTransfer(&tt4, rocketLaunchToSeparation);
+	StateTransferRocket(&z04, rocketLaunchToSeparation, IntabTR, IntabBS);
+
+	// initialize
+	ascent as4(tt4, z04, IntabBS, 0.0);
+
+	// fly! separation to apogee (booster)
+	RKF_data boosterSeparationToApogee = as4.fly();
+
+	// copy states (rocket, booster) to (rocket, booster)
+	vector<double> tt5, z05;
+	TimeTransfer(&tt5, boosterSeparationToApogee);
+	StateTransferRocket(&z05, boosterSeparationToApogee, IntabBS, IntabBS);
+
+	// initialize
+	ascent ds3(tt5, z05, IntabBS, 0.0);
+
+	// change kill switch to enable at set altitude
+	ds3.Kill = KillSwitch(2, getDeploymentAltitude(IntabBS));
+
+	// fly! descent to deployment of parachute (booster)
+	RKF_data boosterApogeeToParachute = ds3.fly();
+
+	// copy states (rocket) to (parachute)
+	vector<double> tt6, z06;
+	TimeTransfer(&tt6, boosterApogeeToParachute);
+	StateTransferParachute(&z06, boosterApogeeToParachute);
+
+	// initialize
+	descent ds4(tt6, z06, IntabBS);
+
+	RKF_data boosterParachuteToGround = ds4.fall();
+
+	/// Package and output
 	OutputData OD;
 	OD.InitializePropertyTree("TwoStageFlight");
 	vector<FlightData *> FDp;
 
 	if (ShortData == true){
-		FlightDataShort FDSL = (as1.getShortData() + as2.getShortData() + ds1.getShortData());
-		FlightDataShort FDSU = (as1.getShortData() + as3.getShortData() + ds2.getShortData());	
+		// booster (bottom part)
+		FlightDataShort FDSL = (as1.getShortData() + as4.getShortData() + ds3.getShortData() + ds4.getShortData());
+		// upper (top part)
+		FlightDataShort FDSU = (as1.getShortData() + as2.getShortData() + ds1.getShortData() + ds2.getShortData());
 		FDp.push_back(&FDSL);
 		FDp.push_back(&FDSU);
-		OD.FillPropertyTree(FDp,1);
+		OD.FillPropertyTree(FDp, 1);
 	}
 	else{
-		FlightDataLong FDLL = (as1.getLongData() + as2.getLongData() + ds1.getLongData());
-		FlightDataLong FDLU = (as1.getLongData() + as3.getLongData() + ds2.getLongData());
+		// booster (bottom part)
+		FlightDataLong FDLL = (as1.getLongData() + as4.getLongData() + ds3.getLongData() + ds4.getLongData());
+		// upper (top part)
+		FlightDataLong FDLU = (as1.getLongData() + as2.getLongData() + ds1.getLongData() + ds2.getLongData());
 		FDp.push_back(&FDLL);
 		FDp.push_back(&FDLU);
-		OD.FillPropertyTree(FDp,1);
+		OD.FillPropertyTree(FDp, 1);
 	}
 	
 	return(OD);
@@ -242,7 +304,7 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 	OutputData OD;
 	OD.InitializePropertyTree("OneStageMonte");
 	int Frun = 0;
-	
+
 	for(int i=0; i<noi;i++){
 		//Initialize rocket ascent simulation
 		try{
@@ -254,6 +316,49 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 				Ftab = StochTab.Wiggle();
 				//Ftab = IntabTR;
 			}
+
+			// Initialize rocket ascent simulation
+			ascent as1(tt, z0, Ftab, RL);
+
+			/*
+				Note: default killswitch in "as1" is set to apogee by negative vertical speed
+				index = 9 (vertical speed)
+				value = -0.001 (negative)
+			*/
+
+			// fly! launch to apogee
+			RKF_data rocketLaunchToApogee = as1.fly();
+
+			// Simulate descent stages [ROCKET]
+
+			// take final state of previous stage (rocket) to next stage (rocket)
+			vector<double> tt2, z02;
+			TimeTransfer(&tt2, rocketLaunchToApogee);
+			StateTransferRocket(&z02, rocketLaunchToApogee, Ftab, Ftab);
+
+			// initialize rocket descent simulation
+			ascent ds1(tt2, z02, Ftab, 0.0);
+
+			// change kill switch to enable at set altitude
+			ds1.Kill = KillSwitch(2, getDeploymentAltitude(Ftab));
+
+			// fly! descent to deployment of parachute
+			RKF_data rocketApogeeToDeployment = ds1.fly();
+
+			// Simulate descent [PARACHUTE]
+
+			// take final state of previous stage (rocket) to next stage (parachute)
+			vector<double> tt3, z03;
+			TimeTransfer(&tt3, rocketApogeeToDeployment);
+			StateTransferParachute(&z03, rocketApogeeToDeployment);
+
+			// initialize parachute descent simulation
+			descent ds2(tt3, z03, Ftab);
+
+			// fly! deployment of parachute to ground
+			RKF_data parachuteDeploymentToGround = ds2.fall();
+
+			/*
 			ascent as1(tt,z0,Ftab,RL);
 			BallisticSwitch(&as1);
 			
@@ -268,23 +373,28 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 			//Initialize parachute descent simulation
 			descent ds1(tt2,z02,IntabTR);
 			RKF_data downdata=ds1.fall();
+			
+			*/
 
 			if (ShortData == true){
-				FlightDataShort FDS = (as1.getShortData() + ds1.getShortData());
+				FlightDataShort FDS = (as1.getShortData() + ds1.getShortData() + ds2.getShortData());
 				OD.FillPropertyTree(&FDS,(i-Frun+1));
 			}
 			else{
-				FlightDataLong FDL = (as1.getLongData() + ds1.getLongData());
+				FlightDataLong FDL = (as1.getLongData() + ds1.getLongData() + ds2.getLongData());
 				OD.FillPropertyTree(&FDL,(i-Frun+1));
 			}
 		
 		}
 		catch(exception e){
 			Frun++;
-			cout<<"Run failed, number of faild runs is: "<<Frun<<endl;
+			cout << "Run failed, number of failed runs is: " << Frun << endl;
 
 		}
 
+		// finished a single run
+		cout << "(" << (i+1) << "," << noi << ")" << endl;
+	
 	}
 	return(OD);
         //OD.WriteToXML("SimulationOutput.xml");
@@ -310,79 +420,120 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
 		try{
 			INTAB FtabTR, FtabBS, FtabUS;
 			if(i == 0){
-				FtabTR = IntabTR;
-				FtabBS = IntabBS;
-				FtabUS = IntabUS;
+				FtabTR = IntabTR; // rocket, complete
+				FtabBS = IntabBS; // rocket, booster
+				FtabUS = IntabUS; // rocket, upper
 			}
 			else{
 				FtabTR = StochTabTR.Wiggle();
 				FtabBS = StochTabBS.Wiggle();
 				FtabUS = StochTabUS.Wiggle();
 			}
-
-			ascent as1(tt,z0,FtabTR,RL);
-
-			//Fly the first stage
-			RKF_data StageTR = as1.fly();
-
-
-			//Take the final state of StageTR to define
-			//the initial conditions for the post separation
-			//stages
-			vector<double>tt2, z02_BS, z02_US;
-			StageTransfer(&tt2,&z02_BS,&z02_US,StageTR);
-
-			//Initialize the simulation of the booster stage
-			ascent as2(tt2,z02_BS,FtabBS,0.0);
-
-			//Fly the booster stage
-			RKF_data StageBR = as2.fly();
-
-			//Add ignition delay to upper stage
-			INTAB FtabUS_t = FtabUS;
-			FtabUS_t.intab1.addDelay(Tsep+IgDelay);
-
-			ascent as3(tt2,z02_US,FtabUS_t,0.0);
-
-			//Fly the upper stage
-			RKF_data StageUS = as3.fly();
-
-
-			//Take the final flight states for the two flight stages
-			//and use them to prepare the parachute stages
-
-			//Booster Stage
-			vector<double>tt3, z03;
-			ParachuteTransfer(&tt3,&z03,StageBR);
-
-			//Upper Stage
-			vector<double>tt4, z04;
-			ParachuteTransfer(&tt4,&z04,StageUS);
 			
-			//Simulate the descent stages************************
-			//Booster stage
-			descent ds1(tt3,z03,FtabBS);
+			// Initialize the simulation from launch to separation
+			tt[1] = Tsep;
 
-			RKF_data RecoverBS = ds1.fall();
+			ascent as1(tt, z0, FtabTR, RL);
 
-			//Upper stage
-			descent ds2(tt4,z04,FtabUS);
+			// fly! launch to separation (rocket, complete)
+			RKF_data rocketLaunchToSeparation = as1.fly();
 
-			RKF_data RecoverUS = ds2.fall();
+			// copy states (rocket, complete) to (rocket, upper stage)
+			vector<double> tt1, z01;
+			TimeTransfer(&tt1, rocketLaunchToSeparation);
+			StateTransferRocket(&z01, rocketLaunchToSeparation, FtabTR, FtabUS);
+
+			// Add ignition delay to (rocket, upper stage)
+			INTAB IntabUS_t = FtabUS;
+			IntabUS_t.intab1.addDelay(Tsep + IgDelay);
+
+			// initialize, IntabUS_t = second stage +delay, 0,0 = rail length
+			ascent as2(tt1, z01, IntabUS_t, 0.0);
+
+			// fly! separation to apogee (rocket, upper stage)
+			RKF_data rocketSeparationToApogee = as2.fly();
+
+			// copy states (rocket, upper stage) to (rocket, upper stage)
+			vector<double> tt2, z02;
+
+			TimeTransfer(&tt2, rocketSeparationToApogee);
+
+			StateTransferRocket(&z02, rocketSeparationToApogee, IntabUS_t, IntabUS_t);
+
+			// initialize
+			ascent ds1(tt2, z02, IntabUS_t, 0.0);
+
+			// change kill switch to enable at set altitude
+			ds1.Kill = KillSwitch(2, getDeploymentAltitude(IntabUS_t));
+
+			// fly! descent to deployment of parachute (rocket, upper stage)
+			RKF_data rocketApogeeToParachute = ds1.fly();
+
+			// copy states (rocket) to (parachute)
+			vector<double> tt3, z03;
+			TimeTransfer(&tt3, rocketApogeeToParachute);
+			StateTransferParachute(&z03, rocketApogeeToParachute);
+
+			// initialize parachute descent simulation
+			descent ds2(tt3, z03, IntabUS_t);
+
+			// fly! deployment of parachute to ground (rocket, upper stage)
+			RKF_data rocketParachuteToGround = ds2.fall();
+
+			// *** booster stage
+
+			// copy states (rocket, complete) to (rocket, booster)
+			vector<double> tt4, z04;
+			TimeTransfer(&tt4, rocketLaunchToSeparation);
+			StateTransferRocket(&z04, rocketLaunchToSeparation, FtabTR, FtabBS);
+
+			// initialize
+			ascent as4(tt4, z04, FtabBS, 0.0);
+
+			// fly! separation to apogee (booster)
+			RKF_data boosterSeparationToApogee = as4.fly();
+
+			// copy states (rocket, booster) to (rocket, booster)
+			vector<double> tt5, z05;
+			TimeTransfer(&tt5, boosterSeparationToApogee);
+			StateTransferRocket(&z05, boosterSeparationToApogee, FtabBS, FtabBS);
+
+			// initialize
+			ascent ds3(tt5, z05, FtabBS, 0.0);
+
+			// change kill switch to enable at set altitude
+			ds3.Kill = KillSwitch(2, getDeploymentAltitude(FtabBS));
+
+			// fly! descent to deployment of parachute (booster)
+			RKF_data boosterApogeeToParachute = ds3.fly();
+
+			// copy states (rocket) to (parachute)
+			vector<double> tt6, z06;
+			TimeTransfer(&tt6, boosterApogeeToParachute);
+			StateTransferParachute(&z06, boosterApogeeToParachute);
+
+			// initialize
+			descent ds4(tt6, z06, FtabBS);
+
+			RKF_data boosterParachuteToGround = ds4.fall();
 
 			///Package and output
 			vector<FlightData *> FDp;
 
 			if (ShortData == true){
-				FlightDataShort FDSL = (as1.getShortData() + as2.getShortData() + ds1.getShortData());
-				FlightDataShort FDSU = (as1.getShortData() + as3.getShortData() + ds2.getShortData());	
+				// booster (bottom part)
+				FlightDataShort FDSL = (as1.getShortData() + as4.getShortData() + ds3.getShortData() + ds4.getShortData());
+				// upper (top part)
+				FlightDataShort FDSU = (as1.getShortData() + as2.getShortData() + ds1.getShortData() + ds2.getShortData());
 				FDp.push_back(&FDSL);
 				FDp.push_back(&FDSU);
 				OD.FillPropertyTree(FDp,(i-Frun+1));
 			}
 			else{
-				FlightDataLong FDLL = (as1.getLongData() + as2.getLongData() + ds1.getLongData());
-				FlightDataLong FDLU = (as1.getLongData() + as3.getLongData() + ds2.getLongData());
+				// booster (bottom part)
+				FlightDataLong FDLL = (as1.getLongData() + as4.getLongData() + ds3.getLongData() + ds4.getLongData());
+				// upper (top part)
+				FlightDataLong FDLU = (as1.getLongData() + as2.getLongData() + ds1.getLongData() + ds2.getLongData());
 				FDp.push_back(&FDLL);
 				FDp.push_back(&FDLU);
 				OD.FillPropertyTree(FDp,(i-Frun+1));
@@ -393,6 +544,8 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
 			cout<<"Run failed, number of faild runs is: "<<Frun<<endl;
 		}
 	
+		// finished a single run
+		cout << "(" << (i+1) << "," << noi << ")" << endl;
 
 	}
 
@@ -401,84 +554,106 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
         //OD.WriteToXML("SimulationOutput.xml");
 }
 
-void Rocket_Flight::ParachuteTransfer(std::vector<double> * tt2, std::vector<double> * z2, RKF_data RockStage){
-	tt2->push_back(RockStage.t.back());
-	tt2->push_back(RockStage.t.back()+Tspan);
-	z2->push_back(RockStage.z.back()[0]);
-	z2->push_back(RockStage.z.back()[1]);
-	z2->push_back(RockStage.z.back()[2]);
-	z2->push_back(RockStage.z.back()[7]);
-	z2->push_back(RockStage.z.back()[8]);
-	z2->push_back(RockStage.z.back()[9]);
-
+void Rocket_Flight::StateTransferParachute(vector<double>* zp, RKF_data Stage){
+	/*
+		for the parachute transfer, all the other parameters are not required.
+	*/
+	zp->push_back(Stage.z.back()[0]); // x
+	zp->push_back(Stage.z.back()[1]); // y
+	zp->push_back(Stage.z.back()[2]); // z
+	// 3, 4, 5, 6 - 4x quaternions
+	zp->push_back(Stage.z.back()[7]); // x dot (velocity)
+	zp->push_back(Stage.z.back()[8]); // y dot
+	zp->push_back(Stage.z.back()[9]); // z dot
+	// 10, 11, 12 - 3x angular velocity
 }
 
-void Rocket_Flight::StageTransfer(vector<double> * ttp, vector<double> * zp_BS, vector<double> * zp_US, RKF_data Stage){
-	ttp->push_back(Stage.t.back());
-	ttp->push_back(Stage.t.back()+Tspan);
+
+void Rocket_Flight::TimeTransfer(vector<double> * ttp, RKF_data Stage){
+	/*
+		copy the timings from the end of one stage to the next
+		ttp[0] start
+		ttp[1] end
+	*/
+	double t1 = Stage.t.back();
+	double t2 = t1 + Tspan;
 	
-	vector3 TransitionMomentum(Stage.z.back()[7],Stage.z.back()[8],Stage.z.back()[9]);
-	vector3 TransitionVelocity = TransitionMomentum/IntabTR.intab1.Mass.back();
+	ttp->push_back(t1);
+	ttp->push_back(t2);
+}
+
+void Rocket_Flight::StateTransferRocket(vector<double> *zp, RKF_data StagePrevious, INTAB IntabPrevious, INTAB IntabNext){
+	/*
+		transfer the state as a start position of the next stage [ROCKET]
+		zp: state vector to fill (this will have the start position)
+		StagePrevious: the data as returned from the previous simulation
+		IntabPrevious: the rocket data from the previous stage
+		IntabNext: the rocket data for the next stage
+	*/
 	
-	vector3 Momentum_BS = TransitionVelocity*IntabBS.intab1.Mass.front();
-	vector3 Momentum_US = TransitionVelocity*IntabUS.intab1.Mass.front();
+	vector3 TransitionMomentum(StagePrevious.z.back()[7],StagePrevious.z.back()[8],StagePrevious.z.back()[9]);
+	vector3 TransitionVelocity = TransitionMomentum/IntabPrevious.intab1.Mass.back();
 	
-	vector3 TransitionAngMom(Stage.z.back()[10],Stage.z.back()[11],Stage.z.back()[12]);
-	quaternion TransitionQ(Stage.z.back()[3],Stage.z.back()[4],Stage.z.back()[5],Stage.z.back()[6]);
+	vector3 Momentum_next = TransitionVelocity*IntabNext.intab1.Mass.front();
+	
+	vector3 TransitionAngMom(StagePrevious.z.back()[10],StagePrevious.z.back()[11],StagePrevious.z.back()[12]);
+	quaternion TransitionQ(StagePrevious.z.back()[3],StagePrevious.z.back()[4],StagePrevious.z.back()[5],StagePrevious.z.back()[6]);
 	matrix3x3 TransitionR = TransitionQ.to_matrix();
 
-	matrix3x3 TransitionTensor(IntabTR.intab1.Ixx.back(),IntabTR.intab1.Ixy.back(),IntabTR.intab1.Ixz.back(),IntabTR.intab1.Ixy.back(),IntabTR.intab1.Iyy.back(),IntabTR.intab1.Iyz.back(),IntabTR.intab1.Ixz.back(),IntabTR.intab1.Iyz.back(),IntabTR.intab1.Izz.back());
+	matrix3x3 TransitionTensor(IntabPrevious.intab1.Ixx.back(),IntabPrevious.intab1.Ixy.back(),IntabPrevious.intab1.Ixz.back(),IntabPrevious.intab1.Ixy.back(),IntabPrevious.intab1.Iyy.back(),IntabPrevious.intab1.Iyz.back(),IntabPrevious.intab1.Ixz.back(),IntabPrevious.intab1.Iyz.back(),IntabPrevious.intab1.Izz.back());
 	matrix3x3 TransitionInverse = TransitionR*TransitionTensor.inv()*TransitionR.transpose();
 	vector3 TransitionOmega = TransitionInverse*TransitionAngMom;
 
-	matrix3x3 Tensor_BS(IntabBS.intab1.Ixx.front(),IntabBS.intab1.Ixy.front(),IntabBS.intab1.Ixz.front(),IntabBS.intab1.Ixy.front(),IntabBS.intab1.Iyy.front(),IntabBS.intab1.Iyz.front(),IntabBS.intab1.Ixz.front(),IntabBS.intab1.Iyz.front(),IntabBS.intab1.Izz.front());
-	matrix3x3 Tensor_US(IntabUS.intab1.Ixx.front(),IntabUS.intab1.Ixy.front(),IntabUS.intab1.Ixz.front(),IntabUS.intab1.Ixy.front(),IntabUS.intab1.Iyy.front(),IntabUS.intab1.Iyz.front(),IntabUS.intab1.Ixz.front(),IntabUS.intab1.Iyz.front(),IntabUS.intab1.Izz.front());
-
-	matrix3x3 Inverse_BS = TransitionR*Tensor_BS.inv()*TransitionR.transpose();
-    matrix3x3 Inverse_US = TransitionR*Tensor_US.inv()*TransitionR.transpose();
-
-	vector3 AngMom_BS = Inverse_BS.inv()*TransitionOmega;
-	vector3 AngMom_US = Inverse_US.inv()*TransitionOmega;
-
+	matrix3x3 Tensor_next(IntabNext.intab1.Ixx.front(),IntabNext.intab1.Ixy.front(),IntabNext.intab1.Ixz.front(),IntabNext.intab1.Ixy.front(),IntabNext.intab1.Iyy.front(),IntabNext.intab1.Iyz.front(),IntabNext.intab1.Ixz.front(),IntabNext.intab1.Iyz.front(),IntabNext.intab1.Izz.front());
+	
+	matrix3x3 Inverse_next = TransitionR*Tensor_next.inv()*TransitionR.transpose();
+    
+	vector3 AngMom_next = Inverse_next.inv()*TransitionOmega;
 
 	for (int i=0; i<7; i++){
-		zp_BS->push_back(Stage.z.back()[i]);
-		zp_US->push_back(Stage.z.back()[i]);
+		zp->push_back(StagePrevious.z.back()[i]);
 	}
 
-	zp_BS->push_back(Momentum_BS.e1);
-	zp_BS->push_back(Momentum_BS.e2);
-	zp_BS->push_back(Momentum_BS.e3);
+	zp->push_back(Momentum_next.e1);
+	zp->push_back(Momentum_next.e2);
+	zp->push_back(Momentum_next.e3);
 
-	zp_US->push_back(Momentum_US.e1);
-	zp_US->push_back(Momentum_US.e2);
-	zp_US->push_back(Momentum_US.e3);
-
-	zp_BS->push_back(AngMom_BS.e1);
-	zp_BS->push_back(AngMom_BS.e2);
-	zp_BS->push_back(AngMom_BS.e3);
-
-	zp_US->push_back(AngMom_US.e1);
-	zp_US->push_back(AngMom_US.e2);
-	zp_US->push_back(AngMom_US.e3);
-
+	zp->push_back(AngMom_next.e1);
+	zp->push_back(AngMom_next.e2);
+	zp->push_back(AngMom_next.e3);
 }
 
 void Rocket_Flight::BallisticSwitch(ascent * a1){
 	if (ballisticfailure==true){
-		a1->Kill.index =2 ;      //Change the stop flag settings so that the 
-		a1->Kill.Kval = -0.01;  //the ground
+		a1->Kill.index = 2;      //Change the stop flag settings so that the 
+		a1->Kill.Kval = -0.01;   //the ground
 	}
-
 }
 
 void Rocket_Flight::setFilePath(string path){
     FilePath = path;
 }
 
+double Rocket_Flight::getDeploymentAltitude(INTAB thisINTAB) {
+	/*
+		1. apogee (one of the parachutes has large altitude > 1000 000)
+		2. altitude (one of the parachutes has a sensible altitude)
+		3. never (all parachutes have negative altitude)
+	*/
 
+	double deployAtAltitude = -0.001; // default: don't deploy
 
+	ParaTab thisParaTab = thisINTAB.paratab;
 
+	vector<double>::iterator altitudeIterator;
 
+	for (altitudeIterator = thisParaTab.AltPd.begin(); altitudeIterator != thisParaTab.AltPd.end(); altitudeIterator++){
+		// find highest altitude (moment for killswitch)
+		if (*altitudeIterator > deployAtAltitude) {
+			deployAtAltitude = *altitudeIterator;
+		}
+	}
 
+	return deployAtAltitude;
+}
 

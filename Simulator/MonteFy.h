@@ -43,6 +43,7 @@ public:
 		void ReadInVector(boost::numeric::ublas::vector<double>* ,string,int);
 		void ReadInMatrix(boost::numeric::ublas::matrix<double>*,string,int,int);
 		INTAB Wiggle();
+		INTAB WiggleProtect(INTAB thisIntab);
 		std::vector<double> ToStdVec (boost::numeric::ublas::vector<double>);
 };
 

@@ -44,19 +44,19 @@ HandleInputFile::HandleInputFile(std::string FileName){
 
 	switch(Fcase){
 		case(0):
-			cout<<"OneStageFlight"<<endl;
+			// cout<<"OneStageFlight"<<endl;
 			DealWithOSF();
 			break;
 		case(1):
-			cout<<"TwoStageFlight"<<endl;
+			// cout<<"TwoStageFlight"<<endl;
 			DealWithTSF();
 			break;
 		case(2):
-			cout<<"OneStageMonte"<<endl;
+			// cout<<"OneStageMonte"<<endl;
 			DealWithOSM();
 			break;
 		case(3):
-			cout<<"TwoStageMonte"<<endl;
+			// cout<<"TwoStageMonte"<<endl;
 			DealWithTSM();
 			break;
 		default:
@@ -66,7 +66,7 @@ HandleInputFile::HandleInputFile(std::string FileName){
 
         string OutputFileName = FilePath.append("SimulationOutput.xml");
         WriteData.WriteToXML(OutputFileName);
-        cout<<"Simulation Complete."<<endl;
+        cout << "Simulation Complete." << endl;
 }
 
 void HandleInputFile::DealWithOSF(){

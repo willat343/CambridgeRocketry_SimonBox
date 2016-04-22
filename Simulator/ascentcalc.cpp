@@ -253,30 +253,30 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	
 
 	if (alpha<an.back() && alpha>=0.0 && Re>=Ren.front() && Re<Ren.back()){
-		Cd= interper.two(an,Ren,Cddat,alpha,Re);
+		Cd = interper.two(an,Ren,Cddat,alpha,Re);
 	}
 	else if (alpha<an.back() && alpha>=0.0 && Re>=Ren.back()){
-		Cd=interper.one(an,CdReEnd,alpha);
+		Cd = interper.one(an,CdReEnd,alpha);
 	}
 	else if (alpha<an.back() && alpha>=0.0 && Re>=0 && Re<Ren.front()){
-		Cd=interper.one(an,CdReEnd,alpha); //bug carried over from old code for comparison!! Change CdReEnd to CdReBeg when happy
+		Cd = interper.one(an,CdReEnd,alpha); // bug carried over from old code for comparison!! Change CdReEnd to CdReBeg when happy
 	}
 	else if  (alpha>an.back()){
-		Cd=1.0;
+		Cd = 1.0;
 	}
 	else {
-      Cd=0.5;
+      Cd = 0.5;
       cout<<"Warning: Cd calculation is broken, check it\n";
 	}
 	
 	//INTAB 3*******************************************************************
-	double Cn=intab3.CNa;//Coeficient of normal force
-	double Cp=intab3.Xcp;//Centre of pressure
+	double Cn = intab3.CNa; // Coeficient of normal force
+	double Cp = intab3.Xcp; // Centre of pressure
 	//*************************************************************************
   
   //Prandtl-Glauert Compressibility Correction********************************
-  double c=sqrt(gamma*R*temp); //Calculate local speed of sound
-  double Ma=Vtmag/c;//Calculate Mach number
+  double c = sqrt(gamma*R*temp); //Calculate local speed of sound
+  double Ma = Vtmag/c;//Calculate Mach number
 
   
   

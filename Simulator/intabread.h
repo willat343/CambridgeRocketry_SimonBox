@@ -112,6 +112,11 @@ public:
 	vector<double>
 		AltPd,
 		CdA;
+	/*
+		Note, special flags for altitude parachute deployment (AltPd)
+		1000 000+ (i.e. large number) : deploy at apogee
+		-1 (i.e. negative number) : never deploy
+	*/
 	ParaTab(){};
 	ParaTab(vector<double> a, vector<double> b, vector<double> c){
 		AltPd=a; CdA=vecop::vecmult(b,c);
