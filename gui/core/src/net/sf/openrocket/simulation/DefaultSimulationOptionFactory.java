@@ -27,8 +27,9 @@ public class DefaultSimulationOptionFactory {
 	// camrocksim
 	public static final String SIMCONDITION_MONTE_BOOL = "MonteCarloBool";
 	public static final String SIMCONDITION_MONTE_INT = "MonteCarloInteger";
-	
 	public static final String SIMCONDITION_ATMOSPHERE_STR = "AtmosphereString";
+	public static final String SIMCONDITION_SIGMA_LAUNCH_DECLINATION = "SigmaLaunchDeclination";
+	public static final String SIMCONDITION_SIGMA_THRUST = "SigmaThrust";
 	
 	public DefaultSimulationOptionFactory(Preferences prefs) {
 		this.prefs = prefs;
@@ -62,9 +63,9 @@ public class DefaultSimulationOptionFactory {
 			// camrocksim defaults
 			defaults.setMonteCarloBool(prefs.getBoolean(SIMCONDITION_MONTE_BOOL, defaults.getMonteCarloBool()));
 			defaults.setMonteCarloInteger(prefs.getDouble(SIMCONDITION_MONTE_INT, defaults.getMonteCarloInteger()));
-			
 			defaults.setAtmosphereString(prefs.getString(SIMCONDITION_ATMOSPHERE_STR, defaults.getAtmosphereString()));
-			
+			defaults.setSigmaLaunchDeclination(prefs.getDouble(SIMCONDITION_SIGMA_LAUNCH_DECLINATION, defaults.getSigmaLaunchDeclination()));
+			defaults.setSigmaThrust(prefs.getDouble(SIMCONDITION_SIGMA_THRUST, defaults.getSigmaThrust()));
 		}
 		return defaults;
 	}
@@ -89,8 +90,9 @@ public class DefaultSimulationOptionFactory {
 		
 		prefs.putBoolean(SIMCONDITION_MONTE_BOOL, newDefaults.getMonteCarloBool());
 		prefs.putDouble(SIMCONDITION_MONTE_INT, newDefaults.getMonteCarloInteger());
-		
 		prefs.putString(SIMCONDITION_ATMOSPHERE_STR, newDefaults.getAtmosphereString());
+		prefs.putDouble(SIMCONDITION_SIGMA_LAUNCH_DECLINATION, newDefaults.getSigmaLaunchDeclination());
+		prefs.putDouble(SIMCONDITION_SIGMA_THRUST, newDefaults.getSigmaThrust());
 		
 		
 	}

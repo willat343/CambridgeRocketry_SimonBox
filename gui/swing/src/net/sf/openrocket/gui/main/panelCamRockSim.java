@@ -277,12 +277,12 @@ public class panelCamRockSim extends JPanel {
 				if (selected < 0) {
 					return; 
 				}
-				selected = simulationTable.convertRowIndexToModel(selected);
+				selected = simulationTable.convertRowIndexToModel( selected );
 				simulationTable.clearSelection();
 				simulationTable.addRowSelectionInterval(selected, selected);
 
 				// this simulation
-				Simulation thisSimulation = document.getSimulations().get(selected);
+				Simulation thisSimulation = document.getSimulations().get( selected );
 				
 				SimulationOptions thisSimulationOptions = thisSimulation.getOptions();
 				
@@ -325,7 +325,6 @@ public class panelCamRockSim extends JPanel {
 				
 				boolean isMonteCarlo = thisSimulationOptions.getMonteCarloBool();
 				double numberOfMonteCarloDouble = thisSimulationOptions.getMonteCarloInteger();
-				
 				int numberOfMonteCarloInt = (int) numberOfMonteCarloDouble;
 				
 				boolean isBallisticFailure = false;
@@ -334,6 +333,22 @@ public class panelCamRockSim extends JPanel {
 				thisSimulationInput.WriteSimDataToXML(thisRocketDescription, 
 						thisAtmosphereData, thisLaunchData,
 						isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
+				
+				
+				// edit information on uncertainty for monte carlo
+				RWuncertainty thisUncertainty = new RWuncertainty("../../Data/Uncertainty.xml");
+				
+				// get new values values
+				double sigmaLaunchDeclinationRad = thisSimulationOptions.getSigmaLaunchDeclination();
+				double sigmaLaunchDeclinationDeg = sigmaLaunchDeclinationRad / (2*Math.PI) * 360;
+				double sigmaThrust = thisSimulationOptions.getSigmaThrust();
+				// set new values values
+				thisUncertainty.setSigmaLaunchDeclination(sigmaLaunchDeclinationDeg);
+				thisUncertainty.setSigmaThrust(sigmaThrust);
+				
+				// update xml (update with previous set values)
+				thisUncertainty.UpdateXML();
+				
 				
 				// run program
 				try{

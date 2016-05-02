@@ -450,7 +450,7 @@ public class SimulationConditionsPanel extends JPanel {
 		sub = new JPanel(new MigLayout("fill, gap rel unrel",
 				"[grow][65lp!][30lp!][75lp!]", ""));
 		//// Launch rod
-		sub.setBorder(BorderFactory.createTitledBorder(trans.get("simedtdlg.border.Launchrod")));
+		sub.setBorder(BorderFactory.createTitledBorder("Launch"));
 		this.add(sub, "growx, aligny 0, wrap");
 		
 		
@@ -521,6 +521,26 @@ public class SimulationConditionsPanel extends JPanel {
 		sub.add(slider, "w 75lp, wrap");
 		
 		
+		// Angle sigma 
+		label = new JLabel("+-angle");
+		//// The angle of the launch rod from vertical.
+		tip = "Angle standard deviation";
+		label.setToolTipText(tip);
+		sub.add(label);
+		
+		m = new DoubleModel(conditions, "SigmaLaunchDeclination", UnitGroup.UNITS_ANGLE,
+				0, 90);
+		
+		spin = new JSpinner(m.getSpinnerModel());
+		spin.setEditor(new SpinnerEditor(spin));
+		spin.setToolTipText(tip);
+		sub.add(spin, "w 65lp!");
+		
+		unit = new UnitSelector(m);
+		unit.setToolTipText(tip);
+		sub.add(unit, "growx, wrap");
+		
+		
 		
 		// Direction:
 		JLabel directionLabel = new JLabel("Azimuth");
@@ -550,6 +570,25 @@ public class SimulationConditionsPanel extends JPanel {
 		BasicSlider directionSlider = new BasicSlider(m.getSliderModel(0, 2*Math.PI));
 		directionSlider.setToolTipText(tip);
 		sub.add(directionSlider, "w 75lp, wrap");
+		
+		// TODO: thrust
+		label = new JLabel("+-Thrust");
+		//// The angle of the launch rod from vertical.
+		tip = "Thrust standard deviation";
+		label.setToolTipText(tip);
+		sub.add(label);
+		
+		m = new DoubleModel(conditions, "SigmaThrust", UnitGroup.UNITS_FORCE,
+				0, 1000);
+		
+		spin = new JSpinner(m.getSpinnerModel());
+		spin.setEditor(new SpinnerEditor(spin));
+		spin.setToolTipText(tip);
+		sub.add(spin, "w 65lp!");
+		
+		unit = new UnitSelector(m);
+		unit.setToolTipText(tip);
+		sub.add(unit, "growx, wrap");
 		
 		/*
 		intoWind.addEnableComponent(directionLabel, false);

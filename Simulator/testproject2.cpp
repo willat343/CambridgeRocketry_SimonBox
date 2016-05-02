@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
 		filename = argv[1];
 	}
 	else{
-		cout<<"Unrecognized command line options"<<endl;
+		cout<<"Unrecognised command line options"<<endl;
 	}
 	
 	// cout<<filename<<endl;

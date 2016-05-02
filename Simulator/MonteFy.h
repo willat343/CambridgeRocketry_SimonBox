@@ -27,7 +27,9 @@ public:
 			CoPm,
 			CNm,
 			CDdm,
-			CDpm;
+			CDpm,
+			sigmaLaunchDeclination, // stochastic variable for launch angle
+			sigmaThrust; // stochastic variable for thrust
 		boost::numeric::ublas::vector<double> Mu;
 		boost::numeric::ublas::vector<double> HScale;
 		boost::numeric::ublas::matrix<double> Sigma;
@@ -39,7 +41,8 @@ public:
 		MonteFy(){};
 		MonteFy(INTAB,string);
 		boost::numeric::ublas::vector<double> gsamp(void);
-		double SampleNormal(double, double);
+		double SampleNormal(double mean, double sigma);
+		double SampleNormalTruncated(double mean, double sigma, double truncateSigma);
 		void ReadInVector(boost::numeric::ublas::vector<double>* ,string,int);
 		void ReadInMatrix(boost::numeric::ublas::matrix<double>*,string,int,int);
 		INTAB Wiggle();

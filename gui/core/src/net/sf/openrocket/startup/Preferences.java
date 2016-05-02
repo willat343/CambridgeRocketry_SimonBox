@@ -96,6 +96,9 @@ public abstract class Preferences implements ChangeSource {
 	
 	public static final String ATMOSPHERE_STR = "AtmosphereString";
 	
+	public static final String SIGMA_LAUNCH_DECLINATION = "SigmaLaunchDeclination";
+	public static final String SIGMA_THRUST = "SigmaThrust";
+	
 	private static final AtmosphericModel ISA_ATMOSPHERIC_MODEL = new ExtendedISAModel();
 	
 	/*
@@ -192,6 +195,22 @@ public abstract class Preferences implements ChangeSource {
 	
 	public final void setLaunchIntoWind(boolean check) {
 		this.putBoolean(LAUNCH_INTO_WIND, check);
+	}
+	
+	public final double getSigmaLaunchDeclination() {
+		return this.getDouble(SIGMA_LAUNCH_DECLINATION, 0);
+	}
+	
+	public final void setSigmaLaunchDeclination(double sigmaLaunchDeclination) {
+		this.putDouble(SIGMA_LAUNCH_DECLINATION, sigmaLaunchDeclination);
+	}
+	
+	public final double getSigmaThrust() {
+		return this.getDouble(SIGMA_THRUST, 0);
+	}
+	
+	public final void setSigmaThrust(double sigmaThrust) {
+		this.putDouble(SIGMA_THRUST, sigmaThrust);
 	}
 	
 	public final boolean getShowRockSimFormatWarning() {

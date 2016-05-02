@@ -35,6 +35,8 @@ MonteFy::MonteFy(INTAB I1, string FileName)
 	CNm = PropTree.get<double>("Uncertainty.StochasticCoefficients.CN");
 	CDdm = PropTree.get<double>("Uncertainty.StochasticCoefficients.CDd");
 	CDpm = PropTree.get<double>("Uncertainty.StochasticCoefficients.CDp");
+	sigmaLaunchDeclination = PropTree.get<double>("Uncertainty.StochasticCoefficients.LaunchDeclination");
+	sigmaThrust = PropTree.get<double>("Uncertainty.StochasticCoefficients.Thrust");
 	
 	ReadInVector(&Mu,"Mu",15);
 	ReadInVector(&HScale,"HScale",121);
@@ -113,7 +115,8 @@ INTAB MonteFy::Wiggle(void){
 		// parachute 
 		double CDdc = SampleNormal(1, CDdm);
 		double CDpc = SampleNormal(1, CDpm);
-		
+		// thrust (truncated)
+		double Thrustc = SampleNormalTruncated(0, sigmaThrust, 1.0);
 		
 		std::vector<double> Wx,Wy,hscale,X,Y;
 		Wx = ToStdVec(Wxp);
@@ -135,26 +138,47 @@ INTAB MonteFy::Wiggle(void){
 		TempTab.intab4.Wx = Vop.vecadd(TempTab.intab4.Wx, X);
 		TempTab.intab4.Wy = Vop.vecadd(TempTab.intab4.Wy, Y);
 		
+
+		// vary drag coefficient
 		CD_it = 0;
 		BOOST_FOREACH(std::vector<double> row,TempTab.intab2.CD){
 			TempTab.intab2.CD[CD_it] = Vop.scalmult(row,CDc);
 			CD_it++;
 		}
 
+		// vary normal coefficient and centre of pressure
 		TempTab.intab3.CNa = TempTab.intab3.CNa+CNc;
 		TempTab.intab3.Xcp = TempTab.intab3.Xcp+CoPc;
 		
+		// vary parachute data
 		CD_it = 0;
 		BOOST_FOREACH(double pcd,TempTab.paratab.CdA){
+			
 			if(CD_it == 0){
 				TempTab.paratab.CdA[CD_it]=pcd*CDdc;
 			}
 			else{
 				TempTab.paratab.CdA[CD_it]=pcd*CDpc;
 			}
+
 			CD_it++;
 		}
 
+		// vary thrust data
+		int Thrust_it = 0;
+		BOOST_FOREACH(double thrust1, TempTab.intab1.Thrust) {
+			double newThrust = thrust1 + Thrustc;
+			// check bounds
+			if (newThrust < 0) {
+				newThrust = 0;
+			}
+			// overwrite
+			TempTab.intab1.Thrust[Thrust_it] = newThrust;
+			Thrust_it++; // next point
+		}
+
+
+		// returns data
 		return(TempTab);
 	}
 
@@ -211,6 +235,36 @@ double MonteFy::SampleNormal (double mean, double sigma)
 	 
 		double Out = normal_sampler();
 		// sample from the distribution
+		return(Out);
+	}
+}
+
+double MonteFy::SampleNormalTruncated (double mean, double sigma, double truncateSigma)
+{
+	{
+		using namespace boost;
+		// Create a Mersenne twister random number generator
+		// that is seeded once with #seconds since 1970
+		static mt19937 rng(static_cast<unsigned> (std::time(0)));
+	 
+		// select Gaussian probability distribution
+		normal_distribution<double> norm_dist(mean, sigma);
+	 
+		// bind random number generator to distribution, forming a function
+		variate_generator<mt19937&, normal_distribution<double> >  normal_sampler(rng, norm_dist);
+	 
+		double Out = normal_sampler();
+		// sample from the distribution
+
+		// truncate
+		double lowerBound = mean - truncateSigma*sigma - 0.0001;
+		double upperBound = mean + truncateSigma*sigma + 0.0001; // add a little margin
+
+		while ((Out <= lowerBound) || (Out >= upperBound)) {
+			// resample
+			Out = normal_sampler();
+		}
+
 		return(Out);
 	}
 }

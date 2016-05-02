@@ -74,24 +74,37 @@ Rocket_Flight::Rocket_Flight(std::string)
 
 //****************************************************************************************
 
-//Function to calculate the initial conditions********************************************
+//Functions to calculate the initial conditions********************************************
 
-void Rocket_Flight::InitialConditionsCalc(void)
-{
+vector<double> Rocket_Flight::getInitialTime(void) {
+	//	returns the initial time vector
+	vector<double> tt;
+
 	tt.push_back(0);
 	tt.push_back(Tspan);
+
+	return tt;
+}
+
+vector<double> Rocket_Flight::getInitialState(double sigmaDeclinationAngle) {
+	//	returns the initial state
+	
+	vector<double> z0;
 
 	z0.push_back(X0.e1);
 	z0.push_back(X0.e2);
 	z0.push_back(X0.e3);
 
-	// Calculate the initial quaternion
-	De=De*PI/180.0;
+	// TODO: remove hardcode
+	double De_temp = SampleTruncated (De, sigmaDeclinationAngle, 1.0);
+	double De_rad = De_temp * PI / 180.0;
 	bearing AzOrth((Az-90.0),1.0);
 	vector2 AzVec=AzOrth.to_vector();
 	AzVec=AzVec.norm();
 
-	quaternion Q0((cos(De/2.0)),(sin(De/2.0)*AzVec.e1),(sin(De/2.0)*AzVec.e2),0.0);
+	// Calculate the initial quaternion
+
+	quaternion Q0((cos(De_rad/2.0)),(sin(De_rad/2.0)*AzVec.e1),(sin(De_rad/2.0)*AzVec.e2),0.0);
 	Q0=Q0.norm();
 
 	z0.push_back(Q0.e1);
@@ -99,9 +112,13 @@ void Rocket_Flight::InitialConditionsCalc(void)
 	z0.push_back(Q0.e3);
 	z0.push_back(Q0.e4);
 
+	// xyz 4x quaternion velocity
 	for (int i = 0; i<6; i++){
 		z0.push_back(0.0);
 	}
+
+	return z0;
+
 }
 
 //Flight Functions**********************************************************************
@@ -109,7 +126,10 @@ void Rocket_Flight::InitialConditionsCalc(void)
 OutputData Rocket_Flight::OneStageFlight(void){
 
 	// Create the initial conditions 
-	InitialConditionsCalc();
+	vector<double> tt, z0;
+
+	tt = getInitialTime();
+	z0 = getInitialState(0);
 	
 	// Initialize rocket ascent simulation
 	ascent as1(tt, z0, IntabTR, RL);
@@ -177,7 +197,10 @@ OutputData Rocket_Flight::OneStageFlight(void){
 OutputData Rocket_Flight::TwoStageFlight(){
 
 	//Create the initial conditions
-	InitialConditionsCalc();
+	vector<double> tt, z0;
+
+	tt = getInitialTime();
+	z0 = getInitialState(0);
 
 	// Initialize the simulation from launch to separation
 	tt[1] = Tsep;
@@ -296,9 +319,14 @@ OutputData Rocket_Flight::TwoStageFlight(){
 OutputData Rocket_Flight::OneStageMonte(int noi){
 
 	//Create the initial conditions 
-	InitialConditionsCalc();
-        string Upath = FilePath;
-        Upath.append("Uncertainty.xml");
+	vector<double> tt, z0;
+
+	tt = getInitialTime();
+	z0 = getInitialState(0);
+
+    string Upath = FilePath;
+    Upath.append("Uncertainty.xml");
+	
 	MonteFy StochTab(IntabTR,Upath);
 	
 	OutputData OD;
@@ -315,6 +343,8 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 			else{
 				Ftab = StochTab.Wiggle();
 				//Ftab = IntabTR;
+				// vary initial declination angle
+				z0 = getInitialState(StochTab.sigmaLaunchDeclination);
 			}
 
 			// Initialize rocket ascent simulation
@@ -404,7 +434,11 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 
 OutputData Rocket_Flight::TwoStageMonte(int noi){
 	//Create the initial conditions
-	InitialConditionsCalc();
+	vector<double> tt, z0;
+
+	tt = getInitialTime();
+	z0 = getInitialState(0);
+
 	//Initialize the simulation from launch to separation
 	tt[1]=Tsep;
         string Upath = FilePath;
@@ -428,6 +462,8 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
 				FtabTR = StochTabTR.Wiggle();
 				FtabBS = StochTabBS.Wiggle();
 				FtabUS = StochTabUS.Wiggle();
+				// vary initial declination angle
+				z0 = getInitialState(StochTabTR.sigmaLaunchDeclination);
 			}
 			
 			// Initialize the simulation from launch to separation
@@ -569,6 +605,7 @@ void Rocket_Flight::StateTransferParachute(vector<double>* zp, RKF_data Stage){
 }
 
 
+
 void Rocket_Flight::TimeTransfer(vector<double> * ttp, RKF_data Stage){
 	/*
 		copy the timings from the end of one stage to the next
@@ -657,3 +694,33 @@ double Rocket_Flight::getDeploymentAltitude(INTAB thisINTAB) {
 	return deployAtAltitude;
 }
 
+double Rocket_Flight::SampleTruncated (double mean, double sigma, double truncateSigma)
+{
+	{
+		using namespace boost;
+		// Create a Mersenne twister random number generator
+		// that is seeded once with #seconds since 1970
+		static mt19937 rng(static_cast<unsigned> (std::time(0)));
+	 
+		// select Gaussian probability distribution
+		normal_distribution<double> norm_dist(mean, sigma);
+	 
+		// bind random number generator to distribution, forming a function
+		variate_generator<mt19937&, normal_distribution<double> >  normal_sampler(rng, norm_dist);
+	 	
+	 	// sample from the distribution
+		double Out = normal_sampler();
+
+		// truncate at +- 1 sigma
+		double lowerBound = mean - truncateSigma*sigma - 0.001;
+		double upperBound = mean + truncateSigma*sigma + 0.001; // added a little margin
+
+		while ((Out <= lowerBound) || (Out >= upperBound)) {
+			// re- sample
+			Out = normal_sampler();
+		}
+
+		// return value
+		return(Out);
+	}
+}

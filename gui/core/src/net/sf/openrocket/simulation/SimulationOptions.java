@@ -60,6 +60,9 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 	
 	private String atmosphereStr = preferences.getString(Preferences.ATMOSPHERE_STR, "../../Data/Atmospheres/wpNoWind.xml");
 	
+	private double sigmaLaunchDeclination = preferences.getDouble(Preferences.SIGMA_LAUNCH_DECLINATION, 0);
+	private double sigmaThrust = preferences.getDouble(Preferences.SIGMA_THRUST, 0);
+	
 	/*
 	 * NOTE:  When adding/modifying parameters, they must also be added to the
 	 * equals and copyFrom methods!!
@@ -158,6 +161,24 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 	public void setMonteCarloBool(boolean doMonteCarlo) {
 		// sets whether or not to do a monte carlo run, or simply do an average run
 		this.monteCarloBool = doMonteCarlo;
+	}
+	
+	public void setSigmaLaunchDeclination(double sigmaLaunchDeclination) {
+		// sets declination angle stand deviation
+		this.sigmaLaunchDeclination = sigmaLaunchDeclination;
+	}
+	
+	public double getSigmaLaunchDeclination() {
+		return this.sigmaLaunchDeclination;
+	}
+	
+	public void setSigmaThrust(double sigmaThrust) {
+		// set thrust
+		this.sigmaThrust = sigmaThrust;
+	}
+	
+	public double getSigmaThrust() {
+		return this.sigmaThrust;
 	}
 	
 	
@@ -276,7 +297,6 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 	
 	public double getWindDirection() {
 		return this.windDirection;
-		
 	}
 	
 	public double getLaunchAltitude() {
@@ -515,13 +535,20 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 		this.calculateExtras = src.calculateExtras;
 		this.randomSeed = src.randomSeed;
 		
+		// camrocksim attributes
+		this.monteCarloBool = src.monteCarloBool;
+		this.monteCarloInt = src.monteCarloInt;
+		this.atmosphereStr = src.atmosphereStr;
+		this.sigmaLaunchDeclination = src.sigmaLaunchDeclination;
+		this.sigmaThrust = src.sigmaThrust;
+		
 		fireChangeEvent();
 	}
 	
 	public void copyConditionsFrom(SimulationOptions src) {
 		// Be a little smart about triggering the change event.
 		// only do it if one of the "important" (user specified) parameters has really changed.
-		boolean isChanged = false;
+		boolean isChanged = true;
 		if (this.launchAltitude != src.launchAltitude) {
 			isChanged = true;
 			this.launchAltitude = src.launchAltitude;
@@ -579,6 +606,14 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 			isChanged = true;
 			this.calculateExtras = src.calculateExtras;
 		}
+		
+		// added camrocksim attributes
+		this.monteCarloBool = src.monteCarloBool;
+		this.monteCarloInt = src.monteCarloInt;
+		this.atmosphereStr = src.atmosphereStr;
+		this.sigmaLaunchDeclination = src.sigmaLaunchDeclination;
+		this.sigmaThrust = src.sigmaThrust;
+		
 		
 		if (isChanged) {
 			// Only copy the randomSeed if something else has changed.
