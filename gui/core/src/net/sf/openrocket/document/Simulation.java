@@ -5,6 +5,9 @@ import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.openrocket.aerodynamics.AerodynamicCalculator;
 import net.sf.openrocket.aerodynamics.BarrowmanCalculator;
 import net.sf.openrocket.aerodynamics.WarningSet;
@@ -36,9 +39,6 @@ import net.sf.openrocket.util.BugException;
 import net.sf.openrocket.util.ChangeSource;
 import net.sf.openrocket.util.SafetyMutex;
 import net.sf.openrocket.util.StateChangeListener;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A class defining a simulation, its conditions and simulated data.
@@ -72,7 +72,6 @@ public class Simulation implements ChangeSource, Cloneable {
 	}
 	
 	private RocketDescriptor descriptor = Application.getInjector().getInstance(RocketDescriptor.class);
-	
 	
 	private SafetyMutex mutex = SafetyMutex.newInstance();
 	
@@ -506,9 +505,6 @@ public class Simulation implements ChangeSource, Cloneable {
 			}
 		}
 	}
-	
-	
-	
 	
 	private class ConditionListener implements StateChangeListener {
 		

@@ -28,6 +28,11 @@ package net.sf.openrocket.camrocksim;
 
 import java.util.Vector;
 
+import net.sf.openrocket.motor.Manufacturer;
+import net.sf.openrocket.motor.Motor;
+import net.sf.openrocket.motor.ThrustCurveMotor;
+import net.sf.openrocket.util.Coordinate;
+
 /**
  *
  * @author simon
@@ -215,6 +220,62 @@ public class MotorData {
 	
 	public boolean isBuilt() {
 		return this.built;
+	}
+	
+	// returns the openrocket format
+	public Motor getMotor() {
+		
+		Manufacturer thisManufacturer = new Manufacturer(this.Name,
+				this.Name, Motor.Type.UNKNOWN);
+		String designation = this.Name,
+				description = this.Name,
+				digest = this.Name;
+		Motor.Type thisType = Motor.Type.UNKNOWN;
+		double[] delays = { 0 }; // no delays
+		double diameter = this.Diameter;
+		double length = this.Length;
+		
+		double[] time = new double[this.Time.size()];
+		double[] thrust = new double[this.Thrust.size()];
+		
+		for (int i = 0; i < this.Time.size(); i++) {
+			// time
+			time[i] = this.Time.get(i);
+		}
+		
+		for (int i = 0; i < this.Thrust.size(); i++) {
+			// thrust
+			thrust[i] = this.Thrust.get(i);
+		}
+		
+		double weightLaunch = this.LoadedMass;
+		double weightEmpty = this.DryMass;
+		
+		Coordinate[] cg = new Coordinate[time.length];
+		
+		for (int i = 0; i < time.length; i++) {
+			Coordinate thisCoordinate = null;
+			if (i == 0) {
+				// start
+				thisCoordinate = new Coordinate(0, 0, 0, weightLaunch);
+			} else if (i == (time.length - 1)) {
+				// end
+				thisCoordinate = new Coordinate(0, 0, 0, weightEmpty);
+			} else {
+				// irrelevant
+				thisCoordinate = new Coordinate(0, 0, 0, weightLaunch);
+			}
+			cg[i] = thisCoordinate;
+		}
+		
+		ThrustCurveMotor thisThrustCurveMotor = new ThrustCurveMotor(
+				thisManufacturer, designation, description, thisType,
+				delays, diameter, length, time, thrust, cg,
+				digest);
+		
+		Motor thisMotor = (Motor) thisThrustCurveMotor;
+		
+		return thisMotor;
 	}
 	
 }

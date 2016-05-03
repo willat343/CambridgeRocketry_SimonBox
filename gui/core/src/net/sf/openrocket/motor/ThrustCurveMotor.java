@@ -5,15 +5,16 @@ import java.text.Collator;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.openrocket.camrocksim.MotorData;
 import net.sf.openrocket.models.atmosphere.AtmosphericConditions;
 import net.sf.openrocket.util.ArrayUtils;
 import net.sf.openrocket.util.BugException;
 import net.sf.openrocket.util.Coordinate;
 import net.sf.openrocket.util.Inertia;
 import net.sf.openrocket.util.MathUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class ThrustCurveMotor implements Motor, Comparable<ThrustCurveMotor>, Serializable {
@@ -165,6 +166,28 @@ public class ThrustCurveMotor implements Motor, Comparable<ThrustCurveMotor>, Se
 		computeStatistics();
 	}
 	
+	
+	/*
+	 * returns a camrocksim version
+	 * 
+	 */
+	public MotorData getMotorData() {
+		
+		String thisName = this.getDesignation();
+		double thisLength = this.getLength();
+		double thisDiameter = this.getDiameter();
+		double thisLoadedMass = this.getLaunchCG().weight;
+		double thisDryMass = this.getEmptyCG().weight;
+		double[] theseTimePoints = this.getTimePoints();
+		double[] theseThrustPoints = this.getThrustPoints();
+		
+		MotorData thisMotorData = new MotorData(
+				thisName, thisLength, thisDiameter,
+				thisLoadedMass, thisDryMass, theseTimePoints,
+				theseThrustPoints);
+		
+		return thisMotorData;
+	}
 	
 	
 	/**

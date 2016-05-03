@@ -308,7 +308,7 @@ public class PresetEditorDialog extends JDialog implements ItemListener {
 			
 			ncShapeCB = new JComboBox();
 			ncShapeCB.setModel(new DefaultComboBoxModel(new String[] { Transition.Shape.OGIVE.getName(), Transition.Shape.CONICAL.getName(), Transition.Shape.PARABOLIC.getName(),
-					Transition.Shape.ELLIPSOID.getName(), Transition.Shape.HAACK.getName() }));
+					Transition.Shape.ELLIPSOID.getName() }));
 			ncPanel.add(ncShapeCB, "cell 1 2,growx");
 			
 			JLabel ncLengthLabel = new JLabel(trans.get("NoseConeCfg.lbl.Noseconelength"));
@@ -407,7 +407,7 @@ public class PresetEditorDialog extends JDialog implements ItemListener {
 			
 			trShapeCB = new JComboBox();
 			trShapeCB.setModel(new DefaultComboBoxModel(new String[] { Transition.Shape.OGIVE.getName(), Transition.Shape.CONICAL.getName(), Transition.Shape.PARABOLIC.getName(),
-					Transition.Shape.ELLIPSOID.getName(), Transition.Shape.HAACK.getName() }));
+					Transition.Shape.ELLIPSOID.getName() }));
 			trPanel.add(trShapeCB, "cell 1 2,growx");
 			
 			JLabel trLengthLabel = new JLabel("Length:");

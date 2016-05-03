@@ -52,7 +52,10 @@ public class NoseConeConfig extends RocketComponentConfig {
 		panel.add(new JLabel(trans.get("NoseConeCfg.lbl.Noseconeshape")));
 		
 		Transition.Shape selected = ((NoseCone) component).getType();
-		Transition.Shape[] typeList = Transition.Shape.values();
+		//Transition.Shape[] typeList = Transition.Shape.values();
+		
+		// present a reduced list
+		Transition.Shape[] typeList = {Transition.Shape.OGIVE, Transition.Shape.CONICAL, Transition.Shape.PARABOLIC};
 		
 		typeBox = new JComboBox(typeList);
 		typeBox.setEditable(false);
@@ -68,24 +71,22 @@ public class NoseConeConfig extends RocketComponentConfig {
 		});
 		panel.add(typeBox, "span, wrap rel");
 		
-
-
-
-		////  Shape parameter
 		////  Shape parameter:
 		shapeLabel = new JLabel(trans.get("NoseConeCfg.lbl.Shapeparam"));
-		panel.add(shapeLabel);
+		//panel.add(shapeLabel);
 		
 		m = new DoubleModel(component, "ShapeParameter");
 		
 		shapeSpinner = new JSpinner(m.getSpinnerModel());
 		shapeSpinner.setEditor(new SpinnerEditor(shapeSpinner));
-		panel.add(shapeSpinner, "growx");
+		//panel.add(shapeSpinner, "growx");
 		
 		DoubleModel min = new DoubleModel(component, "ShapeParameterMin");
 		DoubleModel max = new DoubleModel(component, "ShapeParameterMax");
 		shapeSlider = new BasicSlider(m.getSliderModel(min, max));
-		panel.add(shapeSlider, "skip, w 100lp, wrap para");
+		//panel.add(shapeSlider, "skip, w 100lp, wrap para");
+		
+		
 		
 		updateEnabled();
 		

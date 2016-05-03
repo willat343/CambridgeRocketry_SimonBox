@@ -74,16 +74,17 @@ public class MotorChooserDialog extends JDialog implements CloseableDialog {
 		});
 		panel.add(cancelButton, "tag cancel");
 		
+		/*
 		//// New motor button
 		JButton newButton = new JButton("New motor");
 		newButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO: create new motor
 				newMotor();
 			}
 		});
 		panel.add(newButton, "");
+		*/
 		
 		this.add(panel);
 		
@@ -138,8 +139,8 @@ public class MotorChooserDialog extends JDialog implements CloseableDialog {
 		}
 	}
 	
+	/*
 	private void newMotor() {
-		// TODO: finish function
 		
 		// get default folder to save file
 		SwingPreferences preferences = (SwingPreferences) Application.getPreferences();
@@ -179,9 +180,8 @@ public class MotorChooserDialog extends JDialog implements CloseableDialog {
 			
 			// create file
 			thisCustomRocketMotor.printMotorToFile(defaultThrustCurveString);
-			
-			// TODO: update database
 		}
-		
+	
 	}
+	*/	
 }

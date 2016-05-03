@@ -32,9 +32,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
-import net.sf.openrocket.camrocksim.MotorCreator;
 import net.sf.openrocket.camrocksim.MotorData;
-import net.sf.openrocket.camrocksim.ProfilePreLoader;
 import net.sf.openrocket.camrocksim.RWmotorXML;
 import net.sf.openrocket.gui.components.StyledLabel;
 import net.sf.openrocket.gui.components.StyledLabel.Style;
@@ -42,7 +40,6 @@ import net.sf.openrocket.gui.dialogs.flightconfiguration.IgnitionSelectionDialog
 import net.sf.openrocket.gui.dialogs.flightconfiguration.MotorMountConfigurationPanel;
 import net.sf.openrocket.gui.dialogs.motor.MotorChooserDialog;
 import net.sf.openrocket.gui.util.GUIUtil;
-import net.sf.openrocket.motor.Manufacturer;
 import net.sf.openrocket.motor.Motor;
 import net.sf.openrocket.motor.ThrustCurveMotor;
 import net.sf.openrocket.rocketcomponent.IgnitionConfiguration;
@@ -54,7 +51,6 @@ import net.sf.openrocket.rocketcomponent.RocketComponent;
 import net.sf.openrocket.unit.UnitGroup;
 import net.sf.openrocket.util.Chars;
 import net.sf.openrocket.util.Coordinate;
-import net.sf.openrocket.util.Pair;
 
 public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount> {
 
@@ -65,7 +61,10 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 
 	private static final String NONE = trans.get("edtmotorconfdlg.tbl.None");
 
-	private final JButton selectMotorButton, removeMotorButton, selectIgnitionButton, resetIgnitionButton;
+	// private final JButton selectMotorButton, removeMotorButton, selectIgnitionButton, resetIgnitionButton;
+	private final JButton selectIgnitionButton;
+	private final JButton newCustomMotorButton, editCustomMotorButton, saveCustomMotorButton, 
+		loadCustomMotorButton,removeCustomMotorButton;
 
 	private final JPanel cards;
 	private final static String HELP_LABEL = "help";
@@ -86,6 +85,11 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 			subpanel.add(label, "wrap");
 
 			MotorMountConfigurationPanel mountConfigPanel = new MotorMountConfigurationPanel(this,rocket) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				public void onDataChanged() {
 					MotorConfigurationPanel.this.fireTableDataChanged();
@@ -107,18 +111,57 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		
 		this.add(cards, "grow, wrap");
 		
-		/*
-		//// Add motor
-		addMotorButton = new JButton("Add custom motor");
-		addMotorButton.addActionListener(new ActionListener() {
+		//// XML new motor
+		newCustomMotorButton = new JButton("New motor");
+		newCustomMotorButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addCustomMotor();
+				newCustomMotor();
 			}
 		});
-		this.add(addMotorButton, "split, align right, sizegroup button");
-		*/
+		this.add(newCustomMotorButton, "split, align right, sizegroup button");
 		
+		//// XML edit motor
+		editCustomMotorButton = new JButton("Edit motor");
+		editCustomMotorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editCustomMotor();
+			}
+		});
+		this.add(editCustomMotorButton, "split, align right, sizegroup button");
+		
+		//// XML save motor
+		saveCustomMotorButton = new JButton("Save motor");
+		saveCustomMotorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveCustomMotor();
+			}
+		});
+		this.add(saveCustomMotorButton, "split, align right, sizegroup button");
+		
+		//// XML load motor
+		loadCustomMotorButton = new JButton("Load motor");
+		loadCustomMotorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				loadCustomMotor();
+			}
+		});
+		this.add(loadCustomMotorButton, "split, align right, sizegroup button");
+		
+		//// remove motor
+		removeCustomMotorButton = new JButton("Remove motor");
+		removeCustomMotorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				removeMotor();
+			}
+		});
+		this.add(removeCustomMotorButton, "split, align right, sizegroup button");
+		
+		/*
 		//// Select motor
 		selectMotorButton = new JButton(trans.get("MotorConfigurationPanel.btn.selectMotor"));
 		selectMotorButton.addActionListener(new ActionListener() {
@@ -138,7 +181,8 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 			}
 		});
 		this.add(removeMotorButton, "sizegroup button");
-
+		*/
+		
 		//// Select Ignition button
 		selectIgnitionButton = new JButton(trans.get("MotorConfigurationPanel.btn.selectIgnition"));
 		selectIgnitionButton.addActionListener(new ActionListener() {
@@ -149,6 +193,7 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		});
 		this.add(selectIgnitionButton, "sizegroup button");
 
+		/*
 		//// Reset Ignition button
 		resetIgnitionButton = new JButton(trans.get("MotorConfigurationPanel.btn.resetIgnition"));
 		resetIgnitionButton.addActionListener(new ActionListener() {
@@ -158,7 +203,8 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 			}
 		});
 		this.add(resetIgnitionButton, "sizegroup button, wrap");
-
+		*/
+		
 		updateButtonState();
 
 	}
@@ -175,6 +221,11 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 	protected JTable initializeTable() {
 		//// Motor selection table.
 		configurationTableModel = new FlightConfigurableTableModel<MotorMount>(MotorMount.class,rocket) {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected boolean includeComponent(MotorMount component) {
@@ -205,7 +256,7 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 				int selectedColumn = table.getSelectedColumn();
 				if (e.getClickCount() == 2) {
 					if (selectedColumn > 0) {
-						selectMotor();
+						editCustomMotor();
 					}
 				}
 			}
@@ -219,37 +270,155 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 			showContent();
 			String currentID = rocket.getDefaultConfiguration().getFlightConfigurationID();
 			MotorMount currentMount = getSelectedComponent();
-			//addMotorButton.setEnabled(currentMount != null && currentID != null);
-			selectMotorButton.setEnabled(currentMount != null && currentID != null);
-			removeMotorButton.setEnabled(currentMount != null && currentID != null);
+			//selectMotorButton.setEnabled(currentMount != null && currentID != null);
+			//removeMotorButton.setEnabled(currentMount != null && currentID != null);
 			selectIgnitionButton.setEnabled(currentMount != null && currentID != null);
-			resetIgnitionButton.setEnabled(currentMount != null && currentID != null);
+			//resetIgnitionButton.setEnabled(currentMount != null && currentID != null);
+			newCustomMotorButton.setEnabled(currentMount != null && currentID != null);
+			editCustomMotorButton.setEnabled(currentMount != null && currentID != null);
+			saveCustomMotorButton.setEnabled(currentMount != null && currentID != null);
+			loadCustomMotorButton.setEnabled(currentMount != null && currentID != null);
+			removeCustomMotorButton.setEnabled(currentMount != null && currentID != null);
 		} else {
 			showEmptyText();
-			//addMotorButton.setEnabled(false);
-			selectMotorButton.setEnabled(false);
-			removeMotorButton.setEnabled(false);
+			//selectMotorButton.setEnabled(false);
+			//removeMotorButton.setEnabled(false);
 			selectIgnitionButton.setEnabled(false);
-			resetIgnitionButton.setEnabled(false);
+			//resetIgnitionButton.setEnabled(false);
+			newCustomMotorButton.setEnabled(false);
+			editCustomMotorButton.setEnabled(false);
+			saveCustomMotorButton.setEnabled(false);
+			loadCustomMotorButton.setEnabled(false);
+			removeCustomMotorButton.setEnabled(false);
 		}
 	}
 
-
 	
-	private void addCustomMotor() {
+	private void newCustomMotor() {
+
+		// use existing GUI
+		MotorData thisMotorData = new MotorData();
+		
+		// populate with GUI
+		thisMotorData.EditMe();
+		
+		if ( thisMotorData.isBuilt() ) {
+			// use MotorData in simulation
+			
+			Motor thisMotor = thisMotorData.getMotor();
+			
+			// add motor to configuration
+			
+			MotorMount mount = getSelectedComponent();
+			
+			String id = rocket.getDefaultConfiguration().getFlightConfigurationID();
+			
+			MotorConfiguration config = new MotorConfiguration();
+			config.setMotor(thisMotor);
+			config.setEjectionDelay(0); // no delay
+			mount.getMotorConfiguration().set(id, config);
+			
+		}
+		
+		fireTableDataChanged();
+		
+	}
+	
+	private void editCustomMotor() {
+		// TODO: make function
+		
+		// get MotorData
+		MotorMount mount = getSelectedComponent();
+		String id = rocket.getDefaultConfiguration().getFlightConfigurationID();
+		Motor thisMotor = mount.getMotorConfiguration().get(id).getMotor();
+		
+		
+
+		
+		
+		if (thisMotor != null) {
+			
+			// extract data
+			ThrustCurveMotor thisThrustCurveMotor = (ThrustCurveMotor) thisMotor;
+			MotorData thisMotorData = thisThrustCurveMotor.getMotorData();
+			
+			// edit MotorData
+			thisMotorData.EditMe();
+			
+			// store MotorData
+			if ( thisMotorData.isBuilt() ) {
+				// use MotorData in simulation
+				
+				thisMotor = thisMotorData.getMotor();
+				// add motor to configuration
+				mount = getSelectedComponent();
+				id = rocket.getDefaultConfiguration().getFlightConfigurationID();
+				
+				MotorConfiguration config = new MotorConfiguration();
+				config.setMotor(thisMotor);
+				config.setEjectionDelay(0); // no delay
+				mount.getMotorConfiguration().set(id, config);
+				
+			}
+			
+			
+		}
+		else {
+			// new motor
+			this.newCustomMotor();
+		}
+
+		
+	}
+
+	private void saveCustomMotor() {
+		
+		// get MotorData
+		MotorMount mount = getSelectedComponent();
+		String id = rocket.getDefaultConfiguration().getFlightConfigurationID();
+		Motor thisMotor = mount.getMotorConfiguration().get(id).getMotor();
+		ThrustCurveMotor thisThrustCurveMotor = (ThrustCurveMotor) thisMotor;
+		MotorData thisMotorData = thisThrustCurveMotor.getMotorData();
+		
+		// write MotorData to XML
+		String FileName = null;
+		
+		JFileChooser fc = new JFileChooser();
+		File thisFile = new File("../../Data/Motors/");
+		fc.setCurrentDirectory(thisFile);
+		int RetVal = fc.showSaveDialog(null);
+		if (RetVal == JFileChooser.APPROVE_OPTION) {
+			FileName = fc.getSelectedFile().getPath();
+		}
+		
+		// select a file
+		if ((thisMotorData != null) && (FileName != null)) {
+			
+			try {
+				RWmotorXML thisMotorXML = new RWmotorXML( FileName );
+				
+				thisMotorXML.WriteMotorToXML(thisMotorData);
+				
+			}
+			catch (Exception e1) {
+				JOptionPane.showMessageDialog(null, ("Something is wrong with the data that you entered"));
+			}
+		}
+	}
+	
+	private void loadCustomMotor() {
 		/*
 		 * this function loads a custom engine XML into the design
 		 */
 		
 		String FileName = null;
-		
 		MotorData thisMotorData = new MotorData();
 		
 		JFileChooser fc = new JFileChooser();
-		File thisFile = new File(".");
+		File thisFile = new File("../../Data/Motors/");
 		fc.setCurrentDirectory(thisFile);
 		int RetVal = fc.showSaveDialog(null);
-		if (RetVal == fc.APPROVE_OPTION) {
+		if (RetVal == JFileChooser.APPROVE_OPTION) {
 			FileName = fc.getSelectedFile().getPath();
 		}
 		
@@ -273,78 +442,13 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		if ( thisMotorData.isBuilt() ) {
 			// use MotorData in simulation
 			
-			/*
-			 * (Manufacturer manufacturer, String designation, String description,
-			Motor.Type type, double[] delays, double diameter, double length,
-			double[] time, double[] thrust, Coordinate[] cg, String digest)
-			 */
-			
-			// (String displayName, String simpleName, Motor.Type motorType, String... alternateNames)
-			
-			Manufacturer thisManufacturer = new Manufacturer(thisMotorData.Name, 
-					thisMotorData.Name, Motor.Type.UNKNOWN);
-			String designation = thisMotorData.Name, 
-					description = thisMotorData.Name, 
-					digest = thisMotorData.Name;
-			Motor.Type thisType = Motor.Type.UNKNOWN;
-			double[] delays = {0}; // no delays
-			double diameter = thisMotorData.Diameter;
-			double length = thisMotorData.Length;
-			
-			double[] time = new double[thisMotorData.Time.size()];
-			double[] thrust = new double[thisMotorData.Thrust.size()];
-			
-			for (int i = 0; i < thisMotorData.Time.size(); i++)
-			{
-				// time
-				time[i] = thisMotorData.Time.get(i);
-			}
-			
-			for (int i = 0; i < thisMotorData.Thrust.size(); i++)
-			{
-				// thrust
-				thrust[i] = thisMotorData.Thrust.get(i);
-			}
-			
-			double weightLaunch = thisMotorData.LoadedMass;
-			double weightEmpty = thisMotorData.DryMass;
-			
-			Coordinate[] cg = new Coordinate[time.length];
-			
-			for ( int i = 0; i < time.length; i++ )
-			{
-				Coordinate thisCoordinate = null;
-				if (i == 0)
-				{
-					// start
-					thisCoordinate = new Coordinate(0,0,0,weightLaunch);
-				}
-				else if (i == (time.length - 1))
-				{
-					// end
-					thisCoordinate = new Coordinate(0,0,0,weightEmpty);
-				}
-				else
-				{
-					// irrelevant
-					thisCoordinate = new Coordinate(0,0,0,weightLaunch);
-				}
-				cg[i] = thisCoordinate;
-			}
-			
-			ThrustCurveMotor thisThrustCurveMotor = new ThrustCurveMotor(
-					thisManufacturer, designation, description, thisType, 
-					delays, diameter, length, time, thrust, cg,
-					digest);
-			
-			Motor thisMotor = (Motor) thisThrustCurveMotor;
+			Motor thisMotor = thisMotorData.getMotor();
 			
 			// add motor to configuration
 			
 			MotorMount mount = getSelectedComponent();
 			
 			String id = rocket.getDefaultConfiguration().getFlightConfigurationID();
-			
 			
 			MotorConfiguration config = new MotorConfiguration();
 			config.setMotor(thisMotor);
@@ -356,32 +460,6 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		fireTableDataChanged();
 	}
 	
-	
-	private void selectMotor() {
-		String id = rocket.getDefaultConfiguration().getFlightConfigurationID();
-		MotorMount mount = getSelectedComponent();
-		if (id == null || mount == null)
-			return;
-
-		MotorConfiguration config = mount.getMotorConfiguration().get(id);
-
-		motorChooserDialog.setMotorMountAndConfig(mount, id);
-
-		motorChooserDialog.setVisible(true);
-
-		Motor m = motorChooserDialog.getSelectedMotor();
-		double d = motorChooserDialog.getSelectedDelay();
-
-		if (m != null) {
-			config = new MotorConfiguration();
-			config.setMotor(m);
-			config.setEjectionDelay(d);
-			mount.getMotorConfiguration().set(id, config);
-		}
-
-		fireTableDataChanged();
-	}
-
 	private void removeMotor() {
 		String id = rocket.getDefaultConfiguration().getFlightConfigurationID();
 		MotorMount mount = getSelectedComponent();
@@ -401,27 +479,19 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 
 		IgnitionSelectionDialog dialog = new IgnitionSelectionDialog(
 				SwingUtilities.getWindowAncestor(this.flightConfigurationPanel),
-				rocket,
-				currentMount);
+				rocket,	currentMount);
 		dialog.setVisible(true);
 
 		fireTableDataChanged();
 	}
 
 
-	private void resetIgnition() {
-		String currentID = rocket.getDefaultConfiguration().getFlightConfigurationID();
-		MotorMount currentMount = getSelectedComponent();
-		if (currentID == null || currentMount == null)
-			return;
-
-		currentMount.getIgnitionConfiguration().resetDefault(currentID);
-
-		fireTableDataChanged();
-	}
-
-
 	private class MotorTableCellRenderer extends FlightConfigurablePanel<MotorMount>.FlightConfigurableCellRenderer {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		protected JLabel format( MotorMount mount, String configId, JLabel l ) {

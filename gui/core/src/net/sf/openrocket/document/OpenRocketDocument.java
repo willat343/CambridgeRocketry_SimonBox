@@ -751,6 +751,7 @@ public class OpenRocketDocument implements ComponentChangeListener {
 				
 				// add motor (if present)
 				RocketMotor thisRocketMotor = this.getRocketMotor(thisRocketComponent, inputSimulation);
+				
 				if (thisRocketMotor != null) {
 					// add motor to stage
 					thisRocketDescription.addMotor(thisRocketMotor, thisStageNumber);
@@ -870,17 +871,19 @@ public class OpenRocketDocument implements ComponentChangeListener {
 			// pick one from the array based on the FlightConfigurationID
 			MotorConfiguration thisMotorConfiguration = theseFlightConfiguration.get(thisFlightConfigurationID);
 			
-			// Extract this motor from the configuration..
+			// Extract this motor from the configuration.. TODO: create setMotor to write from file!
 			Motor thisMotor = thisMotorConfiguration.getMotor();
 			
 			// check if the mount actually holds a motor
 			if (thisMotor != null) {
+				
 				// check if it has a thrustcurve (requirement)
 				if (thisMotor instanceof ThrustCurveMotor) {
 					// cast to thrustcurve
 					
 					ThrustCurveMotor thisThrustCurveMotor = (ThrustCurveMotor) thisMotor;
 					
+					/*
 					String thisName = thisThrustCurveMotor.getDesignation();
 					double thisLength = thisThrustCurveMotor.getLength();
 					double thisDiameter = thisThrustCurveMotor.getDiameter();
@@ -888,12 +891,17 @@ public class OpenRocketDocument implements ComponentChangeListener {
 					double thisDryMass = thisThrustCurveMotor.getEmptyCG().weight;
 					double[] theseTimePoints = thisThrustCurveMotor.getTimePoints();
 					double[] theseThrustPoints = thisThrustCurveMotor.getThrustPoints();
-					double thisPosition = thisRocketComponent.getAbsolutePosition();
+					
 					
 					MotorData thisMotorData = new MotorData(
 							thisName, thisLength, thisDiameter,
 							thisLoadedMass, thisDryMass, theseTimePoints,
 							theseThrustPoints);
+					*/
+					
+					MotorData thisMotorData = thisThrustCurveMotor.getMotorData();
+					
+					double thisPosition = thisRocketComponent.getAbsolutePosition();
 					
 					thisRocketMotor = new RocketMotor(thisMotorData, thisPosition);
 					

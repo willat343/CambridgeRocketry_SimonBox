@@ -37,7 +37,7 @@ public class NoseConeData extends RockPartsData {
 	//*Class members
 	double Ln, //Nosecone length
 			Dn; //base diameter
-	int ShapeID; // 0 = ogive, 1 = cone , 2 = parabola TODO: check shapeID
+	int ShapeID; // 0 = ogive, 1 = cone , 2 = parabola
 	boolean built = false;
 	
 	

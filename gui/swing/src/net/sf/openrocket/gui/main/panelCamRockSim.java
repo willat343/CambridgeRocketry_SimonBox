@@ -100,8 +100,6 @@ public class panelCamRockSim extends JPanel {
 	
 	private final JButton exportButton;
 	
-	private JProgressBar pbar;
-	
 
 	public panelCamRockSim(OpenRocketDocument doc) {
 		super(new MigLayout("fill", "[grow][][][][][][grow]"));
@@ -291,10 +289,10 @@ public class panelCamRockSim extends JPanel {
 				
 				
 				/*
-				// (temporary) export XML of design, for testing
-				RWdesignXML thisDesign = new RWdesignXML("rocketDesign.xml");
-				// fill design with rocket description (easy comparison)
-				thisDesign.WriteDesign(thisRocketDescription);
+					// (temporary) export XML of design, for testing
+					RWdesignXML thisDesign = new RWdesignXML("rocketDesign.xml");
+					// fill design with rocket description (easy comparison)
+					thisDesign.WriteDesign(thisRocketDescription);
 				*/
 				
 				// setup atmosphere (read from file)
