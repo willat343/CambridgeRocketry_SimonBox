@@ -148,9 +148,11 @@ public class SwingStartup {
 		// Start update info fetching
 		final UpdateInfoRetriever updateInfo;
 		if (Application.getPreferences().getCheckUpdates()) {
-			log.info("Starting update check");
-			updateInfo = new UpdateInfoRetriever();
-			updateInfo.start();
+			// log.info("Starting update check");
+			// updateInfo = new UpdateInfoRetriever();
+			// updateInfo.start();
+			log.info("Update check disabled");
+			updateInfo = null;
 		} else {
 			log.info("Update check disabled");
 			updateInfo = null;

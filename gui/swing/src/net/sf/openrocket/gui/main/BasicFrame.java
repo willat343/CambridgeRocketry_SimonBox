@@ -114,6 +114,11 @@ import net.sf.openrocket.util.TestRockets;
 import net.sf.openrocket.utils.ComponentPresetEditor;
 
 public class BasicFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger log = LoggerFactory.getLogger(BasicFrame.class);
 
 	private static final GeneralRocketSaver ROCKET_SAVER = new GeneralRocketSaver();
@@ -679,13 +684,13 @@ public class BasicFrame extends JFrame {
 			menu.add(item);
 		}
 
-
+		
 		////  Analyze
 		menu = new JMenu(trans.get("main.menu.analyze"));
 		menu.setMnemonic(KeyEvent.VK_A);
 		//// Analyzing the rocket
 		menu.getAccessibleContext().setAccessibleDescription(trans.get("main.menu.analyze.desc"));
-		menubar.add(menu);
+		//menubar.add(menu);
 
 		//// Component analysis
 		item = new JMenuItem(trans.get("main.menu.analyze.componentAnalysis"), KeyEvent.VK_C);
@@ -698,7 +703,7 @@ public class BasicFrame extends JFrame {
 				ComponentAnalysisDialog.showDialog(rocketpanel);
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		//// Optimize
 		item = new JMenuItem(trans.get("main.menu.analyze.optimization"), KeyEvent.VK_O);
@@ -710,7 +715,7 @@ public class BasicFrame extends JFrame {
 				new GeneralOptimizationDialog(document, BasicFrame.this).setVisible(true);
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		//// Custom expressions
 		item = new JMenuItem(trans.get("main.menu.analyze.customExpressions"), KeyEvent.VK_E);
@@ -722,7 +727,7 @@ public class BasicFrame extends JFrame {
 				new CustomExpressionDialog(document, BasicFrame.this).setVisible(true);
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		item = new JMenuItem(trans.get("PhotoFrame.title"), KeyEvent.VK_P);
 		item.getAccessibleContext().setAccessibleDescription(trans.get("PhotoFrame.desc"));
@@ -734,7 +739,7 @@ public class BasicFrame extends JFrame {
 				pa.setVisible(true);
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		////  Debug
 		// (shown if openrocket.debug.menu is defined)
