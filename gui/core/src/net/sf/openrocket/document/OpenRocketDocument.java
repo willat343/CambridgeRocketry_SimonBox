@@ -871,7 +871,7 @@ public class OpenRocketDocument implements ComponentChangeListener {
 			// pick one from the array based on the FlightConfigurationID
 			MotorConfiguration thisMotorConfiguration = theseFlightConfiguration.get(thisFlightConfigurationID);
 			
-			// Extract this motor from the configuration.. TODO: create setMotor to write from file!
+			// Extract this motor from the configuration..
 			Motor thisMotor = thisMotorConfiguration.getMotor();
 			
 			// check if the mount actually holds a motor
@@ -882,22 +882,6 @@ public class OpenRocketDocument implements ComponentChangeListener {
 					// cast to thrustcurve
 					
 					ThrustCurveMotor thisThrustCurveMotor = (ThrustCurveMotor) thisMotor;
-					
-					/*
-					String thisName = thisThrustCurveMotor.getDesignation();
-					double thisLength = thisThrustCurveMotor.getLength();
-					double thisDiameter = thisThrustCurveMotor.getDiameter();
-					double thisLoadedMass = thisThrustCurveMotor.getLaunchCG().weight;
-					double thisDryMass = thisThrustCurveMotor.getEmptyCG().weight;
-					double[] theseTimePoints = thisThrustCurveMotor.getTimePoints();
-					double[] theseThrustPoints = thisThrustCurveMotor.getThrustPoints();
-					
-					
-					MotorData thisMotorData = new MotorData(
-							thisName, thisLength, thisDiameter,
-							thisLoadedMass, thisDryMass, theseTimePoints,
-							theseThrustPoints);
-					*/
 					
 					MotorData thisMotorData = thisThrustCurveMotor.getMotorData();
 					

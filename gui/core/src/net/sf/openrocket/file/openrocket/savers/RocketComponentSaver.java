@@ -172,10 +172,15 @@ public class RocketComponentSaver {
 				elements.add("    <manufacturer>" + TextUtil.escapeXML(m.getManufacturer().getSimpleName()) +
 						"</manufacturer>");
 				elements.add("    <digest>" + m.getDigest() + "</digest>");
+				// TODO include thrust curve time/thrust
+				elements.add("    <time>" + ArrayToDstring(m.getTimePoints()) + "</time>");
+				elements.add("    <thrust>" + ArrayToDstring(m.getThrustPoints()) + "</thrust>");
 			}
 			elements.add("    <designation>" + TextUtil.escapeXML(motor.getDesignation()) + "</designation>");
 			elements.add("    <diameter>" + motor.getDiameter() + "</diameter>");
 			elements.add("    <length>" + motor.getLength() + "</length>");
+			elements.add("    <dryMass>" + motor.getEmptyCG().weight + "</dryMass>");
+			elements.add("    <loadedMass>" + motor.getLaunchCG().weight + "</loadedMass>");
 			
 			// Motor delay
 			if (motorConfig.getEjectionDelay() == Motor.PLUGGED) {
@@ -207,6 +212,16 @@ public class RocketComponentSaver {
 					+ "\" blue=\"" + color.getBlue() + "\"/>");
 		}
 		
+	}
+	
+	private String ArrayToDstring(double[] Mat) {
+		String Temp = "";
+		for (double elem : Mat) {
+			Temp += (Double.toString(elem) + ",");
+		}
+		Temp = Temp.substring(0, (Temp.length() - 1)); // trim off  the last comma
+		// Temp += ";\n";
+		return (Temp);
 	}
 	
 }

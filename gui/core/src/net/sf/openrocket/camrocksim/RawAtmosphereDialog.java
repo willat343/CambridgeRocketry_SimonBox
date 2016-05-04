@@ -34,7 +34,6 @@ package net.sf.openrocket.camrocksim;
 
 import java.util.Vector;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -1223,7 +1222,7 @@ public class RawAtmosphereDialog extends javax.swing.JDialog {
 		
 		boolean Goer = CheckValidity();
 		if (Goer == true) {
-			
+			/*
 			JFileChooser fc = new JFileChooser();
 			ProfilePreLoader PPL = new ProfilePreLoader();
 			fc.setCurrentDirectory(PPL.AtmosDir);
@@ -1234,7 +1233,9 @@ public class RawAtmosphereDialog extends javax.swing.JDialog {
 					ReadOk = true;
 					this.dispose();
 				}
-			}
+			} */
+			ReadOk = true;
+			this.dispose();
 		} else {
 			JOptionPane.showMessageDialog(null, ("Something is wrong with the data that you entered"));
 		}

@@ -86,8 +86,6 @@ public class NoseConeConfig extends RocketComponentConfig {
 		shapeSlider = new BasicSlider(m.getSliderModel(min, max));
 		//panel.add(shapeSlider, "skip, w 100lp, wrap para");
 		
-		
-		
 		updateEnabled();
 		
 

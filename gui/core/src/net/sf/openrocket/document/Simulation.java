@@ -105,6 +105,9 @@ public class Simulation implements ChangeSource, Cloneable {
 	private int simulatedRocketID = -1;
 	
 	
+	// Conditions used for simulation [camrocksim]  TODO  store in file
+	// private AtmosphereData atmosphereData = new AtmosphereData(true);
+	
 	/**
 	 * Create a new simulation for the rocket. Parent document should also be provided.
 	 * The initial motor configuration is taken from the default rocket configuration.
@@ -177,6 +180,15 @@ public class Simulation implements ChangeSource, Cloneable {
 		return rocket;
 	}
 	
+	/*
+	public AtmosphereData getAtmosphereData() {
+		return this.atmosphereData;
+	}
+	
+	public void setAtmosphereData(AtmosphereData newAtmosphereData) {
+		this.atmosphereData = newAtmosphereData;
+	}
+	*/
 	
 	/**
 	 * Return a newly created Configuration for this simulation.  The configuration

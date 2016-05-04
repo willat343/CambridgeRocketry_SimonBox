@@ -42,6 +42,7 @@ public class SimulationConditionsPanel extends JPanel {
 	private static final long serialVersionUID = 6026484093043119005L;
 	private static final Translator trans = Application.getTranslator();
 	
+	JTextField text = new JTextField("Not initialised");
 	
 	SimulationConditionsPanel(final Simulation simulation) {
 		super(new MigLayout("fill"));
@@ -54,12 +55,8 @@ public class SimulationConditionsPanel extends JPanel {
 		BasicSlider slider;
 		DoubleModel m;
 		JSpinner spin;
-		
-		final JTextField text;
 		JButton button;
-		
 		JLabel label;
-		
 		
 		//// Monte-carlo settings:  boolean and number (int)
 		sub = new JPanel(new MigLayout("fill, gap rel unrel",
@@ -95,64 +92,62 @@ public class SimulationConditionsPanel extends JPanel {
 		
 		//// Atmosphere settings settings: 
 		sub = new JPanel(new MigLayout("fill, gap rel unrel",
-				"[grow][65lp!][30lp!][75lp!]", ""));
+				"", "")); // "[25lp!][25lp!][25lp!][25lp!]"
 		//// Wind
 		sub.setBorder(BorderFactory.createTitledBorder("Atmosphere Settings"));
-		this.add(sub, "growx, split 2, aligny 0, flowy, gapright para");
+		this.add(sub,"growx"); // , "growx, split 4, aligny 0, flowy, gapright para"
 		
 		
 		label = new JLabel("Selected profile:");
 		sub.add(label);
 		
 		// text field with the selected atmosphere profile
-		text = new JTextField(conditions.getAtmosphereString());
+		// text = new JTextField("-");
+		// updateAtmosphere(simulation);
 		text.setEditable(false);
-		sub.add(text,"spanx"); //  "growx, gapright para"
-		
+		sub.add(text,"spanx, wrap"); //  "growx, gapright para"
 		
 		// new atmosphere button
-		button = new JButton("New atmosphere");
+		button = new JButton("New");
 		//// new atmosphere
 		button.setToolTipText("New atmosphere");
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// do action
-				AtmosphereData thisAtmosphereData = new AtmosphereData();
-				
-				thisAtmosphereData.EditMeRaw();
+				newAtmosphere(simulation);
+				// update
+				updateAtmosphere(simulation);
 			}
 		});
-		sub.add(button, "spanx"); // "w 75lp, wrap"
+		sub.add(button); // "w 75lp, wrap"
 		
 		// edit atmosphere button
-		button = new JButton("Edit atmosphere");
+		button = new JButton("Edit");
 		//// new atmosphere
 		button.setToolTipText("Edit atmosphere");
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// do action
-				
-				RWatmosXML thisAtmos = new RWatmosXML(conditions.getAtmosphereString());
-				
-				thisAtmos.ReadXMLtoAtmos();
-				
-				AtmosphereData thisAtmosphereData = thisAtmos.getAtmosphereData();
-				
-				thisAtmosphereData.EditMeRaw();
+				editAtmosphere(simulation);
+				// update
+				updateAtmosphere(simulation);
 			}
 		});
-		sub.add(button, "spanx"); // "w 75lp, wrap"
+		sub.add(button); // "w 75lp, wrap"
 		
-		
-		button = new JButton("Load atmosphere");
+		button = new JButton("Save");
 		//// load atmosphere
-		button.setToolTipText("Load atmosphere");
+		button.setToolTipText("Save atmosphere");
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// do action
+				saveAtmosphere(simulation);
+				// update
+				updateAtmosphere(simulation);
+				/*
 				String thisFileName = selectAtmosphere();
 				
 				if (thisFileName != null) {
@@ -162,13 +157,36 @@ public class SimulationConditionsPanel extends JPanel {
 				
 				// update text
 				text.setText(conditions.getAtmosphereString());
+				*/
 			}
 		});
-		sub.add(button, "spanx"); // , "growx"
+		sub.add(button);
 		
-		
-
-		
+		button = new JButton("Load");
+		//// load atmosphere
+		button.setToolTipText("Load atmosphere");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// do action
+				// TODO load
+				loadAtmosphere(simulation);
+				// update
+				updateAtmosphere(simulation);
+				/*
+				String thisFileName = selectAtmosphere();
+				
+				if (thisFileName != null) {
+					// set new condition
+					conditions.setAtmosphereString(thisFileName);
+				}
+				
+				// update text
+				text.setText(conditions.getAtmosphereString());
+				*/
+			}
+		});
+		sub.add(button); // , "growx"
 		
 		// selectWindProfile();
 		
@@ -222,10 +240,6 @@ public class SimulationConditionsPanel extends JPanel {
 		slider = new BasicSlider(m.getSliderModel(new DoubleModel(0), m2));
 		slider.setToolTipText(tip);
 		sub.add(slider, "w 75lp, wrap");
-		
-			
-		
-		
 		
 		// Wind turbulence intensity
 		//// Turbulence intensity:
@@ -571,7 +585,7 @@ public class SimulationConditionsPanel extends JPanel {
 		directionSlider.setToolTipText(tip);
 		sub.add(directionSlider, "w 75lp, wrap");
 		
-		// TODO: thrust
+		// +- thrust
 		label = new JLabel("+-Thrust");
 		//// The angle of the launch rod from vertical.
 		tip = "Thrust standard deviation";
@@ -626,6 +640,8 @@ public class SimulationConditionsPanel extends JPanel {
 		});
 		
 		this.add(saveDefaults, "gapbottom para, gapright para, right");
+		
+		updateAtmosphere(simulation);
 		
 	}
 	
@@ -688,6 +704,115 @@ public class SimulationConditionsPanel extends JPanel {
 		}
 		
 		return FileName;
+		
+	}
+	
+	private void newAtmosphere(Simulation simulation) {
+		
+		// create a new atmosphere
+		AtmosphereData newAtmosphereData = new AtmosphereData();
+		newAtmosphereData.EditMeRaw();
+		
+		// overwrite if built
+		if (newAtmosphereData.built) {
+			//simulation.setAtmosphereData(newAtmosphereData);
+			simulation.getOptions().atmosphereData = newAtmosphereData;
+		}
+		
+	}
+	
+	private void editAtmosphere(Simulation simulation) {
+		// TODO
+		
+		// obtain set atmosphere
+		AtmosphereData thisAtmosphereData = simulation.getOptions().atmosphereData;
+		
+		thisAtmosphereData.EditMeRaw();
+		
+		if (thisAtmosphereData != null) {
+			simulation.getOptions().atmosphereData = (thisAtmosphereData);
+		}
+		
+	}
+	
+	private void saveAtmosphere(Simulation simulation) {
+		// TODO
+		
+		String FileName = null;
+		
+		JFileChooser fc = new JFileChooser();
+		File thisFile = new File("../../Data/Atmospheres"); 
+		fc.setCurrentDirectory(thisFile);
+		int RetVal = fc.showSaveDialog(null);
+		if (RetVal == fc.APPROVE_OPTION) {
+			FileName = fc.getSelectedFile().getPath();
+		}
+		
+		AtmosphereData thisAtmosphereData = simulation.getOptions().atmosphereData;
+		
+		if (FileName != null)
+		{
+			
+			try {
+				
+				RWatmosXML thisAtmosXML = new RWatmosXML( FileName );
+				thisAtmosXML.WriteAtmosToXML(thisAtmosphereData);
+				
+			}
+			catch (Exception e1) {
+				JOptionPane.showMessageDialog(null, ("Something is wrong with the data that you entered"));
+				FileName = null; // set back to null, don't want to use it.
+			}
+		}
+		
+	}
+	
+	private void loadAtmosphere(Simulation simulation) {
+		
+		String FileName = null;
+		
+		JFileChooser fc = new JFileChooser();
+		File thisFile = new File("../../Data/Atmospheres"); // TODO fix hardcoded folder location
+		fc.setCurrentDirectory(thisFile);
+		int RetVal = fc.showSaveDialog(null);
+		if (RetVal == fc.APPROVE_OPTION) {
+			FileName = fc.getSelectedFile().getPath();
+		}
+		
+		AtmosphereData thisAtmosphereData = null; // simulation.getAtmosphereData();
+		
+		if (FileName != null)
+		{
+			
+			try {
+				
+				RWatmosXML thisAtmosXML = new RWatmosXML( FileName );
+				thisAtmosXML.ReadXMLtoAtmos();
+				thisAtmosphereData = thisAtmosXML.getAtmosphereData();
+				
+			}
+			catch (Exception e1) {
+				JOptionPane.showMessageDialog(null, ("Something is wrong with the data that you entered"));
+				FileName = null; // set back to null, don't want to use it.
+			}
+		}
+		
+		if (thisAtmosphereData != null) {
+			simulation.getOptions().atmosphereData = (thisAtmosphereData);
+		}
+		
+	}
+	
+	private void updateAtmosphere(Simulation simulation) {
+		
+		// String newName = simulation.getOptions().atmosphereData.name;
+		
+		if (simulation.getOptions().atmosphereData.built) {
+			text.setText(simulation.getOptions().atmosphereData.name);
+		}
+		else {
+			text.setText("Unspecified atmosphere");
+		}
 		
 	}
 	

@@ -332,10 +332,6 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		String id = rocket.getDefaultConfiguration().getFlightConfigurationID();
 		Motor thisMotor = mount.getMotorConfiguration().get(id).getMotor();
 		
-		
-
-		
-		
 		if (thisMotor != null) {
 			
 			// extract data

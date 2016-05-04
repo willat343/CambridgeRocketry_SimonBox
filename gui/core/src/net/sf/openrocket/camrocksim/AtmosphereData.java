@@ -29,22 +29,20 @@ package net.sf.openrocket.camrocksim;
 
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author sb4p07
  */
 public class AtmosphereData {
 	//*class members
-	public String name;
+	public String name = null;
 	public Vector<Double> Altitude,
 			Xwind,
 			Ywind,
 			Zwind,
 			rho,
 			Theta;
-	boolean built;
+	public boolean built;
 	public boolean AddToList;
 	
 	//*class constuctor
@@ -52,6 +50,91 @@ public class AtmosphereData {
 		name = "Not Initialized";
 		built = false;
 		AddToList = false;
+	}
+	
+	public AtmosphereData(boolean preFill) {
+		
+		PopulateISA();
+		
+	}
+	
+	private void PopulateISA() {
+		
+		name = "ISA";
+		built = true;
+		AddToList = false;
+		
+		Altitude = new Vector<Double>();
+		Xwind = new Vector<Double>();
+		Ywind = new Vector<Double>();
+		Zwind = new Vector<Double>();
+		rho = new Vector<Double>();
+		Theta = new Vector<Double>();
+		
+		// pass altitude
+		for (double a1 = 0; a1 < 10000; a1 += 100) {
+			
+			Altitude.add(a1);
+			Xwind.add(0.0);
+			Ywind.add(0.0);
+			Zwind.add(0.0);
+			double rho1 = getDensity(a1);
+			rho.add(rho1);
+			double temp1 = getTemperature(a1);
+			Theta.add(temp1);
+		}
+	}
+	
+	private double getDensity(double altitude) {
+		double dense = -(0.0001 * altitude) + 1.2208;
+		if (dense < 0) {
+			dense = 0;
+		}
+		return dense;
+	}
+	
+	private double getTemperature(double altitude) {
+		
+		double temperature = 0;
+		
+		double[][] LapseRate = new double[3][7];
+		
+		LapseRate[0][0] = 11000;
+		LapseRate[1][0] = -0.0065;
+		LapseRate[2][0] = 15;
+		LapseRate[0][1] = 20000;
+		LapseRate[1][1] = 0;
+		LapseRate[2][1] = -56.5;
+		LapseRate[0][2] = 32000;
+		LapseRate[1][2] = 0.001;
+		LapseRate[2][2] = -56.5;
+		LapseRate[0][3] = 47000;
+		LapseRate[1][3] = 0.0028;
+		LapseRate[2][3] = -44.5;
+		LapseRate[0][4] = 51000;
+		LapseRate[1][4] = 0;
+		LapseRate[2][4] = -2.5;
+		LapseRate[0][5] = 71000;
+		LapseRate[1][5] = -0.0028;
+		LapseRate[2][5] = -2.5;
+		LapseRate[0][6] = 84852;
+		LapseRate[1][6] = -0.002;
+		LapseRate[2][6] = -58.5;
+		
+		if (altitude < LapseRate[0][0]) {
+			temperature = (273 + LapseRate[2][0] + altitude * LapseRate[1][0]);
+		} else {
+			for (int i = 1; i < 7; i++) {
+				if (altitude < LapseRate[0][i]) {
+					temperature = (273 + LapseRate[2][i] + (altitude - LapseRate[0][i - 1]) * LapseRate[1][i]);
+					break;
+				} else {
+					temperature = (273 + LapseRate[2][6]);
+				}
+			}
+		}
+		
+		return temperature;
 	}
 	
 	public void EditMeRaw() {
@@ -71,12 +154,13 @@ public class AtmosphereData {
 			Theta = RAD.Temperature;
 			built = true;
 			
+			/*
 			try {
 				RWatmosXML Wxml = new RWatmosXML(RAD.FileName);
 				Wxml.WriteAtmosToXML(this);
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, ("Saving " + RAD.FileName + " failed. \nSystem msg: " + e));
-			}
+			} */
 			
 		}
 		

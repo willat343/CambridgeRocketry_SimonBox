@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import com.google.inject.Key;
+
 import net.sf.openrocket.aerodynamics.WarningSet;
 import net.sf.openrocket.document.OpenRocketDocument;
 import net.sf.openrocket.document.Simulation;
@@ -20,8 +22,6 @@ import net.sf.openrocket.simulation.extension.SimulationExtensionProvider;
 import net.sf.openrocket.simulation.extension.impl.JavaCode;
 import net.sf.openrocket.startup.Application;
 import net.sf.openrocket.util.StringUtil;
-
-import com.google.inject.Key;
 
 class SingleSimulationHandler extends AbstractElementHandler {
 	

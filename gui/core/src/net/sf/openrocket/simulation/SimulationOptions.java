@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sf.openrocket.aerodynamics.BarrowmanCalculator;
+import net.sf.openrocket.camrocksim.AtmosphereData;
 import net.sf.openrocket.formatting.MotorDescriptionSubstitutor;
 import net.sf.openrocket.masscalc.BasicMassCalculator;
 import net.sf.openrocket.models.atmosphere.AtmosphericModel;
@@ -53,6 +54,8 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 	private final Rocket rocket;
 	private String motorID = null;
 	
+	// default ISA
+	public AtmosphereData atmosphereData = new AtmosphereData(true);
 	
 	// [defaults] additional parameters for camrocksim
 	private boolean monteCarloBool = preferences.getBoolean(Preferences.MONTE_CARLO_BOOL, false);

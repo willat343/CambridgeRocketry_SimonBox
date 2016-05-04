@@ -295,15 +295,8 @@ public class panelCamRockSim extends JPanel {
 					thisDesign.WriteDesign(thisRocketDescription);
 				*/
 				
-				// setup atmosphere (read from file)
-				
-				String thisAtmospherePath = thisSimulationOptions.getAtmosphereString();
-				
-				RWatmosXML thisAtmos = new RWatmosXML(thisAtmospherePath);
-				// fill atmosphere with data
-				thisAtmos.ReadXMLtoAtmos();
-				
-				AtmosphereData thisAtmosphereData = thisAtmos.getAtmosphereData();
+				// setup atmosphere
+				AtmosphereData thisAtmosphereData = thisSimulationOptions.atmosphereData;
 				
 				double thisRailLength = thisSimulationOptions.getLaunchRodLength(); // [m]
 				double thisAzimuthRad = thisSimulationOptions.getLaunchRodDirection(); // [rad]

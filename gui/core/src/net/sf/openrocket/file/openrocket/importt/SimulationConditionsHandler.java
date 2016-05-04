@@ -1,6 +1,7 @@
 package net.sf.openrocket.file.openrocket.importt;
 
 import java.util.HashMap;
+import java.util.Vector;
 
 import net.sf.openrocket.aerodynamics.WarningSet;
 import net.sf.openrocket.file.DocumentLoadingContext;
@@ -103,8 +104,7 @@ class SimulationConditionsHandler extends AbstractElementHandler {
 				conditions.setLaunchLongitude(d);
 			}
 		} else if (element.equals("geodeticmethod")) {
-			GeodeticComputationStrategy gcs =
-					(GeodeticComputationStrategy) DocumentConfig.findEnum(content, GeodeticComputationStrategy.class);
+			GeodeticComputationStrategy gcs = (GeodeticComputationStrategy) DocumentConfig.findEnum(content, GeodeticComputationStrategy.class);
 			if (gcs != null) {
 				conditions.setGeodeticComputation(gcs);
 			} else {
@@ -118,6 +118,41 @@ class SimulationConditionsHandler extends AbstractElementHandler {
 			} else {
 				conditions.setTimeStep(d);
 			}
+		} else if (element.equals("montecarlo_bool")) {
+			if (content.equals("true")) {
+				conditions.setMonteCarloBool(true);
+			} else {
+				conditions.setMonteCarloBool(false);
+			}
+		} else if (element.equals("montecarlo_int")) {
+			conditions.setMonteCarloInteger(d);
+		} else if (element.equals("std_angle")) {
+			conditions.setSigmaLaunchDeclination(d);
+		} else if (element.equals("std_thrust")) {
+			conditions.setSigmaThrust(d);
 		}
 	}
+	
+	//*Function do split a data string into a vector of doubles
+	private Vector<Double> DstringToVector(String Dstring) {
+		String[] SplitString = Dstring.split(",");
+		Vector<Double> Temp = new Vector<Double>();
+		
+		for (String S : SplitString) {
+			Temp.add(Double.valueOf(S));
+		}
+		return (Temp);
+	}
+	
+	//and back
+	private String VectorToDstring(Vector<Double> Vec) {
+		String Temp = "";
+		for (double d : Vec) {
+			Temp += (Double.toString(d) + ", ");
+		}
+		Temp = Temp.substring(0, (Temp.length() - 2)); // trim off  the last comma
+		
+		return (Temp);
+	}
+	
 }

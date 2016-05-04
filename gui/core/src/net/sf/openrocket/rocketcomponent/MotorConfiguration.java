@@ -33,7 +33,6 @@ public class MotorConfiguration implements FlightConfigurableParameter<MotorConf
 	private Motor motor;
 	private double ejectionDelay;
 	
-	
 	public Motor getMotor() {
 		return motor;
 	}

@@ -43,7 +43,7 @@ import javax.swing.JOptionPane;
 public class CreateMotorDialog extends javax.swing.JDialog {
 	//**class members
 	String Name, FileName, Manufacturer = "CUSTOM";
-	double Length, Diameter, LMass, DMass;
+	double Length, Diameter, LMass, DMass, stdThrust;
 	Vector<Double> Time = new Vector<Double>();
 	Vector<Double> Thrust = new Vector<Double>();
 	boolean ReadOk = false;
@@ -1504,6 +1504,7 @@ public class CreateMotorDialog extends javax.swing.JDialog {
 	private javax.swing.JButton jButton1;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JScrollPane jScrollPane1;
+	//
 	// End of variables declaration//GEN-END:variables
 	
 }

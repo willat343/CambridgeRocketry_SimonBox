@@ -2,6 +2,9 @@ package net.sf.openrocket.file.openrocket.importt;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Vector;
+
+import org.xml.sax.SAXException;
 
 import net.sf.openrocket.aerodynamics.Warning;
 import net.sf.openrocket.aerodynamics.WarningSet;
@@ -9,9 +12,10 @@ import net.sf.openrocket.file.DocumentLoadingContext;
 import net.sf.openrocket.file.simplesax.AbstractElementHandler;
 import net.sf.openrocket.file.simplesax.ElementHandler;
 import net.sf.openrocket.file.simplesax.PlainTextHandler;
+import net.sf.openrocket.motor.Manufacturer;
 import net.sf.openrocket.motor.Motor;
-
-import org.xml.sax.SAXException;
+import net.sf.openrocket.motor.ThrustCurveMotor;
+import net.sf.openrocket.util.Coordinate;
 
 class MotorHandler extends AbstractElementHandler {
 	/** File version where latest digest format was introduced */
@@ -25,6 +29,11 @@ class MotorHandler extends AbstractElementHandler {
 	private double diameter = Double.NaN;
 	private double length = Double.NaN;
 	private double delay = Double.NaN;
+	private double[] time;
+	private double[] thrust;
+	
+	private double loadedMass;
+	private double dryMass;
 	
 	public MotorHandler(DocumentLoadingContext context) {
 		this.context = context;
@@ -42,7 +51,44 @@ class MotorHandler extends AbstractElementHandler {
 	 * Return the motor to use, or null.
 	 */
 	public Motor getMotor(WarningSet warnings) {
-		return context.getMotorFinder().findMotor(type, manufacturer, designation, diameter, length, digest, warnings);
+		// TODO HIGH add motor if not found!
+		
+		Manufacturer thisManufacturer = new Manufacturer(this.manufacturer,
+				this.manufacturer, Motor.Type.UNKNOWN);
+		
+		Motor.Type thisType = Motor.Type.UNKNOWN;
+		
+		double[] delays = { 0 }; // no delays
+		
+		double weightLaunch = this.loadedMass;
+		double weightEmpty = this.dryMass;
+		
+		Coordinate[] cg = new Coordinate[this.time.length];
+		
+		for (int i = 0; i < time.length; i++) {
+			Coordinate thisCoordinate = null;
+			if (i == 0) {
+				// start
+				thisCoordinate = new Coordinate(0, 0, 0, weightLaunch);
+			} else if (i == (time.length - 1)) {
+				// end
+				thisCoordinate = new Coordinate(0, 0, 0, weightEmpty);
+			} else {
+				// irrelevant
+				thisCoordinate = new Coordinate(0, 0, 0, weightLaunch);
+			}
+			cg[i] = thisCoordinate;
+		}
+		
+		
+		ThrustCurveMotor thisThrustCurveMotor = new ThrustCurveMotor(
+				thisManufacturer, designation, "", thisType,
+				delays, diameter, length, time, thrust, cg,
+				digest);
+		
+		Motor thisMotor = (Motor) thisThrustCurveMotor;
+		
+		return thisMotor;
 	}
 	
 	/**
@@ -93,7 +139,22 @@ class MotorHandler extends AbstractElementHandler {
 				digest = content.trim();
 			}
 			
+		} else if (element.equals("loadedMass")) {
+			loadedMass = Double.NaN;
+			try {
+				loadedMass = Double.parseDouble(content.trim());
+			} catch (NumberFormatException e) {
+				// Ignore
+			}
+		} else if (element.equals("dryMass")) {
+			dryMass = Double.NaN;
+			try {
+				dryMass = Double.parseDouble(content.trim());
+			} catch (NumberFormatException e) {
+				// Ignore
+			}
 		} else if (element.equals("diameter")) {
+			
 			
 			// Diameter
 			diameter = Double.NaN;
@@ -137,9 +198,50 @@ class MotorHandler extends AbstractElementHandler {
 				
 			}
 			
+		} else if (element.equals("time")) {
+			try {
+				this.time = DstringToArray(content);
+			} catch (NumberFormatException ignore) {
+			}
+		} else if (element.equals("thrust")) {
+			try {
+				this.thrust = DstringToArray(content);
+			} catch (NumberFormatException ignore) {
+			}
 		} else {
 			super.closeElement(element, attributes, content, warnings);
 		}
+	}
+	
+	private double[] DstringToArray(String Dstring) {
+		return VectorToArray(DstringToVector(Dstring));
+	}
+	
+	private Vector<Double> DstringToVector(String Dstring) {
+		String[] SplitString = Dstring.split(",");
+		Vector<Double> Temp = new Vector<Double>();
+		
+		for (String S : SplitString) {
+			Temp.add(Double.valueOf(S));
+		}
+		return (Temp);
+	}
+	
+	private double[] VectorToArray(Vector<Double> inputVector) {
+		
+		int total = inputVector.size();
+		
+		double[] outputArray = new double[total];
+		
+		int i = 0;
+		for (double d : inputVector) {
+			
+			outputArray[i] = d;
+			
+			i++;
+		}
+		
+		return outputArray;
 	}
 	
 }

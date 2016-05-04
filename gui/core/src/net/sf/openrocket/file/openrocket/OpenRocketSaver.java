@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.openrocket.aerodynamics.Warning;
 import net.sf.openrocket.document.OpenRocketDocument;
 import net.sf.openrocket.document.Simulation;
 import net.sf.openrocket.document.StorageOptions;
@@ -462,8 +462,15 @@ public class OpenRocketSaver extends RocketSaver {
 		writeElement("launchaltitude", cond.getLaunchAltitude());
 		writeElement("launchlatitude", cond.getLaunchLatitude());
 		writeElement("launchlongitude", cond.getLaunchLongitude());
-		writeElement("geodeticmethod", cond.getGeodeticComputation().name().toLowerCase(Locale.ENGLISH));
 		
+		writeElement("montecarlo_bool", cond.getMonteCarloBool());
+		writeElement("montecarlo_int", cond.getMonteCarloInteger());
+		writeElement("std_angle", cond.getSigmaLaunchDeclination());
+		writeElement("std_thrust", cond.getSigmaThrust());
+		
+		//writeElement("geodeticmethod", cond.getGeodeticComputation().name().toLowerCase(Locale.ENGLISH));
+		
+		/*
 		if (cond.isISAAtmosphere()) {
 			writeln("<atmosphere model=\"isa\"/>");
 		} else {
@@ -474,11 +481,30 @@ public class OpenRocketSaver extends RocketSaver {
 			indent--;
 			writeln("</atmosphere>");
 		}
+		*/
 		
 		writeElement("timestep", cond.getTimeStep());
 		
+		writeln("<atmosphere>");
+		indent++;
+		
+		writeElement("name", cond.atmosphereData.name);
+		writeElement("altitude", VectorToDstring(cond.atmosphereData.Altitude));
+		writeElement("xwind", VectorToDstring(cond.atmosphereData.Xwind));
+		writeElement("ywind", VectorToDstring(cond.atmosphereData.Ywind));
+		writeElement("zwind", VectorToDstring(cond.atmosphereData.Zwind));
+		writeElement("rho", VectorToDstring(cond.atmosphereData.rho));
+		writeElement("theta", VectorToDstring(cond.atmosphereData.Theta));
+		
+		indent--;
+		writeln("</atmosphere>");
+		
+		
+		
 		indent--;
 		writeln("</conditions>");
+		
+		
 		
 		for (SimulationExtension extension : simulation.getSimulationExtensions()) {
 			Config config = extension.getConfig();
@@ -495,7 +521,7 @@ public class OpenRocketSaver extends RocketSaver {
 		}
 		
 		// Write basic simulation data
-		
+		/*
 		FlightData data = simulation.getSimulatedData();
 		if (data != null) {
 			String str = "<flightdata";
@@ -539,6 +565,7 @@ public class OpenRocketSaver extends RocketSaver {
 			indent--;
 			writeln("</flightdata>");
 		}
+		*/
 		
 		indent--;
 		writeln("</simulation>");
@@ -760,6 +787,28 @@ public class OpenRocketSaver extends RocketSaver {
 	 */
 	public static String enumToXMLName(Enum<?> e) {
 		return e.name().toLowerCase(Locale.ENGLISH).replace("_", "");
+	}
+	
+	//*Function do split a data string into a vector of doubles
+	private Vector<Double> DstringToVector(String Dstring) {
+		String[] SplitString = Dstring.split(",");
+		Vector<Double> Temp = new Vector<Double>();
+		
+		for (String S : SplitString) {
+			Temp.add(Double.valueOf(S));
+		}
+		return (Temp);
+	}
+	
+	//and back
+	private String VectorToDstring(Vector<Double> Vec) {
+		String Temp = "";
+		for (double d : Vec) {
+			Temp += (Double.toString(d) + ", ");
+		}
+		Temp = Temp.substring(0, (Temp.length() - 2)); // trim off  the last comma
+		
+		return (Temp);
 	}
 	
 }
