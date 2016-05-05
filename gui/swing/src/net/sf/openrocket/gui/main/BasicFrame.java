@@ -506,7 +506,7 @@ public class BasicFrame extends JFrame {
 				importAction();
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		//// Export Rocksim
 		item = new JMenuItem(trans.get("main.menu.file.export"));
@@ -518,7 +518,7 @@ public class BasicFrame extends JFrame {
 				exportAction();
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		//// Export decal...
 		item = new JMenuItem(trans.get("main.menu.file.exportDecal"));
@@ -539,7 +539,7 @@ public class BasicFrame extends JFrame {
 			}
 
 		});
-		menu.add(item);
+		//menu.add(item);
 
 
 		//// Print...
@@ -555,7 +555,7 @@ public class BasicFrame extends JFrame {
 				printAction();
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 
 		menu.addSeparator();
@@ -769,7 +769,7 @@ public class BasicFrame extends JFrame {
 				GuidedTourSelectionDialog.showDialog(BasicFrame.this);
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		menu.addSeparator();
 
@@ -784,7 +784,7 @@ public class BasicFrame extends JFrame {
 				BugReportDialog.showBugReportDialog(BasicFrame.this);
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 		//// Debug log
 		item = new JMenuItem(trans.get("main.menu.help.debugLog"));
@@ -827,7 +827,7 @@ public class BasicFrame extends JFrame {
 				new AboutDialog(BasicFrame.this).setVisible(true);
 			}
 		});
-		menu.add(item);
+		//menu.add(item);
 
 
 		this.setJMenuBar(menubar);

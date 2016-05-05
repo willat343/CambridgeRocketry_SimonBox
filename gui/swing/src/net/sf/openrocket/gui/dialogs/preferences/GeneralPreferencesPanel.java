@@ -57,7 +57,7 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 			locales.add(new Named<Locale>(l, l.getDisplayLanguage(l) + "/" + l.getDisplayLanguage()));
 		}
 		Collections.sort(locales);
-		locales.add(0, new Named<Locale>(null, trans.get("generalprefs.languages.default")));
+		//locales.add(0, new Named<Locale>(null, trans.get("generalprefs.languages.default")));
 		
 		final JComboBox<?> languageCombo = new JComboBox<Object>(locales.toArray());
 		for (int i = 0; i < locales.size(); i++) {
@@ -77,10 +77,10 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 		this.add(new JLabel(trans.get("generalprefs.lbl.language")), "gapright para");
 		this.add(languageCombo, "wrap rel, growx, sg combos");
 		
-		this.add(new StyledLabel(trans.get("generalprefs.lbl.languageEffect"), -3, Style.ITALIC), "span, wrap para*2");
+		//this.add(new StyledLabel(trans.get("generalprefs.lbl.languageEffect"), -3, Style.ITALIC), "span, wrap para*2");
 		
 		//// User-defined thrust curves:
-		this.add(new JLabel(trans.get("pref.dlg.lbl.User-definedthrust")), "spanx, wrap");
+		//this.add(new JLabel(trans.get("pref.dlg.lbl.User-definedthrust")), "spanx, wrap");
 		final JTextField field = new JTextField();
 		List<File> files = preferences.getUserThrustCurveFiles();
 		String str = "";
@@ -119,7 +119,7 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 				preferences.setUserThrustCurveFiles(list);
 			}
 		});
-		this.add(field, "w 100px, gapright unrel, spanx, growx, split");
+		//this.add(field, "w 100px, gapright unrel, spanx, growx, split");
 		
 		//// Add button
 		JButton button = new JButton(trans.get("pref.dlg.but.add"));
@@ -162,7 +162,7 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 				}
 			}
 		});
-		this.add(button, "gapright unrel");
+		//this.add(button, "gapright unrel");
 		
 		//// Reset button
 		button = new JButton(trans.get("pref.dlg.but.reset"));
@@ -175,12 +175,12 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 				preferences.setUserThrustCurveFiles(null);
 			}
 		});
-		this.add(button, "wrap");
+		//this.add(button, "wrap");
 		
 		//// Add directories, RASP motor files (*.eng), RockSim engine files (*.rse) or ZIP archives separated by a semicolon (;) to load external thrust curves.  Changes will take effect the next time you start OpenRocket.
 		DescriptionArea desc = new DescriptionArea(trans.get("pref.dlg.DescriptionArea.Adddirectories"), 3, -3, false);
 		desc.setBackground(getBackground());
-		this.add(desc, "spanx, growx, wrap 40lp");
+		//this.add(desc, "spanx, growx, wrap 40lp");
 		
 		
 		
@@ -195,7 +195,7 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 				preferences.setCheckUpdates(softwareUpdateBox.isSelected());
 			}
 		});
-		this.add(softwareUpdateBox);
+		//this.add(softwareUpdateBox);
 		
 		//// Check now button
 		button = new JButton(trans.get("pref.dlg.but.checknow"));
@@ -207,7 +207,7 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 				checkForUpdates();
 			}
 		});
-		this.add(button, "right, wrap");
+		//this.add(button, "right, wrap");
 		
 		//// Open most recent file on startup
 		final JCheckBox openRecentOnStartupBox = new JCheckBox(trans.get("pref.dlg.but.openlast"));
@@ -229,7 +229,7 @@ public class GeneralPreferencesPanel extends PreferencesPanel {
 				preferences.setShowRockSimFormatWarning(rocksimWarningDialogBox.isSelected());
 			}
 		});
-		this.add(rocksimWarningDialogBox,"spanx, wrap");
+		//this.add(rocksimWarningDialogBox,"spanx, wrap");
 		
 
 	}

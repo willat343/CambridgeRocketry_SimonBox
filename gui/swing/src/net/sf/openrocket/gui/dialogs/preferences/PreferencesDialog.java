@@ -51,12 +51,12 @@ public class PreferencesDialog extends JDialog {
 		tabbedPane.addTab(trans.get("pref.dlg.tab.Design"), null,
 				new DesignPreferencesPanel(), trans.get("pref.dlg.tab.Design"));
 		// Simulation options
-		tabbedPane.addTab(trans.get("pref.dlg.tab.Simulation"), null,
-				new SimulationPreferencesPanel(),
-				trans.get("pref.dlg.tab.Design"));
+		// tabbedPane.addTab(trans.get("pref.dlg.tab.Simulation"), null,
+		//		new SimulationPreferencesPanel(),
+		//	trans.get("pref.dlg.tab.Design"));
 		// Launch options
-		tabbedPane.addTab(trans.get("pref.dlg.tab.Launch"), null,
-				new LaunchPreferencesPanel(), trans.get("pref.dlg.tab.Launch"));
+		// tabbedPane.addTab(trans.get("pref.dlg.tab.Launch"), null,
+		//		new LaunchPreferencesPanel(), trans.get("pref.dlg.tab.Launch"));
 		// Units and Default units
 		tabbedPane.addTab(trans.get("pref.dlg.tab.Units"), null,
 				new UnitsPreferencesPanel(this),
@@ -66,8 +66,8 @@ public class PreferencesDialog extends JDialog {
 				new MaterialEditPanel(),
 				trans.get("pref.dlg.tab.Custommaterials"));
 		// Decal Editor selection
-		tabbedPane.addTab(trans.get("pref.dlg.tab.Graphics"),
-				new GraphicsPreferencesPanel(this));
+		//tabbedPane.addTab(trans.get("pref.dlg.tab.Graphics"),
+		//		new GraphicsPreferencesPanel(this));
 
 		// Default Colors Preferences
 		// tabbedPane.addTab(trans.get("pref.dlg.tab.Colors"),

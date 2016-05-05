@@ -30,10 +30,10 @@ public class UpdateInfoRetriever {
 	 * This call will return immediately.
 	 */
 	public void start() {
-		fetcher = new UpdateInfoFetcher();
-		fetcher.setName("UpdateInfoFetcher");
-		fetcher.setDaemon(true);
-		fetcher.start();
+		//fetcher = new UpdateInfoFetcher();
+		//fetcher.setName("UpdateInfoFetcher");
+		//fetcher.setDaemon(true);
+		//fetcher.start();
 	}
 	
 	
@@ -90,8 +90,7 @@ public class UpdateInfoRetriever {
 		
 		
 		String version = null;
-		ArrayList<ComparablePair<Integer, String>> updates =
-				new ArrayList<ComparablePair<Integer, String>>();
+		ArrayList<ComparablePair<Integer, String>> updates = new ArrayList<ComparablePair<Integer, String>>();
 		
 		String str = reader.readLine();
 		while (str != null) {
@@ -202,8 +201,7 @@ public class UpdateInfoRetriever {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
 				
 				String version = null;
-				ArrayList<ComparablePair<Integer, String>> updates =
-						new ArrayList<ComparablePair<Integer, String>>();
+				ArrayList<ComparablePair<Integer, String>> updates = new ArrayList<ComparablePair<Integer, String>>();
 				
 				String line = reader.readLine();
 				while (line != null) {

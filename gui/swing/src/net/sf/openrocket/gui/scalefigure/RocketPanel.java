@@ -284,6 +284,11 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 		
 		// View Type Dropdown
 		ComboBoxModel cm = new DefaultComboBoxModel(VIEW_TYPE.values()) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void setSelectedItem(Object o) {
 				super.setSelectedItem(o);
@@ -298,8 +303,8 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 				}
 			}
 		};
-		add(new JLabel(trans.get("RocketPanel.lbl.ViewType")), "spanx, split");
-		add(new JComboBox(cm));
+		add(new JLabel(""), "spanx, split");
+		// add(new JComboBox(cm));
 		
 		
 		// Zoom level selector
@@ -344,9 +349,9 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 		
 		
 		//// <html>Click to select &nbsp;&nbsp; Shift+click to select other &nbsp;&nbsp; Double-click to edit &nbsp;&nbsp; Click+drag to move
-		infoMessage = new JLabel(trans.get("RocketPanel.lbl.infoMessage"));
-		infoMessage.setFont(new Font("Sans Serif", Font.PLAIN, 9));
-		add(infoMessage, "skip, span, gapleft 25, wrap");
+		//infoMessage = new JLabel(trans.get("RocketPanel.lbl.infoMessage"));
+		//infoMessage.setFont(new Font("Sans Serif", Font.PLAIN, 9));
+		//add(infoMessage, "skip, span, gapleft 25, wrap");
 		
 		
 		addExtras();
@@ -658,7 +663,7 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 		if (figure.getType() == RocketFigure.TYPE_SIDE && length > 0) {
 			
 			// TODO: LOW: Y-coordinate and rotation
-			extraCP.setPosition(cpx * RocketFigure.EXTRA_SCALE, 0);
+			//extraCP.setPosition(cpx * RocketFigure.EXTRA_SCALE, 0);
 			extraCG.setPosition(cgx * RocketFigure.EXTRA_SCALE, 0);
 			
 		} else {
@@ -795,12 +800,12 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 	 */
 	private void addExtras() {
 		extraCG = new CGCaret(0, 0);
-		extraCP = new CPCaret(0, 0);
+		//extraCP = new CPCaret(0, 0);
 		extraText = new RocketInfo(configuration);
 		updateExtras();
 		
 		figure.clearRelativeExtra();
-		figure.addRelativeExtra(extraCP);
+		//figure.addRelativeExtra(extraCP);
 		figure.addRelativeExtra(extraCG);
 		figure.addAbsoluteExtra(extraText);
 		

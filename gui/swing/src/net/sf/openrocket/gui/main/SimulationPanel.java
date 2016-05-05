@@ -60,6 +60,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SimulationPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Logger log = LoggerFactory.getLogger(SimulationPanel.class);
 	private static final Translator trans = Application.getTranslator();
 
@@ -428,6 +432,7 @@ public class SimulationPanel extends JPanel {
 					}
 				},
 
+				
 				//// Maximum acceleration
 				new ValueColumn(trans.get("simpanel.col.Maxacceleration"), UnitGroup.UNITS_ACCELERATION) {
 					@Override
@@ -442,6 +447,7 @@ public class SimulationPanel extends JPanel {
 						return data.getMaxAcceleration();
 					}
 				},
+				
 
 				//// Time to apogee
 				new ValueColumn(trans.get("simpanel.col.Timetoapogee"), UnitGroup.UNITS_FLIGHT_TIME) {
@@ -489,6 +495,11 @@ public class SimulationPanel extends JPanel {
 				}
 
 				) {
+			/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 			@Override
 			public int getRowCount() {
 				return document.getSimulationCount();

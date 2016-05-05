@@ -145,11 +145,10 @@ public class ComponentAddButtons extends JPanel implements Scrollable {
 				//// Centering\nring
 				new ComponentButton(CenteringRing.class, trans.get("compaddbuttons.Centeringring")),
 				//// Bulkhead
-				new ComponentButton(Bulkhead.class, trans.get("compaddbuttons.Bulkhead")),
+				new ComponentButton(Bulkhead.class, trans.get("compaddbuttons.Bulkhead"))
 				//// Engine\nblock
-				new ComponentButton(EngineBlock.class, trans.get("compaddbuttons.Engineblock"))
+				// new ComponentButton(EngineBlock.class, trans.get("compaddbuttons.Engineblock"))
 				);
-		
 		row++;
 		
 		////////////////////////////////////////////

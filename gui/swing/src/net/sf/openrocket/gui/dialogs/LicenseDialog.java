@@ -4,7 +4,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.swing.JButton;
@@ -28,27 +31,33 @@ public class LicenseDialog extends JDialog {
 		"\n" +
 		"Error:  Unable to load " + LICENSE_FILENAME + "!\n" +
 		"\n" +
-		"OpenRocket is licensed under the GNU GPL version 3, with additional permissions.\n" +
-		"See http://openrocket.sourceforge.net/ for details.";
+		"Cambridge Rocketry Simulator v2 is licensed under the GNU GPL version 3.\n";
 
 	public LicenseDialog(JFrame parent) {
 		super(parent, true);
 		
 		JPanel panel = new JPanel(new MigLayout("fill"));
 		
-		panel.add(new StyledLabel("OpenRocket license", 10), "ax 50%, wrap para");
+		panel.add(new StyledLabel("Cambridge Rocketry v2 license", 10), "ax 50%, wrap para");
 
 		String licenseText;
 		try {
 			
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(ClassLoader.getSystemResourceAsStream(LICENSE_FILENAME)));
+			File licenseFile = new File(LICENSE_FILENAME);
+			
+			//InputStream inputStream = ClassLoader.getSystemResourceAsStream(LICENSE_FILENAME);
+			InputStream inputStream = new FileInputStream(licenseFile);
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+			
 			StringBuffer sb = new StringBuffer();
 			for (String s = reader.readLine(); s != null; s = reader.readLine()) {
 				sb.append(s);
 				sb.append('\n');
 			}
 			licenseText = sb.toString();
+			
+			reader.close();
 			
 		} catch (IOException e) {
 
