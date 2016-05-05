@@ -2,6 +2,7 @@ package net.sf.openrocket.gui.main;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,7 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
@@ -48,6 +51,7 @@ import net.sf.openrocket.gui.components.StyledLabel;
 import net.sf.openrocket.gui.simulation.SimulationEditDialog;
 import net.sf.openrocket.gui.simulation.SimulationRunDialog;
 import net.sf.openrocket.gui.simulation.SimulationWarningDialog;
+import net.sf.openrocket.gui.util.GUIUtil;
 import net.sf.openrocket.gui.util.Icons;
 // import net.sf.openrocket.gui.util.SwingPreferences;
 import net.sf.openrocket.l10n.Translator;
@@ -341,19 +345,98 @@ public class panelCamRockSim extends JPanel {
 				thisUncertainty.UpdateXML();
 				
 				
+				
 				// run program
 				try{
-					String thisCommand="../../Simulator/rocketc ../../Data/SimulationInput.xml"; // location binary root/Data
-					Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
+
+					// create dialog
+					final RunningDialog dialog = new RunningDialog();
 					
-					BufferedReader thisBufferedReader = 
-							new BufferedReader(new InputStreamReader(thisProcess.getInputStream()));
 					
-					String thisPrintLine = null;
+					Timer timer = new Timer(100, new ActionListener() {
+						
+						private int count = 0;
+						
+						String thisCommand="../../Simulator/rocketc ../../Data/SimulationInput.xml"; // location binary root/Data
+						Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
+						BufferedReader thisBufferedReader = 
+								new BufferedReader(new InputStreamReader(thisProcess.getInputStream()));
+						String thisPrintLine = null;
+						
+						boolean isDone = false;
+						
+						int intCurrent = 0, intTotal = 100;
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							count++;
+							
+							// check
+							try {
+								if ((thisPrintLine = thisBufferedReader.readLine()) != null) {
+									// thisPrintLine, (current,total)
+									
+									if (thisPrintLine.contains("(")){
 										
+										String strCurrent = thisPrintLine.substring(thisPrintLine.indexOf("(") + 1, 
+												thisPrintLine.indexOf(",") );
+										String strTotal = thisPrintLine.substring(thisPrintLine.indexOf(",") + 1, 
+												thisPrintLine.indexOf(")") );
+										// transform to values
+										intCurrent = Integer.parseInt(strCurrent);
+										intTotal = Integer.parseInt(strTotal);
+										// check if it's a valid number
+										if (intCurrent == (int) intCurrent) {
+											// adjust maximum
+											if (intCurrent < intTotal) {
+												// running
+												isDone = false;
+											}
+											else {
+												// done
+												isDone = true;
+											}
+										}
+									}
+									
+									// print to console
+									System.out.println(thisPrintLine);
+								}
+							} catch (Exception e1) {
+								// do nothing
+								System.out.println("Failed to read the output string");
+							}
+							
+							
+							if (isDone) {
+								// done
+								//log.debug("Database loaded, closing dialog");
+								dialog.adjustProgress(intCurrent, intTotal);
+								dialog.setVisible(false);
+							} else if (count % 10 == 0) {
+								// not yet done
+								dialog.adjustProgress(intCurrent, intTotal);
+								//log.debug("Database not loaded, count=" + count);
+							}
+						}
+					});
+					
+					timer.start();
+					dialog.setVisible(true);
+					timer.stop();
+					
+					// plot output
+					if (dialog.isDone()) {
+						String thisPath = "../../";
+						PlotLauncher thisPlotLauncher = new PlotLauncher(thisPath);
+						File thisFile = new File("../../Data/SimulationOutput.xml");
+						thisPlotLauncher.MakePlots(thisFile);
+					}
+					
+					/*
 					while ((thisPrintLine = thisBufferedReader.readLine()) != null) {
 						// thisPrintLine, (current,total)
-						/*
+						
 						if (thisPrintLine.contains("(")){
 							
 							String strCurrent = thisPrintLine.substring(thisPrintLine.indexOf("(") + 1, 
@@ -366,28 +449,32 @@ public class panelCamRockSim extends JPanel {
 							// check if it's a valid number
 							if (intCurrent == (int) intCurrent) {
 								// adjust maximum
+								if (intCurrent < intTotal) {
+									// running
+									dialog.setVisible(true);
+									dialog.adjustProgress(intCurrent, intTotal);
+								}
+								else {
+									// done
+									dialog.setVisible(false);
+								}
 								// TODO: progressbar intCurrent / intTotal
 							}
 						}
-						*/
+						
 						// print to console
 						System.out.println(thisPrintLine);
-					}
+					} */
+					
+					// dialog.setVisible(false);
 					
 				} catch (Exception e1) {
 					// do nothing
 					System.out.println("Failed to run the program");
 				}
 				
-				// plot output
-				
-				String thisPath = "../../";
-				
-				PlotLauncher thisPlotLauncher = new PlotLauncher(thisPath);
-				
-				File thisFile = new File("../../Data/SimulationOutput.xml");
-				
-				thisPlotLauncher.MakePlots(thisFile);
+
+
 				
 				// code to export to csv
 				/*
@@ -740,7 +827,8 @@ public class panelCamRockSim extends JPanel {
 				}
 			}
 		});
-
+		
+		
 		document.addDocumentChangeListener(new DocumentChangeListener() {
 			@Override
 			public void documentChanged(DocumentChangeEvent event) {
@@ -749,7 +837,7 @@ public class panelCamRockSim extends JPanel {
 				exportTableModel.fireTableDataChanged();
 			}
 		});
-
+		
 
 
 
@@ -766,6 +854,49 @@ public class panelCamRockSim extends JPanel {
 		this.add(scrollpane, "spanx, grow, wrap rel");
 
 		updateButtonStates();
+	}
+	
+	private class RunningDialog extends JDialog {
+		/**
+		 *  TODO: cancel button
+		 */
+		private static final long serialVersionUID = 1L;
+		private JProgressBar progress = new JProgressBar();
+		private boolean isDone = false;
+
+		private RunningDialog() {
+			super(null, "Running Simulation", ModalityType.APPLICATION_MODAL);
+			
+			JPanel panel = new JPanel(new MigLayout("fill"));
+			panel.add(new JLabel("Running .."), "wrap para");
+			
+			progress.setIndeterminate(false);
+			progress.setMinimum(0);
+			
+			panel.add(progress, "growx");
+			
+			this.add(panel);
+			this.pack();
+			this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+			this.setLocationByPlatform(true);
+			GUIUtil.setWindowIcons(this);
+		}
+		
+		public void adjustProgress(int currentValue, int totalValue) {
+			
+			progress.setMaximum(totalValue);
+			progress.setValue(currentValue);
+			
+			if (totalValue == currentValue) {
+				isDone = true;
+			}
+			
+		}
+		
+		public boolean isDone() {
+			return this.isDone;
+		}
+		
 	}
 
 	
@@ -791,7 +922,7 @@ public class panelCamRockSim extends JPanel {
 
 	}
 	
-
+	
 	/// when the simulation tab is selected this run outdated simulated if appropriate.
 	public void activating(){
 		if( ((Preferences) Application.getPreferences()).getAutoRunSimulations()){
@@ -946,7 +1077,12 @@ public class panelCamRockSim extends JPanel {
 
 			return tip;
 		}
+		
+
 
 	 
 	}
+	
+
+	
 }
