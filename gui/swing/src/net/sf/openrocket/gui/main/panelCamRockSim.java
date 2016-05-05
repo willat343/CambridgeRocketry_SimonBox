@@ -352,13 +352,15 @@ public class panelCamRockSim extends JPanel {
 					// create dialog
 					final RunningDialog dialog = new RunningDialog();
 					
+					String thisCommand="../../Simulator/rocketc ../../Data/SimulationInput.xml"; // location binary root/Data
+					
+					final Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
 					
 					Timer timer = new Timer(100, new ActionListener() {
 						
 						private int count = 0;
 						
-						String thisCommand="../../Simulator/rocketc ../../Data/SimulationInput.xml"; // location binary root/Data
-						Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
+
 						BufferedReader thisBufferedReader = 
 								new BufferedReader(new InputStreamReader(thisProcess.getInputStream()));
 						String thisPrintLine = null;
@@ -431,6 +433,9 @@ public class panelCamRockSim extends JPanel {
 						PlotLauncher thisPlotLauncher = new PlotLauncher(thisPath);
 						File thisFile = new File("../../Data/SimulationOutput.xml");
 						thisPlotLauncher.MakePlots(thisFile);
+					} else {
+						// kill remaining process!
+						thisProcess.destroy();
 					}
 					
 					/*
@@ -458,7 +463,6 @@ public class panelCamRockSim extends JPanel {
 									// done
 									dialog.setVisible(false);
 								}
-								// TODO: progressbar intCurrent / intTotal
 							}
 						}
 						
@@ -877,7 +881,7 @@ public class panelCamRockSim extends JPanel {
 			
 			this.add(panel);
 			this.pack();
-			this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+			// this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 			this.setLocationByPlatform(true);
 			GUIUtil.setWindowIcons(this);
 		}

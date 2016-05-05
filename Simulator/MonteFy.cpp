@@ -177,6 +177,8 @@ INTAB MonteFy::Wiggle(void){
 			Thrust_it++; // next point
 		}
 
+		// protect values
+		TempTab = WiggleProtect(TempTab);
 
 		// returns data
 		return(TempTab);
@@ -187,6 +189,63 @@ INTAB MonteFy::Wiggle(void){
 
 INTAB MonteFy::WiggleProtect(INTAB thisIntab){
 	// do a check on parameters to make sure they are not non-negative
+
+	int intLoop = 0;
+
+	// INTAB1
+
+	intLoop = 0;
+	BOOST_FOREACH(double thrust1, thisIntab.intab1.Thrust) {
+		// check bounds
+		if (thrust1 < 0) {
+			thrust1 = 0;
+		}
+		// overwrite
+		thisIntab.intab1.Thrust[intLoop] = thrust1;
+		intLoop++; // next point
+	}
+
+	// INTAB2
+
+	intLoop = 0;
+	
+	BOOST_FOREACH(vector<double> cd2, thisIntab.intab2.CD) {
+
+		int intLoop2 = 0;
+
+		BOOST_FOREACH(double cd1, cd2) {
+
+			// check bounds
+			if (cd1 < 0) {
+				cd1 = 0;
+			}
+			// overwrite
+			cd2[intLoop2] = cd1;
+			intLoop2++; // next point
+		}
+
+		// overwrite
+		thisIntab.intab2.CD[intLoop] = cd2;
+		intLoop++; // next vector
+
+	}
+
+	// INTAB3
+
+	if (thisIntab.intab3.CNa < 0) {
+		thisIntab.intab3.CNa = 0;
+	}
+
+	if (thisIntab.intab3.Xcp < 0) {
+		thisIntab.intab3.Xcp = 0;
+	}
+
+	// INTAB4
+
+	// ParaTab
+
+	// LandA
+
 
 	// TODO: create this function
 	return thisIntab;
