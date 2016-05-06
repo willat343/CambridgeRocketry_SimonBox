@@ -90,7 +90,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	const vector3 PA0(0,1,0);	//Reference Pitch axis;
 	const vector3 RA0(0,0,1);   //Reference Roll axis;
 
-
+	/*
 	// check validity
 	int intLoop = 0;
 	BOOST_FOREACH( double z1, z )
@@ -101,6 +101,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 		}
 		intLoop++; // next
 	}
+	*/
 
 	//Unpack z*****************************************************************
 	double xn=z[0];//postion vector
@@ -223,12 +224,6 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 		cout << xn << " " << yn << " " << zn << endl;
 	}
 
-	if (Xt.mag() != Xt.mag()) {
-		// is NaN	
-		cout << "Xt: " << Xt.mag() << endl;
-
-	}
-
 	vector3 Ut = Pt / Mi; // Rocket earth relative velocity vector
 	vector3 Vt = Ut + Wt; // Rocket atmosphere relative velocity vector
 
@@ -264,11 +259,6 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 
 		alpha = acos(dprod);
 	} 
-
-	// check alpha validity
-	if (alpha != alpha) {
-		alpha = 0;
-	}
 
 	double Re = rho*Utmag*RBL / mu; // Calculate Reynolds number
 
