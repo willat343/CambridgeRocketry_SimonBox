@@ -110,13 +110,13 @@ INTAB MonteFy::Wiggle(void){
 		Wyp = prod(gsamp(),trans(PHI));
 		
 		double CDc = SampleNormal(1, CDm);
-		double CoPc = SampleNormal(0, CoPm);
-		double CNc = SampleNormal(0, CNm);
+		double CoPc = SampleNormal(1, CoPm);
+		double CNc = SampleNormal(1, CNm);
 		// parachute 
 		double CDdc = SampleNormal(1, CDdm);
 		double CDpc = SampleNormal(1, CDpm);
 		// thrust (truncated)
-		double Thrustc = SampleNormalTruncated(0, sigmaThrust, 1.0);
+		double Thrustc = SampleNormalTruncated(1, sigmaThrust, 1.0);
 		
 		std::vector<double> Wx,Wy,hscale,X,Y;
 		Wx = ToStdVec(Wxp);
@@ -147,8 +147,8 @@ INTAB MonteFy::Wiggle(void){
 		}
 
 		// vary normal coefficient and centre of pressure
-		TempTab.intab3.CNa = TempTab.intab3.CNa+CNc;
-		TempTab.intab3.Xcp = TempTab.intab3.Xcp+CoPc;
+		TempTab.intab3.CNa = TempTab.intab3.CNa*CNc;
+		TempTab.intab3.Xcp = TempTab.intab3.Xcp*CoPc;
 		
 		// vary parachute data
 		CD_it = 0;
@@ -167,7 +167,7 @@ INTAB MonteFy::Wiggle(void){
 		// vary thrust data
 		int Thrust_it = 0;
 		BOOST_FOREACH(double thrust1, TempTab.intab1.Thrust) {
-			double newThrust = thrust1 + Thrustc;
+			double newThrust = thrust1 * Thrustc;
 			// check bounds
 			if (newThrust < 0) {
 				newThrust = 0;

@@ -281,9 +281,10 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 		
 		setPreferredSize(new Dimension(800, 300));
 		
-		
+		VIEW_TYPE[] thisList = new VIEW_TYPE[] {VIEW_TYPE.Sideview, VIEW_TYPE.Backview};
 		// View Type Dropdown
-		ComboBoxModel cm = new DefaultComboBoxModel(VIEW_TYPE.values()) {
+		//ComboBoxModel cm = new DefaultComboBoxModel(VIEW_TYPE.values()) {
+		ComboBoxModel cm = new DefaultComboBoxModel( thisList ) {
 			/**
 			 * 
 			 */
@@ -304,7 +305,7 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 			}
 		};
 		add(new JLabel(""), "spanx, split");
-		// add(new JComboBox(cm));
+		add(new JComboBox(cm));
 		
 		
 		// Zoom level selector
@@ -663,7 +664,7 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 		if (figure.getType() == RocketFigure.TYPE_SIDE && length > 0) {
 			
 			// TODO: LOW: Y-coordinate and rotation
-			//extraCP.setPosition(cpx * RocketFigure.EXTRA_SCALE, 0);
+			extraCP.setPosition(cpx * RocketFigure.EXTRA_SCALE, 0);
 			extraCG.setPosition(cgx * RocketFigure.EXTRA_SCALE, 0);
 			
 		} else {
@@ -800,7 +801,7 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 	 */
 	private void addExtras() {
 		extraCG = new CGCaret(0, 0);
-		//extraCP = new CPCaret(0, 0);
+		extraCP = new CPCaret(0, 0);
 		extraText = new RocketInfo(configuration);
 		updateExtras();
 		
@@ -812,7 +813,7 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 		
 		figure3d.clearRelativeExtra();
 		//figure3d.addRelativeExtra(extraCP);
-		//figure3d.addRelativeExtra(extraCG);
+		figure3d.addRelativeExtra(extraCG);
 		figure3d.addAbsoluteExtra(extraText);
 		
 	}

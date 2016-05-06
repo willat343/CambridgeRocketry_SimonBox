@@ -38,7 +38,7 @@ public class RocketInfo implements FigureElement {
 	private static final Font SMALLFONT = new Font(Font.SANS_SERIF, Font.PLAIN, 9);
 
 	
-	//private final Caret cpCaret = new CPCaret(0,0);
+	private final Caret cpCaret = new CPCaret(0,0);
 	private final Caret cgCaret = new CGCaret(0,0);
 	
 	private final Configuration configuration;
@@ -86,6 +86,7 @@ public class RocketInfo implements FigureElement {
 		y1 = visible.y + line ;
 		y2 = visible.y + visible.height - MARGIN;
 
+		
 		drawMainInfo();
 		drawStabilityInfo();
 		//drawWarnings();

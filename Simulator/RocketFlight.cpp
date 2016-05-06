@@ -577,7 +577,7 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
 		}
 		catch(exception e){
 			Frun++;
-			cout<<"Run failed, number of faild runs is: "<<Frun<<endl;
+			cout<<"Run failed, number of failed runs is: "<<Frun<<endl;
 		}
 	
 		// finished a single run
@@ -712,8 +712,8 @@ double Rocket_Flight::SampleTruncated (double mean, double sigma, double truncat
 		double Out = normal_sampler();
 
 		// truncate at +- 1 sigma
-		double lowerBound = mean - truncateSigma*sigma - 0.001;
-		double upperBound = mean + truncateSigma*sigma + 0.001; // added a little margin
+		double lowerBound = mean - truncateSigma*sigma - 0.0001;
+		double upperBound = mean + truncateSigma*sigma + 0.0001; // added a little margin
 
 		while ((Out <= lowerBound) || (Out >= upperBound)) {
 			// re- sample

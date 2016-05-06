@@ -90,6 +90,18 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	const vector3 PA0(0,1,0);	//Reference Pitch axis;
 	const vector3 RA0(0,0,1);   //Reference Roll axis;
 
+
+	// check validity
+	int intLoop = 0;
+	BOOST_FOREACH( double z1, z )
+	{
+		if (z1 != z1) {
+			z[intLoop] = 0.0; // overwrite
+			cout << "x " << intLoop << endl;
+		}
+		intLoop++; // next
+	}
+
 	//Unpack z*****************************************************************
 	double xn=z[0];//postion vector
 	double yn=z[1];//"
@@ -104,6 +116,8 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	double Ltheta=z[10];//Rotational momentum vector
 	double Lphi=z[11];//"
 	double Lpsi=z[12];//"
+
+
 
 	if (tt>0.9){
 		bool stop_flag=true;
@@ -182,9 +196,11 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	}
 
 
+
+
 	//Calculate angle of attack (alpha)****************************************
-	vector3 Pt=vector3(Px,Py,Pz);//Rocket momentum vector
-	vector3 Xt=vector3(xn,yn,zn);//Position vector
+	vector3 Pt = vector3(Px,Py,Pz); // Rocket momentum vector
+	vector3 Xt = vector3(xn,yn,zn); // Position vector
 	quaternion qt=quaternion(s,vx,vy,vz);//Quaternion
 	vector3 Lt=vector3(Ltheta,Lphi,Lpsi);//Rotational momentum vector
 	matrix3x3 Ibody(Ixxi,Ixyi,Ixzi,Ixyi,Iyyi,Iyzi,Ixzi,Iyzi,Izzi);//Inertia tensor
@@ -192,43 +208,69 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	vector3 Wt;
 	if ((Xt-X0).mag()<=RL){
 		vector3 Wpre(0.0,0.0,0.0);
-		Wt=Wpre;
+		Wt = Wpre;
 	}
 	else{
 		vector3 Wpre(Wxi,Wyi,Wzi);
-		Wt=Wpre;//Wind vector
+		Wt = Wpre; // Wind vector
 	}
 
-	vector3 Ut=Pt/Mi;//Rocket earth relative velocity vector
-	vector3 Vt=Ut+Wt;//Rocket atmosphere relative velocity vector
+	// CHECKING VALUES
+	if (Pt.mag() != Pt.mag()) {
+		// is NaN	
+		cout << "Pt: " << Pt.mag() << endl;
+		cout << Px << " " << Py << " " << Pz << endl;
+		cout << xn << " " << yn << " " << zn << endl;
+	}
 
-	qt=qt.norm();//Normalise the quaternion
+	if (Xt.mag() != Xt.mag()) {
+		// is NaN	
+		cout << "Xt: " << Xt.mag() << endl;
+
+	}
+
+	vector3 Ut = Pt / Mi; // Rocket earth relative velocity vector
+	vector3 Vt = Ut + Wt; // Rocket atmosphere relative velocity vector
+
+	qt = qt.norm();//Normalise the quaternion
 	
 	s=qt.e1;//quaternion scalar part;
 	vector3 vt(qt.e2,qt.e3,qt.e4);//quaternion vector part
 
 	matrix3x3 Rt=qt.to_matrix();//Transform quaternion to rotation matrix
 	
-	vector3 YA=Rt*YA0;//Yaw axis vector
-	vector3 PA=Rt*PA0;//Pitch axis vector
-	vector3 RA=Rt*RA0;//Roll axis vector
+	vector3 YA=Rt*YA0; // Yaw axis vector
+	vector3 PA=Rt*PA0; // Pitch axis vector
+	vector3 RA=Rt*RA0; // Roll axis vector
 
-	double Utmag=Ut.mag();//Rocket earth reference velocity
-	double Vtmag=Vt.mag();//Rocket atmosphere reference velocity
+	double Utmag=Ut.mag(); // Rocket earth reference velocity
+	double Vtmag=Vt.mag(); // Rocket atmosphere reference velocity
 
-	vector3 RAnorm=RA.norm();//Normalized vector of the rockets roll axis
-	vector3 Vtnorm=Vt.norm();//Normalized vecror of atmoshpere relative velocity
+	vector3 RAnorm=RA.norm(); // Normalized vector of the rockets roll axis
+	vector3 Vtnorm=Vt.norm(); // Normalized vector of atmosphere relative velocity
 
 	double alpha;
 
-	if (Vtmag==0.0) alpha=0.0;
-	else{
-		double dprod=Vtnorm.dot(RAnorm);
-		if (dprod>1) dprod=1;
-		alpha=acos(dprod);
-	}//Calculate angle of attack alpha
+	// Calculate angle of attack alpha
+	if (Vtmag==0.0) {
+		alpha = 0.0;
+	} 
+	else {
+		double dprod = Vtnorm.dot(RAnorm);
 
-	double Re=rho*Utmag*RBL/mu; //Calculate Reynolds number
+		if (dprod > 1) { 
+			dprod = 1;
+		}
+
+		alpha = acos(dprod);
+	} 
+
+	// check alpha validity
+	if (alpha != alpha) {
+		alpha = 0;
+	}
+
+	double Re = rho*Utmag*RBL / mu; // Calculate Reynolds number
 
 	//********************************************************
 
@@ -266,11 +308,11 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	}
 	else {
       Cd = 0.5;
-      cout<<"Warning: Cd calculation is broken, check it\n";
+      cout << "Warning: Cd calculation is broken, check it, a:" << alpha << " R:" << Re << "\n" ;
 	}
 	
 	//INTAB 3*******************************************************************
-	double Cn = intab3.CNa; // Coeficient of normal force
+	double Cn = intab3.CNa; // Coefficient of normal force
 	double Cp = intab3.Xcp; // Centre of pressure
 	//*************************************************************************
   
