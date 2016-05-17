@@ -1,6 +1,8 @@
 package net.sf.openrocket.arch;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 import net.sf.openrocket.util.BugException;
@@ -15,9 +17,7 @@ public class SystemInfo {
 	 * @author Sampo Niskanen <sampo.niskanen@iki.fi>
 	 */
 	public enum Platform {
-		WINDOWS,
-		MAC_OS,
-		UNIX;
+		WINDOWS, MAC_OS, UNIX;
 	}
 	
 	
@@ -79,6 +79,22 @@ public class SystemInfo {
 		}
 		
 		return dir;
+	}
+	
+	public static Path getJarLocation() {
+		
+		Path path = null;
+		
+		try {
+			path = Paths.get(SystemInfo.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+			path = path.getParent();
+		} catch (Exception e1) {
+			// do nothing
+			System.out.println("Failed to obtain the location");
+		}
+		
+		return path;
+		
 	}
 	
 }

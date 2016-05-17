@@ -11,7 +11,10 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
@@ -35,6 +38,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.miginfocom.swing.MigLayout;
 import net.sf.openrocket.aerodynamics.Warning;
 import net.sf.openrocket.aerodynamics.WarningSet;
+import net.sf.openrocket.arch.SystemInfo;
 import net.sf.openrocket.document.OpenRocketDocument;
 import net.sf.openrocket.document.Simulation;
 import net.sf.openrocket.document.Simulation.Status;
@@ -316,7 +320,18 @@ public class panelCamRockSim extends JPanel {
 						thisRailLength,thisAzimuthDeg,thisDeclinationDeg,
 						thisAltitude);
 				
-				RWsiminXML thisSimulationInput = new RWsiminXML("../../Data/SimulationInput.xml");
+				// use relative paths
+				Path jarPath = SystemInfo.getJarLocation();
+				
+				// System.out.println("jar path: " + jarPath.toString());
+				
+				File fileSimulationInput = new File(jarPath.toFile(), ("Data" + File.separator + "SimulationInput.xml"));
+				
+				// System.out.println(fileSimulationInput.toString());
+				
+				RWsiminXML thisSimulationInput = new RWsiminXML(fileSimulationInput.toString());
+				
+				// RWsiminXML thisSimulationInput = new RWsiminXML("Data/SimulationInput.xml");
 				
 				boolean isMonteCarlo = thisSimulationOptions.getMonteCarloBool();
 				double numberOfMonteCarloDouble = thisSimulationOptions.getMonteCarloInteger();
@@ -329,9 +344,12 @@ public class panelCamRockSim extends JPanel {
 						thisAtmosphereData, thisLaunchData,
 						isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
 				
-				
 				// edit information on uncertainty for monte carlo
-				RWuncertainty thisUncertainty = new RWuncertainty("../../Data/Uncertainty.xml");
+				File fileUncertainty = new File(jarPath.toFile(), "Data" + File.separator + "Uncertainty.xml");
+				
+				// System.out.println(fileUncertainty.toString());
+				
+				RWuncertainty thisUncertainty = new RWuncertainty(fileUncertainty.toString());
 				
 				// get new values values
 				double sigmaLaunchDeclinationRad = thisSimulationOptions.getSigmaLaunchDeclination();
@@ -352,7 +370,13 @@ public class panelCamRockSim extends JPanel {
 					// create dialog
 					final RunningDialog dialog = new RunningDialog();
 					
-					String thisCommand="../../Simulator/rocketc ../../Data/SimulationInput.xml"; // location binary root/Data
+					File fileRocketc = new File(jarPath.toFile(),  "Data" + File.separator + "rocketc");
+					
+					// System.out.println(fileRocketc.toString());
+					
+					String thisCommand= fileRocketc.toString() + " " + fileSimulationInput.toString(); // location binary root/Data
+					
+					// System.out.println(thisCommand);
 					
 					final Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
 					
@@ -429,9 +453,11 @@ public class panelCamRockSim extends JPanel {
 					
 					// plot output
 					if (dialog.isDone()) {
-						String thisPath = "../../";
-						PlotLauncher thisPlotLauncher = new PlotLauncher(thisPath);
-						File thisFile = new File("../../Data/SimulationOutput.xml");
+						File filePlotter = new File(jarPath.toFile(),  "Data" + File.separator + "Plotter" + File.separator);
+						// System.out.println(filePlotter.toString());
+						PlotLauncher thisPlotLauncher = new PlotLauncher(filePlotter.toString());
+						File thisFile = new File(jarPath.toFile(), "Data" + File.separator + "SimulationOutput.xml");
+						// System.out.println(thisFile.toString());
 						thisPlotLauncher.MakePlots(thisFile);
 					} else {
 						// kill remaining process!
@@ -1082,11 +1108,11 @@ public class panelCamRockSim extends JPanel {
 			return tip;
 		}
 		
-
-
-	 
 	}
 	
+	// return new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+
+
 
 	
 }

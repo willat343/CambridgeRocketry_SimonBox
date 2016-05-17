@@ -38,7 +38,7 @@ public class LicenseDialog extends JDialog {
 		
 		JPanel panel = new JPanel(new MigLayout("fill"));
 		
-		panel.add(new StyledLabel("Cambridge Rocketry v2 license", 10), "ax 50%, wrap para");
+		panel.add(new StyledLabel("Cambridge Rocketry Simulator license", 10), "ax 50%, wrap para");
 
 		String licenseText;
 		try {

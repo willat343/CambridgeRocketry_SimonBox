@@ -3,6 +3,7 @@ package net.sf.openrocket.gui.simulation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,6 +18,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
+import net.sf.openrocket.arch.SystemInfo;
 import net.sf.openrocket.camrocksim.AtmosphereData;
 import net.sf.openrocket.camrocksim.MotorData;
 import net.sf.openrocket.camrocksim.RWatmosXML;
@@ -677,8 +679,13 @@ public class SimulationConditionsPanel extends JPanel {
 		
 		AtmosphereData thisAtmosphereData = new AtmosphereData();
 		
+		Path jarPath = SystemInfo.getJarLocation();
+		
 		JFileChooser fc = new JFileChooser();
-		File thisFile = new File("./Atmospheres"); // TODO fix hardcoded folder location
+		// File thisFile = new File("./Atmospheres"); // folder location
+		File thisFile = new File(jarPath.toFile(), ("Data" + File.separator + 
+				"Atmospheres" + File.separator));
+		
 		fc.setCurrentDirectory(thisFile);
 		int RetVal = fc.showSaveDialog(null);
 		if (RetVal == fc.APPROVE_OPTION) {

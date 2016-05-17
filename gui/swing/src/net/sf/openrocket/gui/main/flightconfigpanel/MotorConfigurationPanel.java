@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -32,6 +33,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
+import net.sf.openrocket.arch.SystemInfo;
 import net.sf.openrocket.camrocksim.MotorData;
 import net.sf.openrocket.camrocksim.RWmotorXML;
 import net.sf.openrocket.gui.components.StyledLabel;
@@ -379,8 +381,13 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		// write MotorData to XML
 		String FileName = null;
 		
+		Path jarPath = SystemInfo.getJarLocation();
+		
 		JFileChooser fc = new JFileChooser();
-		File thisFile = new File("../../Data/Motors/");
+		// File thisFile = new File("Data/Motors/");
+		File thisFile = new File(jarPath.toFile(), ("Data" + File.separator + 
+				"Motors" + File.separator));
+		
 		fc.setCurrentDirectory(thisFile);
 		int RetVal = fc.showSaveDialog(null);
 		if (RetVal == JFileChooser.APPROVE_OPTION) {
@@ -411,7 +418,12 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		MotorData thisMotorData = new MotorData();
 		
 		JFileChooser fc = new JFileChooser();
-		File thisFile = new File("../../Data/Motors/");
+		//File thisFile = new File("Data/Motors/");
+		
+		Path jarPath = SystemInfo.getJarLocation();
+		File thisFile = new File(jarPath.toFile(), ("Data" + File.separator + 
+				"Motors" + File.separator));
+		
 		fc.setCurrentDirectory(thisFile);
 		int RetVal = fc.showSaveDialog(null);
 		if (RetVal == JFileChooser.APPROVE_OPTION) {

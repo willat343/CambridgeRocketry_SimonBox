@@ -45,9 +45,10 @@ public class PlotLauncher {
 	//class constructor
 	public PlotLauncher(String path) {
 		isWindows = false;
-		FilePath = new File(path + File.separator + "Plotter" + File.separator + "FlightPlotter.py");
+		// File.separator + "Plotter"
+		FilePath = new File(path + File.separator + "FlightPlotter.py");
 		if (!FilePath.exists()) {
-			FilePath = new File(path + File.separator + "Plotter" + File.separator + "FlightPlotter.exe");
+			FilePath = new File(path + File.separator + "FlightPlotter.exe");
 			isWindows = true;
 		}
 	}

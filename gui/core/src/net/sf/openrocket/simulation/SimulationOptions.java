@@ -61,8 +61,6 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 	private boolean monteCarloBool = preferences.getBoolean(Preferences.MONTE_CARLO_BOOL, false);
 	private double monteCarloInt = preferences.getDouble(Preferences.MONTE_CARLO_INT, 10);
 	
-	private String atmosphereStr = preferences.getString(Preferences.ATMOSPHERE_STR, "../../Data/Atmospheres/wpNoWind.xml");
-	
 	private double sigmaLaunchDeclination = preferences.getDouble(Preferences.SIGMA_LAUNCH_DECLINATION, 0);
 	private double sigmaThrust = preferences.getDouble(Preferences.SIGMA_THRUST, 0);
 	
@@ -133,16 +131,6 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 			return;
 		motorID = id;
 		fireChangeEvent();
-	}
-	
-	public String getAtmosphereString() {
-		// returns the path for the wind profile
-		return this.atmosphereStr;
-	}
-	
-	public void setAtmosphereString(String newPath) {
-		// sets the path for the wind profile
-		this.atmosphereStr = newPath;
 	}
 	
 	public double getMonteCarloInteger() {
@@ -541,7 +529,6 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 		// camrocksim attributes
 		this.monteCarloBool = src.monteCarloBool;
 		this.monteCarloInt = src.monteCarloInt;
-		this.atmosphereStr = src.atmosphereStr;
 		this.sigmaLaunchDeclination = src.sigmaLaunchDeclination;
 		this.sigmaThrust = src.sigmaThrust;
 		
@@ -613,7 +600,6 @@ public class SimulationOptions implements ChangeSource, Cloneable {
 		// added camrocksim attributes
 		this.monteCarloBool = src.monteCarloBool;
 		this.monteCarloInt = src.monteCarloInt;
-		this.atmosphereStr = src.atmosphereStr;
 		this.sigmaLaunchDeclination = src.sigmaLaunchDeclination;
 		this.sigmaThrust = src.sigmaThrust;
 		
