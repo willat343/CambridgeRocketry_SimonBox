@@ -85,12 +85,17 @@ public class panelCamRockSim extends JPanel {
 	private static final Logger log = LoggerFactory.getLogger(panelCamRockSim.class);
 	private static final Translator trans = Application.getTranslator();
 
+	private static String DATA_FOLDER = "Data";
+	private static String INPUT_SIMULATION = "SimulationInput.xml";
+	private static String OUTPUT_SIMULATION = "SimulationOutput.xml";
+	private static String UNCERTAINTY_SIMULATION = "Uncertainty.xml";
+	private static String CPP_CODE = "rocketc";
 
-	private static final Color WARNING_COLOR = Color.RED;
-	private static final String WARNING_TEXT = "\uFF01"; // Fullwidth exclamation mark
+	//private static final Color WARNING_COLOR = Color.RED;
+	//private static final String WARNING_TEXT = "\uFF01"; // Fullwidth exclamation mark
 
-	private static final Color OK_COLOR = new Color(60, 150, 0);
-	private static final String OK_TEXT = "\u2714"; // Heavy check mark
+	//private static final Color OK_COLOR = new Color(60, 150, 0);
+	//private static final String OK_TEXT = "\u2714"; // Heavy check mark
 
 
 	private RocketDescriptor descriptor = Application.getInjector().getInstance(RocketDescriptor.class);
@@ -102,15 +107,21 @@ public class panelCamRockSim extends JPanel {
 	private final JTable simulationTable;
 	
 	private final JButton editButton;
-	private final JButton runButton;
 	private final JButton deleteButton;
+	
+	private final JButton runButton2;
+	private final JButton plotButton2;
+	private final JButton exportButtonCsv;
+	private final JButton exportButtonExcel;
+	
+	private final JButton runButton;
 	private final JButton plotButton;
 	
-	private final JButton exportButton;
+	Path jarPath = SystemInfo.getJarLocation();
 	
 
 	public panelCamRockSim(OpenRocketDocument doc) {
-		super(new MigLayout("fill", "[grow][][][][][][grow]"));
+		super(new MigLayout("fill", "[grow][][][][][][][grow]"));
 
 		this.document = doc;
 		
@@ -272,11 +283,9 @@ public class panelCamRockSim extends JPanel {
 		});
 		// this.add(plotButton, "gapright para");
 		
-
 		//  Run simulation using camrocksim backend
-		exportButton = new JButton("Run+Plot simulation");
-		//  button = new JButton("Plot flight");
-		exportButton.addActionListener(new ActionListener() {
+		runButton2 = new JButton("Run simulation");
+		runButton2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selected = simulationTable.getSelectedRow();
@@ -290,265 +299,92 @@ public class panelCamRockSim extends JPanel {
 				// this simulation
 				Simulation thisSimulation = document.getSimulations().get( selected );
 				
-				SimulationOptions thisSimulationOptions = thisSimulation.getOptions();
+				// TODO: generate unique XML for each simulation (no need for re-run)
 				
-				// convert OpenRocketDocument (openrocket) to RocketDescription (camrocksim)
-				RocketDescription thisRocketDescription = document.getRocketDescription( thisSimulation );
-				
-				
-				/*
-					// (temporary) export XML of design, for testing
-					RWdesignXML thisDesign = new RWdesignXML("rocketDesign.xml");
-					// fill design with rocket description (easy comparison)
-					thisDesign.WriteDesign(thisRocketDescription);
-				*/
-				
-				// setup atmosphere
-				AtmosphereData thisAtmosphereData = thisSimulationOptions.atmosphereData;
-				
-				double thisRailLength = thisSimulationOptions.getLaunchRodLength(); // [m]
-				double thisAzimuthRad = thisSimulationOptions.getLaunchRodDirection(); // [rad]
-				double thisDeclinationRad = thisSimulationOptions.getLaunchRodAngle(); // [rad]
-				
-				// convert from rad to deg
-				double thisAzimuthDeg = thisAzimuthRad / (2*Math.PI) * 360;
-				double thisDeclinationDeg = thisDeclinationRad / (2*Math.PI) * 360;
-				
-				double thisAltitude = thisSimulationOptions.getLaunchAltitude();
-				
-				LaunchData thisLaunchData = new LaunchData(
-						thisRailLength,thisAzimuthDeg,thisDeclinationDeg,
-						thisAltitude);
-				
-				// use relative paths
-				Path jarPath = SystemInfo.getJarLocation();
-				
-				// System.out.println("jar path: " + jarPath.toString());
-				
-				File fileSimulationInput = new File(jarPath.toFile(), ("Data" + File.separator + "SimulationInput.xml"));
-				
-				// System.out.println(fileSimulationInput.toString());
-				
-				RWsiminXML thisSimulationInput = new RWsiminXML(fileSimulationInput.toString());
-				
-				// RWsiminXML thisSimulationInput = new RWsiminXML("Data/SimulationInput.xml");
-				
-				boolean isMonteCarlo = thisSimulationOptions.getMonteCarloBool();
-				double numberOfMonteCarloDouble = thisSimulationOptions.getMonteCarloInteger();
-				int numberOfMonteCarloInt = (int) numberOfMonteCarloDouble;
-				
-				boolean isBallisticFailure = false;
-				
-				// writes all information to SimulationInput.xml
-				thisSimulationInput.WriteSimDataToXML(thisRocketDescription, 
-						thisAtmosphereData, thisLaunchData,
-						isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
-				
-				// edit information on uncertainty for monte carlo
-				File fileUncertainty = new File(jarPath.toFile(), "Data" + File.separator + "Uncertainty.xml");
-				
-				// System.out.println(fileUncertainty.toString());
-				
-				RWuncertainty thisUncertainty = new RWuncertainty(fileUncertainty.toString());
-				
-				// get new values values
-				double sigmaLaunchDeclinationRad = thisSimulationOptions.getSigmaLaunchDeclination();
-				double sigmaLaunchDeclinationDeg = sigmaLaunchDeclinationRad / (2*Math.PI) * 360;
-				double sigmaThrust = thisSimulationOptions.getSigmaThrust();
-				// set new values values
-				thisUncertainty.setSigmaLaunchDeclination(sigmaLaunchDeclinationDeg);
-				thisUncertainty.setSigmaThrust(sigmaThrust);
-				
-				// update xml (update with previous set values)
-				thisUncertainty.UpdateXML();
-				
-				
+				// update XML
+				updateXML(thisSimulation);
 				
 				// run program
-				try{
+				runProgram();
+				
+				fireMaintainSelection();
+				
+			}
+		});
+		this.add(runButton2, "gapright para");
 
-					// create dialog
-					final RunningDialog dialog = new RunningDialog();
-					
-					File fileRocketc = new File(jarPath.toFile(),  "Data" + File.separator + "rocketc");
-					
-					// System.out.println(fileRocketc.toString());
-					
-					String thisCommand= fileRocketc.toString() + " " + fileSimulationInput.toString(); // location binary root/Data
-					
-					// System.out.println(thisCommand);
-					
-					final Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
-					
-					Timer timer = new Timer(100, new ActionListener() {
-						
-						private int count = 0;
-						
-
-						BufferedReader thisBufferedReader = 
-								new BufferedReader(new InputStreamReader(thisProcess.getInputStream()));
-						String thisPrintLine = null;
-						
-						boolean isDone = false;
-						
-						int intCurrent = 0, intTotal = 100;
-						
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							count++;
-							
-							// check
-							try {
-								if ((thisPrintLine = thisBufferedReader.readLine()) != null) {
-									// thisPrintLine, (current,total)
-									
-									if (thisPrintLine.contains("(")){
-										
-										String strCurrent = thisPrintLine.substring(thisPrintLine.indexOf("(") + 1, 
-												thisPrintLine.indexOf(",") );
-										String strTotal = thisPrintLine.substring(thisPrintLine.indexOf(",") + 1, 
-												thisPrintLine.indexOf(")") );
-										// transform to values
-										intCurrent = Integer.parseInt(strCurrent);
-										intTotal = Integer.parseInt(strTotal);
-										// check if it's a valid number
-										if (intCurrent == (int) intCurrent) {
-											// adjust maximum
-											if (intCurrent < intTotal) {
-												// running
-												isDone = false;
-											}
-											else {
-												// done
-												isDone = true;
-											}
-										}
-									}
-									
-									// print to console
-									System.out.println(thisPrintLine);
-								}
-							} catch (Exception e1) {
-								// do nothing
-								System.out.println("Failed to read the output string");
-							}
-							
-							
-							if (isDone) {
-								// done
-								//log.debug("Database loaded, closing dialog");
-								dialog.adjustProgress(intCurrent, intTotal);
-								dialog.setVisible(false);
-							} else if (count % 10 == 0) {
-								// not yet done
-								dialog.adjustProgress(intCurrent, intTotal);
-								//log.debug("Database not loaded, count=" + count);
-							}
-						}
-					});
-					
-					timer.start();
-					dialog.setVisible(true);
-					timer.stop();
-					
-					// plot output
-					if (dialog.isDone()) {
-						File filePlotter = new File(jarPath.toFile(),  "Data" + File.separator + "Plotter" + File.separator);
-						// System.out.println(filePlotter.toString());
-						PlotLauncher thisPlotLauncher = new PlotLauncher(filePlotter.toString());
-						File thisFile = new File(jarPath.toFile(), "Data" + File.separator + "SimulationOutput.xml");
-						// System.out.println(thisFile.toString());
-						thisPlotLauncher.MakePlots(thisFile);
-					} else {
-						// kill remaining process!
-						thisProcess.destroy();
-					}
-					
-					/*
-					while ((thisPrintLine = thisBufferedReader.readLine()) != null) {
-						// thisPrintLine, (current,total)
-						
-						if (thisPrintLine.contains("(")){
-							
-							String strCurrent = thisPrintLine.substring(thisPrintLine.indexOf("(") + 1, 
-									thisPrintLine.indexOf(",") );
-							String strTotal = thisPrintLine.substring(thisPrintLine.indexOf(",") + 1, 
-									thisPrintLine.indexOf(")") );
-							// transform to values
-							int intCurrent = Integer.parseInt(strCurrent);
-							int intTotal = Integer.parseInt(strTotal);
-							// check if it's a valid number
-							if (intCurrent == (int) intCurrent) {
-								// adjust maximum
-								if (intCurrent < intTotal) {
-									// running
-									dialog.setVisible(true);
-									dialog.adjustProgress(intCurrent, intTotal);
-								}
-								else {
-									// done
-									dialog.setVisible(false);
-								}
-							}
-						}
-						
-						// print to console
-						System.out.println(thisPrintLine);
-					} */
-					
-					// dialog.setVisible(false);
-					
-				} catch (Exception e1) {
-					// do nothing
-					System.out.println("Failed to run the program");
+		plotButton2 = new JButton("Plot simulation");
+		plotButton2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selected = simulationTable.getSelectedRow();
+				if (selected < 0) {
+					return; 
 				}
-				
+				selected = simulationTable.convertRowIndexToModel( selected );
+				simulationTable.clearSelection();
+				simulationTable.addRowSelectionInterval(selected, selected);
 
-
+				// this simulation
+				// Simulation thisSimulation = document.getSimulations().get( selected );
 				
-				// code to export to csv
-				/*
-				
-				RWsimOutXML thisSimulationOutput = new RWsimOutXML("SimulationOutput.xml");
-				
-				thisSimulationOutput.ReadXMLtoSimOdata();
-				
-				Vector<SimulationOutputData> DataList = thisSimulationOutput.getDataList();
-				
-				try
-				{
-					FileWriter thisFileWriter = new FileWriter("output.csv");
-					
-					for (SimulationOutputData thisData : DataList)
-					{
-						// extract x y z
-						Vector<Vector<Double>> thesePositions = thisData.mPosition;
-						
-						thisFileWriter.append( thesePositions.toString() );
-						
-						// next line
-						thisFileWriter.append( "\n" );
-						
-					}
-					
-					thisFileWriter.flush();
-					thisFileWriter.close();
-				}
-				catch(IOException e3)
-				{
-					e3.printStackTrace();
-				}
-				
-				*/
+				// plot simulation
+				plotSimulation();
 				
 				
 				fireMaintainSelection();
 				
 			}
 		});
-		this.add(exportButton, "wrap para");
+		this.add(plotButton2, "gapright para");
 		
+		exportButtonCsv = new JButton("Export CSV");
+		exportButtonCsv.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selected = simulationTable.getSelectedRow();
+				if (selected < 0) {
+					return; 
+				}
+				selected = simulationTable.convertRowIndexToModel( selected );
+				simulationTable.clearSelection();
+				simulationTable.addRowSelectionInterval(selected, selected);
+
+				// this simulation
+				// Simulation thisSimulation = document.getSimulations().get( selected );
+				
+				// export to csv
+				exportCSV();
+				
+				fireMaintainSelection();
+				
+			}
+		});
+		this.add(exportButtonCsv, "gapright para");
 		
+		exportButtonExcel = new JButton("Export Excel");
+		exportButtonExcel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selected = simulationTable.getSelectedRow();
+				if (selected < 0) {
+					return; 
+				}
+				selected = simulationTable.convertRowIndexToModel( selected );
+				simulationTable.clearSelection();
+				simulationTable.addRowSelectionInterval(selected, selected);
+
+				// this simulation
+				// Simulation thisSimulation = document.getSimulations().get( selected );
+			
+				// TODO: export excel
+				exportExcel();
+				
+				fireMaintainSelection();
+				
+			}
+		});
+		this.add(exportButtonExcel, "wrap para");
 		
 		
 		////////  The simulation table
@@ -886,9 +722,267 @@ public class panelCamRockSim extends JPanel {
 		updateButtonStates();
 	}
 	
+	private void updateXML(Simulation thisSimulation) {
+
+		SimulationOptions thisSimulationOptions = thisSimulation.getOptions();
+		
+		// convert OpenRocketDocument (openrocket) to RocketDescription (camrocksim)
+		RocketDescription thisRocketDescription = document.getRocketDescription( thisSimulation );
+		
+		
+		/*
+			// (temporary) export XML of design, for testing
+			RWdesignXML thisDesign = new RWdesignXML("rocketDesign.xml");
+			// fill design with rocket description (easy comparison)
+			thisDesign.WriteDesign(thisRocketDescription);
+		*/
+		
+		// setup atmosphere
+		AtmosphereData thisAtmosphereData = thisSimulationOptions.atmosphereData;
+		
+		double thisRailLength = thisSimulationOptions.getLaunchRodLength(); // [m]
+		double thisAzimuthRad = thisSimulationOptions.getLaunchRodDirection(); // [rad]
+		double thisDeclinationRad = thisSimulationOptions.getLaunchRodAngle(); // [rad]
+		
+		// convert from rad to deg
+		double thisAzimuthDeg = thisAzimuthRad / (2*Math.PI) * 360;
+		double thisDeclinationDeg = thisDeclinationRad / (2*Math.PI) * 360;
+		
+		double thisAltitude = thisSimulationOptions.getLaunchAltitude();
+		
+		LaunchData thisLaunchData = new LaunchData(
+				thisRailLength,thisAzimuthDeg,thisDeclinationDeg,
+				thisAltitude);
+		
+		// use relative paths
+		// Path jarPath = SystemInfo.getJarLocation();
+		
+		// System.out.println("jar path: " + jarPath.toString());
+		
+		File fileSimulationInput = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + INPUT_SIMULATION));
+		
+		// System.out.println(fileSimulationInput.toString());
+		
+		RWsiminXML thisSimulationInput = new RWsiminXML(fileSimulationInput.toString());
+		
+		// RWsiminXML thisSimulationInput = new RWsiminXML("Data/SimulationInput.xml");
+		
+		boolean isMonteCarlo = thisSimulationOptions.getMonteCarloBool();
+		double numberOfMonteCarloDouble = thisSimulationOptions.getMonteCarloInteger();
+		int numberOfMonteCarloInt = (int) numberOfMonteCarloDouble;
+		
+		boolean isBallisticFailure = false;
+		
+		// writes all information to SimulationInput.xml
+		thisSimulationInput.WriteSimDataToXML(thisRocketDescription, 
+				thisAtmosphereData, thisLaunchData,
+				isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
+		
+		// edit information on uncertainty for monte carlo
+		File fileUncertainty = new File(jarPath.toFile(), DATA_FOLDER + File.separator + UNCERTAINTY_SIMULATION);
+		
+		// System.out.println(fileUncertainty.toString());
+		
+		RWuncertainty thisUncertainty = new RWuncertainty(fileUncertainty.toString());
+		
+		// get new values values
+		double sigmaLaunchDeclinationRad = thisSimulationOptions.getSigmaLaunchDeclination();
+		double sigmaLaunchDeclinationDeg = sigmaLaunchDeclinationRad / (2*Math.PI) * 360;
+		double sigmaThrust = thisSimulationOptions.getSigmaThrust() / 100.0; // percentage!
+		// set new values values
+		thisUncertainty.setSigmaLaunchDeclination(sigmaLaunchDeclinationDeg);
+		thisUncertainty.setSigmaThrust(sigmaThrust);
+		
+		// update xml (update with previous set values)
+		thisUncertainty.UpdateXML();
+		
+	}
+	
+	private void runProgram() {
+		
+		// use relative paths
+		// Path jarPath = SystemInfo.getJarLocation();
+		
+		File fileSimulationInput = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + INPUT_SIMULATION));
+		
+		// run program
+		try{
+
+			// create dialog
+			final RunningDialog dialog = new RunningDialog();
+			
+			File fileRocketc = new File(jarPath.toFile(),  DATA_FOLDER + File.separator + CPP_CODE);
+			
+			// System.out.println(fileRocketc.toString());
+			
+			String thisCommand= fileRocketc.toString() + " " + fileSimulationInput.toString(); // location binary root/Data
+			
+			// System.out.println(thisCommand);
+			
+			final Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
+			
+			Timer timer = new Timer(100, new ActionListener() {
+				
+				private int count = 0;
+				
+
+				BufferedReader thisBufferedReader = 
+						new BufferedReader(new InputStreamReader(thisProcess.getInputStream()));
+				String thisPrintLine = null;
+				
+				boolean isDone = false;
+				
+				int intCurrent = 0, intTotal = 100;
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					count++;
+					
+					// check
+					try {
+						if ((thisPrintLine = thisBufferedReader.readLine()) != null) {
+							// thisPrintLine, (current,total)
+							
+							if (thisPrintLine.contains("(")){
+								
+								String strCurrent = thisPrintLine.substring(thisPrintLine.indexOf("(") + 1, 
+										thisPrintLine.indexOf(",") );
+								String strTotal = thisPrintLine.substring(thisPrintLine.indexOf(",") + 1, 
+										thisPrintLine.indexOf(")") );
+								// transform to values
+								intCurrent = Integer.parseInt(strCurrent);
+								intTotal = Integer.parseInt(strTotal);
+								// check if it's a valid number
+								if (intCurrent == (int) intCurrent) {
+									// adjust maximum
+									if (intCurrent < intTotal) {
+										// running
+										isDone = false;
+									}
+									else {
+										// done
+										isDone = true;
+									}
+								}
+							}
+							else if (thisPrintLine.contains("Simulation Complete.")) {
+								isDone = true;
+							}
+							
+							
+							// print to console
+							System.out.println(thisPrintLine);
+						}
+					} catch (Exception e1) {
+						// do nothing
+						System.out.println("Failed to read the output string");
+					}
+					
+					
+					if (isDone) {
+						// done
+						//log.debug("Database loaded, closing dialog");
+						dialog.adjustProgress(intCurrent, intTotal);
+						dialog.setVisible(false);
+					} else if (count % 10 == 0) {
+						// not yet done
+						dialog.adjustProgress(intCurrent, intTotal);
+						//log.debug("Database not loaded, count=" + count);
+					}
+				}
+			});
+			
+			timer.start();
+			dialog.setVisible(true);
+			timer.stop();
+			
+			// check if process finished
+			if (!dialog.isDone()) {
+				// kill remaining process!
+				thisProcess.destroy();
+			}
+			
+			/*
+			// plot output
+			if (dialog.isDone()) {
+				File filePlotter = new File(jarPath.toFile(),  "Data" + File.separator + "Plotter" + File.separator);
+				// System.out.println(filePlotter.toString());
+				PlotLauncher thisPlotLauncher = new PlotLauncher(filePlotter.toString());
+				File thisFile = new File(jarPath.toFile(), "Data" + File.separator + "SimulationOutput.xml");
+				// System.out.println(thisFile.toString());
+				thisPlotLauncher.MakePlots(thisFile);
+			} else {
+
+			}
+			*/
+			
+		} catch (Exception e1) {
+			// do nothing
+			System.out.println("Failed to run the program");
+		}
+		
+	}
+	
+	private void plotSimulation() {
+		
+		File filePlotter = new File(jarPath.toFile(),  DATA_FOLDER + File.separator + "Plotter" + File.separator);
+		// System.out.println(filePlotter.toString());
+		PlotLauncher thisPlotLauncher = new PlotLauncher(filePlotter.toString());
+		File thisFile = new File(jarPath.toFile(), DATA_FOLDER + File.separator + OUTPUT_SIMULATION);
+		// System.out.println(thisFile.toString());
+		thisPlotLauncher.MakePlots(thisFile);
+		
+	}
+	
+	private void exportExcel() {
+		// exports the trajectories to an Excel file
+		
+		
+		// TODO write function
+	}
+	
+	private void exportCSV() {
+		// exports the trajectories to a CSV file
+		
+		File fileSimulationOutput = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + OUTPUT_SIMULATION));
+		
+		RWsimOutXML thisSimulationOutput = new RWsimOutXML(fileSimulationOutput.toString());
+		
+		thisSimulationOutput.ReadXMLtoSimOdata();
+		
+		Vector<SimulationOutputData> DataList = thisSimulationOutput.getDataList();
+		
+		File fileSimulationOutputCSV = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + "output.csv"));
+		
+		try
+		{
+			FileWriter thisFileWriter = new FileWriter(fileSimulationOutputCSV.toString());
+			
+			for (SimulationOutputData thisData : DataList)
+			{
+				// extract x y z
+				Vector<Vector<Double>> thesePositions = thisData.mPosition;
+				
+				thisFileWriter.append( thesePositions.toString() );
+				
+				// next line
+				thisFileWriter.append( "\n" );
+				
+			}
+			
+			thisFileWriter.flush();
+			thisFileWriter.close();
+		}
+		catch(IOException e3)
+		{
+			e3.printStackTrace();
+		}
+		
+	}
+	
 	private class RunningDialog extends JDialog {
 		/**
-		 *  TODO: cancel button
+		 *  cancel button
 		 */
 		private static final long serialVersionUID = 1L;
 		private JProgressBar progress = new JProgressBar();
@@ -934,22 +1028,25 @@ public class panelCamRockSim extends JPanel {
 		int[] selection = simulationTable.getSelectedRows();
 		if (selection.length == 0) {
 			editButton.setEnabled(false);
-			runButton.setEnabled(false);
+			runButton2.setEnabled(false);
 			deleteButton.setEnabled(false);
-			plotButton.setEnabled(false);
-			exportButton.setEnabled(false);
 		} else {
 			if (selection.length > 1) {
+				runButton2.setEnabled(false);
 				plotButton.setEnabled(false);
+				editButton.setEnabled(false);
 			} else {
-				plotButton.setEnabled(true);
+				runButton2.setEnabled(true);
+				editButton.setEnabled(true);
 			}
-			editButton.setEnabled(true);
-			runButton.setEnabled(true);
+			
+			// runButton.setEnabled(true);
 			deleteButton.setEnabled(true);
-			exportButton.setEnabled(true);
 		}
-
+		
+		plotButton2.setEnabled(true);
+		exportButtonCsv.setEnabled(true);
+		exportButtonExcel.setEnabled(true);
 	}
 	
 	

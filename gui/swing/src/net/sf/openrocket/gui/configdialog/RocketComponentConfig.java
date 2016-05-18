@@ -105,11 +105,14 @@ public class RocketComponentConfig extends JPanel {
 		//// Override and Mass and CG override options
 		tabbedPane.addTab(trans.get("RocketCompCfg.tab.Override"), null, overrideTab(),
 				trans.get("RocketCompCfg.tab.MassandCGoverride"));
+		
+		/*
 		if (component.isMassive())
 			
-			//// Appearance options
+			// Appearance options
 			tabbedPane.addTab(trans.get("RocketCompCfg.tab.Appearance"), null, new AppearancePanel(document, component),
 					"Appearance Tool Tip");
+		*/
 		
 		//// Comment and Specify a comment for the component
 		tabbedPane.addTab(trans.get("RocketCompCfg.tab.Comment"), null, commentTab(),

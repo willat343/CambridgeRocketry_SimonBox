@@ -179,12 +179,12 @@ public class InnerTubeConfig extends RocketComponentConfig {
 		tabbedPane.insertTab(trans.get("InnerTubeCfg.tab.Motor"), null, motorConfig,
 				trans.get("InnerTubeCfg.tab.ttip.Motor"), 1);
 
-		JPanel tab = clusterTab();
+		//JPanel tab = clusterTab();
 		//// Cluster and Cluster configuration
-		tabbedPane.insertTab(trans.get("InnerTubeCfg.tab.Cluster"), null, tab,
-				trans.get("InnerTubeCfg.tab.ttip.Cluster"), 2);
+		//tabbedPane.insertTab(trans.get("InnerTubeCfg.tab.Cluster"), null, tab,
+		//		trans.get("InnerTubeCfg.tab.ttip.Cluster"), 2);
 
-		tab = positionTab();
+		JPanel tab = positionTab();
 		//// Radial position
 		tabbedPane.insertTab(trans.get("InnerTubeCfg.tab.Radialpos"), null, tab,
 				trans.get("InnerTubeCfg.tab.ttip.Radialpos"), 3);
@@ -265,20 +265,20 @@ public class InnerTubeConfig extends RocketComponentConfig {
 	private JPanel clusterTab() {
 		JPanel panel = new JPanel(new MigLayout());
 
-		JPanel subPanel = new JPanel(new MigLayout());
+		//JPanel subPanel = new JPanel(new MigLayout());
 
 		// Cluster type selection
 		//// Select cluster configuration:
-		subPanel.add(new JLabel(trans.get("InnerTubeCfg.lbl.Selectclustercfg")), "spanx, wrap");
-		subPanel.add(new ClusterSelectionPanel((InnerTube) component), "spanx, wrap");
+		//subPanel.add(new JLabel(trans.get("InnerTubeCfg.lbl.Selectclustercfg")), "spanx, wrap");
+		//subPanel.add(new ClusterSelectionPanel((InnerTube) component), "spanx, wrap");
 		//		JPanel clusterSelection = new ClusterSelectionPanel((InnerTube)component);
 		//		clusterSelection.setBackground(Color.blue);
 		//		subPanel.add(clusterSelection);
 
-		panel.add(subPanel);
+		//panel.add(subPanel);
 
 
-		subPanel = new JPanel(new MigLayout("gap rel unrel", "[][65lp::][30lp::]"));
+		JPanel subPanel = new JPanel(new MigLayout("gap rel unrel", "[][65lp::][30lp::]"));
 
 		// Tube separation scale
 		//// Tube separation:

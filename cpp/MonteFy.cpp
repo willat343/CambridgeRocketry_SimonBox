@@ -195,10 +195,10 @@ INTAB MonteFy::WiggleProtect(INTAB thisIntab){
 
 	BOOST_FOREACH(double thrust1, thisIntab.intab1.Thrust) {
 		// check bounds
-		if (intLoop == 1) {
+		if (intLoop == 0) {
 			thrust1 = 0;
 		}
-		else if (intLoop == (endLoop-1)) {
+		else if (intLoop == (endLoop)) {
 			thrust1 = 0;
 		}
 		else if (thrust1 <= 0) {

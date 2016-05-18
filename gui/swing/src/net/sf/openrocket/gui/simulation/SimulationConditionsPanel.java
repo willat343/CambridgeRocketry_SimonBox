@@ -94,7 +94,7 @@ public class SimulationConditionsPanel extends JPanel {
 		
 		//// Atmosphere settings settings: 
 		sub = new JPanel(new MigLayout("fill, gap rel unrel",
-				"", "")); // "[25lp!][25lp!][25lp!][25lp!]"
+				"", "[grow][grow]")); // "[25lp!][25lp!][25lp!][25lp!]"
 		//// Wind
 		sub.setBorder(BorderFactory.createTitledBorder("Atmosphere Settings"));
 		this.add(sub,"growx"); // , "growx, split 4, aligny 0, flowy, gapright para"
@@ -107,7 +107,7 @@ public class SimulationConditionsPanel extends JPanel {
 		// text = new JTextField("-");
 		// updateAtmosphere(simulation);
 		text.setEditable(false);
-		sub.add(text,"spanx, wrap"); //  "growx, gapright para"
+		sub.add(text,"wrap para, growx"); //  "growx, gapright para"
 		
 		// new atmosphere button
 		button = new JButton("New");
@@ -122,7 +122,7 @@ public class SimulationConditionsPanel extends JPanel {
 				updateAtmosphere(simulation);
 			}
 		});
-		sub.add(button); // "w 75lp, wrap"
+		sub.add(button,"gapright para"); // "w 75lp, wrap"
 		
 		// edit atmosphere button
 		button = new JButton("Edit");
@@ -137,7 +137,7 @@ public class SimulationConditionsPanel extends JPanel {
 				updateAtmosphere(simulation);
 			}
 		});
-		sub.add(button); // "w 75lp, wrap"
+		sub.add(button,"gapright para"); // "w 75lp, wrap"
 		
 		button = new JButton("Save");
 		//// load atmosphere
@@ -162,7 +162,7 @@ public class SimulationConditionsPanel extends JPanel {
 				*/
 			}
 		});
-		sub.add(button);
+		sub.add(button,"gapright para");
 		
 		button = new JButton("Load");
 		//// load atmosphere
@@ -188,7 +188,7 @@ public class SimulationConditionsPanel extends JPanel {
 				*/
 			}
 		});
-		sub.add(button); // , "growx"
+		sub.add(button,"gapright para"); // , "growx"
 		
 		// selectWindProfile();
 		
@@ -590,12 +590,12 @@ public class SimulationConditionsPanel extends JPanel {
 		// +- thrust
 		label = new JLabel("+-Thrust");
 		//// The angle of the launch rod from vertical.
-		tip = "Thrust standard deviation";
+		tip = "Percentage of thrust standard deviation";
 		label.setToolTipText(tip);
 		sub.add(label);
 		
-		m = new DoubleModel(conditions, "SigmaThrust", UnitGroup.UNITS_FORCE,
-				0, 1000);
+		m = new DoubleModel(conditions, "SigmaThrust", UnitGroup.UNITS_NONE,
+				0, 100);
 		
 		spin = new JSpinner(m.getSpinnerModel());
 		spin.setEditor(new SpinnerEditor(spin));

@@ -60,6 +60,7 @@ public abstract class FinSetConfig extends RocketComponentConfig {
 	protected void addFinSetButtons() {
 		JButton convert = null;
 		
+		/*
 		//// Convert buttons
 		if (!(component instanceof FreeformFinSet)) {
 			//// Convert to freeform
@@ -86,7 +87,7 @@ public abstract class FinSetConfig extends RocketComponentConfig {
 					ComponentConfigDialog.hideDialog();
 				}
 			});
-		}
+		} */
 		
 		//// Split fins
 		split = new JButton(trans.get("FinSetConfig.but.Splitfins"));
@@ -125,12 +126,12 @@ public abstract class FinSetConfig extends RocketComponentConfig {
 			}
 		});
 		split.setEnabled(((FinSet) component).getFinCount() > 1);
-		
+		/*
 		if (convert == null)
 			addButtons(split);
 		else
 			addButtons(split, convert);
-		
+		*/
 	}
 	
 	public JPanel finTabPanel() {
