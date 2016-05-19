@@ -121,7 +121,7 @@ public class panelCamRockSim extends JPanel {
 	
 
 	public panelCamRockSim(OpenRocketDocument doc) {
-		super(new MigLayout("fill", "[grow][][][][][][][grow]"));
+		super(new MigLayout("fill", "[grow][][][][][grow]"));
 
 		this.document = doc;
 		
@@ -317,6 +317,8 @@ public class panelCamRockSim extends JPanel {
 		plotButton2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				/*
 				int selected = simulationTable.getSelectedRow();
 				if (selected < 0) {
 					return; 
@@ -324,7 +326,8 @@ public class panelCamRockSim extends JPanel {
 				selected = simulationTable.convertRowIndexToModel( selected );
 				simulationTable.clearSelection();
 				simulationTable.addRowSelectionInterval(selected, selected);
-
+				*/
+				
 				// this simulation
 				// Simulation thisSimulation = document.getSimulations().get( selected );
 				
@@ -336,12 +339,14 @@ public class panelCamRockSim extends JPanel {
 				
 			}
 		});
-		this.add(plotButton2, "gapright para");
+		this.add(plotButton2, "wrap para");
 		
 		exportButtonCsv = new JButton("Export CSV");
 		exportButtonCsv.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				/*
 				int selected = simulationTable.getSelectedRow();
 				if (selected < 0) {
 					return; 
@@ -349,7 +354,8 @@ public class panelCamRockSim extends JPanel {
 				selected = simulationTable.convertRowIndexToModel( selected );
 				simulationTable.clearSelection();
 				simulationTable.addRowSelectionInterval(selected, selected);
-
+				*/
+				
 				// this simulation
 				// Simulation thisSimulation = document.getSimulations().get( selected );
 				
@@ -360,12 +366,14 @@ public class panelCamRockSim extends JPanel {
 				
 			}
 		});
-		this.add(exportButtonCsv, "gapright para");
+		// this.add(exportButtonCsv, "gapright para");
 		
 		exportButtonExcel = new JButton("Export Excel");
 		exportButtonExcel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				/*
 				int selected = simulationTable.getSelectedRow();
 				if (selected < 0) {
 					return; 
@@ -373,7 +381,8 @@ public class panelCamRockSim extends JPanel {
 				selected = simulationTable.convertRowIndexToModel( selected );
 				simulationTable.clearSelection();
 				simulationTable.addRowSelectionInterval(selected, selected);
-
+				*/
+				
 				// this simulation
 				// Simulation thisSimulation = document.getSimulations().get( selected );
 			
@@ -384,7 +393,7 @@ public class panelCamRockSim extends JPanel {
 				
 			}
 		});
-		this.add(exportButtonExcel, "wrap para");
+		// this.add(exportButtonExcel, "wrap para");
 		
 		
 		////////  The simulation table
