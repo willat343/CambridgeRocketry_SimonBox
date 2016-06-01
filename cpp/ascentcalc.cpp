@@ -168,12 +168,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 		Cda1=intab1.Cda1.back();
 	}
 
-	// reasonable thrust ratio (source wikipedia)
-	double maxThrustMassRatio = 2000;
-	if (Ti > maxThrustMassRatio*Mi) {
-		cout << "warning, unreasonable thrust, ratio: " << (Ti/Mi) << " > " << maxThrustMassRatio << endl;
-		Ti = maxThrustMassRatio*Mi;
-	}
+
 
 
 	//INTAB4***********************************************************
@@ -393,12 +388,22 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
   //**************************************************************************
   
   //Force Vector Calculation**************************************************
+  double mg=Mi*g; 				// Gravity
+
+
+	// reasonable thrust-to-weight ratio (source wikipedia)
+	double maxThrustWeightRatio = 250;
+	if (Ti > maxThrustWeightRatio*mg) {
+		cout << "warning, unreasonable thrust, ratio: " << (Ti/mg) << " > " << maxThrustWeightRatio << endl;
+		Ti = maxThrustWeightRatio*mg;
+	}
+
   double FA=Cd*0.5*rho*pow(Utmag,2)*Ar;//Axial Drag
   
   double FNcp=Cn*0.5*rho*(pow(Vcptmag,2))*Ar*sin(alphacp);//Normal Force
   
   vector3 Tt = RAnorm * Ti; 	// Trust Vector
-  double mg=Mi*g; 				// Gravity
+  
   vector3 FAt=RAnorm*(-1)*FA;	// Axial drag vector
   
   vector3 momaxcp = RAnorm.cross(Vcptnorm);//Axis of pitching motoion

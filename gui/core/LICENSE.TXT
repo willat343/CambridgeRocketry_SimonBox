@@ -1,6 +1,6 @@
-OpenRocket - A model rocket simulator
+Cambridge Rocketry Simulator
 
-Copyright (C) 2007-2013 Sampo Niskanen and others
+Copyright (C) 2016 Simon Box
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
