@@ -1514,7 +1514,10 @@ public class OpenRocketDocument implements ComponentChangeListener {
 			
 			
 			// do a little check incase there is "None"
-			if (!Double.isFinite(thisEjectionDelay)) {
+			/*			if (!Double.isFinite(thisEjectionDelay)) {
+							thisEjectionDelay = 0.0;
+						}*/
+			if (Double.isNaN(thisEjectionDelay)) {
 				thisEjectionDelay = 0.0;
 			}
 			

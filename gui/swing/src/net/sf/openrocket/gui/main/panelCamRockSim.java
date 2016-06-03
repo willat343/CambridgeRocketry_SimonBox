@@ -760,13 +760,7 @@ public class panelCamRockSim extends JPanel {
 	private static final long serialVersionUID = 4815038225984990190L;
 	private static final Logger log = LoggerFactory.getLogger(panelCamRockSim.class);
 	private static final Translator trans = Application.getTranslator();
-
-	private static String DATA_FOLDER = "Data";
-	private static String INPUT_SIMULATION = "SimulationInput.xml";
-	private static String OUTPUT_SIMULATION = "SimulationOutput.xml";
-	private static String UNCERTAINTY_SIMULATION = "Uncertainty.xml";
-	private static String CPP_CODE = "rocketc";
-
+	
 	//private static final Color WARNING_COLOR = Color.RED;
 	//private static final String WARNING_TEXT = "\uFF01"; // Fullwidth exclamation mark
 
@@ -788,7 +782,6 @@ public class panelCamRockSim extends JPanel {
 	private final JButton runButton2;
 	private final JButton plotButton2;
 	private final JButton exportButtonCsv;
-	private final JButton exportButtonExcel;
 	
 	private final JButton runButton;
 	private final JButton plotButton;
@@ -1015,7 +1008,7 @@ public class panelCamRockSim extends JPanel {
 				
 			}
 		});
-		this.add(plotButton2, "gapright para");
+		this.add(plotButton2, "wrap para");
 		
 		exportButtonCsv = new JButton("Export CSV");
 		exportButtonCsv.addActionListener(new ActionListener() {
@@ -1042,35 +1035,7 @@ public class panelCamRockSim extends JPanel {
 				
 			}
 		});
-		this.add(exportButtonCsv, "wrap para");
-		
-		exportButtonExcel = new JButton("Export Excel");
-		exportButtonExcel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				/*
-				int selected = simulationTable.getSelectedRow();
-				if (selected < 0) {
-					return; 
-				}
-				selected = simulationTable.convertRowIndexToModel( selected );
-				simulationTable.clearSelection();
-				simulationTable.addRowSelectionInterval(selected, selected);
-				*/
-				
-				// this simulation
-				// Simulation thisSimulation = document.getSimulations().get( selected );
-			
-				// TODO: export excel
-				exportExcel();
-				
-				fireMaintainSelection();
-				
-			}
-		});
-		// this.add(exportButtonExcel, "wrap para");
-		
+		// this.add(exportButtonCsv, "wrap para");
 		
 		////////  The simulation table
 
@@ -1444,7 +1409,7 @@ public class panelCamRockSim extends JPanel {
 		
 		// System.out.println("jar path: " + jarPath.toString());
 		
-		File fileSimulationInput = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + INPUT_SIMULATION));
+		File fileSimulationInput = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
 		
 		// System.out.println(fileSimulationInput.toString());
 		
@@ -1464,7 +1429,7 @@ public class panelCamRockSim extends JPanel {
 				isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
 		
 		// edit information on uncertainty for monte carlo
-		File fileUncertainty = new File(jarPath.toFile(), DATA_FOLDER + File.separator + UNCERTAINTY_SIMULATION);
+		File fileUncertainty = new File(jarPath.toFile(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.UNCERTAINTY_SIMULATION);
 		
 		// System.out.println(fileUncertainty.toString());
 		
@@ -1488,7 +1453,7 @@ public class panelCamRockSim extends JPanel {
 		// use relative paths
 		// Path jarPath = SystemInfo.getJarLocation();
 		
-		File fileSimulationInput = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + INPUT_SIMULATION));
+		File fileSimulationInput = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
 		
 		// run program
 		try{
@@ -1496,7 +1461,7 @@ public class panelCamRockSim extends JPanel {
 			// create dialog
 			final RunningDialog dialog = new RunningDialog();
 			
-			File fileRocketc = new File(jarPath.toFile(),  DATA_FOLDER + File.separator + CPP_CODE);
+			File fileRocketc = new File(SystemInfo.getUserApplicationDirectory(),  SystemInfo.SIMULATOR_FOLDER + File.separator + SystemInfo.CPP_CODE);
 			
 			// System.out.println(fileRocketc.toString());
 			
@@ -1587,20 +1552,6 @@ public class panelCamRockSim extends JPanel {
 				thisProcess.destroy();
 			}
 			
-			/*
-			// plot output
-			if (dialog.isDone()) {
-				File filePlotter = new File(jarPath.toFile(),  "Data" + File.separator + "Plotter" + File.separator);
-				// System.out.println(filePlotter.toString());
-				PlotLauncher thisPlotLauncher = new PlotLauncher(filePlotter.toString());
-				File thisFile = new File(jarPath.toFile(), "Data" + File.separator + "SimulationOutput.xml");
-				// System.out.println(thisFile.toString());
-				thisPlotLauncher.MakePlots(thisFile);
-			} else {
-
-			}
-			*/
-			
 		} catch (Exception e1) {
 			// do nothing
 			System.out.println("Failed to run the program");
@@ -1610,26 +1561,18 @@ public class panelCamRockSim extends JPanel {
 	
 	private void plotSimulation() {
 		
-		File filePlotter = new File(jarPath.toFile(),  DATA_FOLDER + File.separator + "Plotter" + File.separator);
-		// System.out.println(filePlotter.toString());
+		File filePlotter = new File(SystemInfo.getUserApplicationDirectory(),  "Plotter" + File.separator);
+		
 		PlotLauncher thisPlotLauncher = new PlotLauncher(filePlotter.toString());
-		File thisFile = new File(jarPath.toFile(), DATA_FOLDER + File.separator + OUTPUT_SIMULATION);
-		// System.out.println(thisFile.toString());
+		File thisFile = new File(jarPath.toFile(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION);
+		
 		thisPlotLauncher.MakePlots(thisFile);
-		
-	}
-	
-	private void exportExcel() {
-		// exports the trajectories to an Excel file
-		
-		
-		// TODO write function
 	}
 	
 	private void exportCSV() {
 		// exports the trajectories to a CSV file
 		
-		File fileSimulationOutput = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + OUTPUT_SIMULATION));
+		File fileSimulationOutput = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION));
 		
 		RWsimOutXML thisSimulationOutput = new RWsimOutXML(fileSimulationOutput.toString());
 		
@@ -1637,7 +1580,7 @@ public class panelCamRockSim extends JPanel {
 		
 		Vector<SimulationOutputData> DataList = thisSimulationOutput.getDataList();
 		
-		File fileSimulationOutputCSV = new File(jarPath.toFile(), (DATA_FOLDER + File.separator + "output.csv"));
+		File fileSimulationOutputCSV = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + "output.csv"));
 		
 		try
 		{
@@ -1731,7 +1674,6 @@ public class panelCamRockSim extends JPanel {
 		
 		plotButton2.setEnabled(true);
 		exportButtonCsv.setEnabled(true);
-		exportButtonExcel.setEnabled(true);
 	}
 	
 	

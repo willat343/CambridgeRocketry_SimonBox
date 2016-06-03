@@ -874,34 +874,34 @@ public class RocketInfo implements FigureElement {
 		GlyphVector atText = createSmallText(at);
 
 		Rectangle2D cgRect = cgValue.getVisualBounds();
-		//Rectangle2D cpRect = cpValue.getVisualBounds();
+		Rectangle2D cpRect = cpValue.getVisualBounds();
 		Rectangle2D cgTextRect = cgText.getVisualBounds();
-		//Rectangle2D cpTextRect = cpText.getVisualBounds();
-		//Rectangle2D stabRect = stabValue.getVisualBounds();
-		//Rectangle2D stabTextRect = stabText.getVisualBounds();
-		//Rectangle2D atTextRect = atText.getVisualBounds();
+		Rectangle2D cpTextRect = cpText.getVisualBounds();
+		Rectangle2D stabRect = stabValue.getVisualBounds();
+		Rectangle2D stabTextRect = stabText.getVisualBounds();
+		Rectangle2D atTextRect = atText.getVisualBounds();
 		
-		// double unitWidth = MathUtil.max(cpRect.getWidth(), cgRect.getWidth(),stabRect.getWidth());
-		// double textWidth = Math.max(cpTextRect.getWidth(), cgTextRect.getWidth());
+		double unitWidth = MathUtil.max(cpRect.getWidth(), cgRect.getWidth(),stabRect.getWidth());
+		double textWidth = Math.max(cpTextRect.getWidth(), cgTextRect.getWidth());
 		
-		double unitWidth = cgRect.getWidth();
-		double textWidth = cgTextRect.getWidth();
+		//double unitWidth = cgRect.getWidth();
+		//double textWidth = cgTextRect.getWidth();
 
 		g2.setColor(Color.BLACK);
 
-		//g2.drawGlyphVector(stabValue, (float)(x2-stabRect.getWidth()), y1);
-		g2.drawGlyphVector(cgValue, (float)(x2-cgRect.getWidth()), y1);
-		//g2.drawGlyphVector(cpValue, (float)(x2-cpRect.getWidth()), y1+2*line);
+		g2.drawGlyphVector(stabValue, (float)(x2-stabRect.getWidth()), y1);
+		g2.drawGlyphVector(cgValue, (float)(x2-cgRect.getWidth()), y1+1*line);
+		g2.drawGlyphVector(cpValue, (float)(x2-cpRect.getWidth()), y1+2*line);
 
-		//g2.drawGlyphVector(stabText, (float)(x2-unitWidth-stabTextRect.getWidth()), y1);
-		g2.drawGlyphVector(cgText, (float)(x2-unitWidth-cgTextRect.getWidth()), y1);
-		//g2.drawGlyphVector(cpText, (float)(x2-unitWidth-cpTextRect.getWidth()), y1+2*line);
+		g2.drawGlyphVector(stabText, (float)(x2-unitWidth-stabTextRect.getWidth()), y1);
+		g2.drawGlyphVector(cgText, (float)(x2-unitWidth-cgTextRect.getWidth()), y1+1*line);
+		g2.drawGlyphVector(cpText, (float)(x2-unitWidth-cpTextRect.getWidth()), y1+2*line);
 		
 		
-		cgCaret.setPosition(x2 - unitWidth - textWidth - 10, y1-0.3*line);
+		cgCaret.setPosition(x2 - unitWidth - textWidth - 10, y1+1*line-0.3*line);
 		cgCaret.paint(g2, 1.7);
 		
-		/*
+		
 		cpCaret.setPosition(x2 - unitWidth - textWidth - 10, y1+2*line-0.3*line);
 		cpCaret.paint(g2, 1.7);
 		
@@ -915,7 +915,7 @@ public class RocketInfo implements FigureElement {
 		
 		g2.setColor(Color.GRAY);
 		g2.drawGlyphVector(atText, atPos, y1 + 3*line);
-		*/
+		
 	}
 
     /**

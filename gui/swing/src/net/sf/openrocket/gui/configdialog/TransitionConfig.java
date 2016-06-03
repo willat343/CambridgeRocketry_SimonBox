@@ -730,7 +730,7 @@ public class TransitionConfig extends RocketComponentConfig {
 
 		////  Shape selection
 		//// Transition shape:
-		panel.add(new JLabel(trans.get("TransitionCfg.lbl.Transitionshape")));
+		//panel.add(new JLabel(trans.get("TransitionCfg.lbl.Transitionshape")));
 		
 		Transition.Shape selected = ((Transition) component).getType();
 		Transition.Shape[] typeList = Transition.Shape.values();
@@ -747,29 +747,29 @@ public class TransitionConfig extends RocketComponentConfig {
 				updateEnabled();
 			}
 		});
-		panel.add(typeBox, "span, split 2");
+		//panel.add(typeBox, "span, split 2");
 		
 		//// Clipped
 		checkbox = new JCheckBox(new BooleanModel(component, "Clipped"));
 		//// Clipped
 		checkbox.setText(trans.get("TransitionCfg.checkbox.Clipped"));
-		panel.add(checkbox, "wrap");
+		//panel.add(checkbox, "wrap");
 		
 
 		////  Shape parameter:
 		shapeLabel = new JLabel(trans.get("TransitionCfg.lbl.Shapeparam"));
-		panel.add(shapeLabel);
+		//panel.add(shapeLabel);
 		
 		m = new DoubleModel(component, "ShapeParameter");
 		
 		shapeSpinner = new JSpinner(m.getSpinnerModel());
 		shapeSpinner.setEditor(new SpinnerEditor(shapeSpinner));
-		panel.add(shapeSpinner, "growx");
+		//panel.add(shapeSpinner, "growx");
 		
 		DoubleModel min = new DoubleModel(component, "ShapeParameterMin");
 		DoubleModel max = new DoubleModel(component, "ShapeParameterMax");
 		shapeSlider = new BasicSlider(m.getSliderModel(min, max));
-		panel.add(shapeSlider, "skip, w 100lp, wrap");
+		//panel.add(shapeSlider, "skip, w 100lp, wrap");
 		
 		updateEnabled();
 		

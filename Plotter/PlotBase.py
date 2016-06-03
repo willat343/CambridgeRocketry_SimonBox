@@ -33,7 +33,7 @@ class PlotBase:
 
     def OSFlightPlot(self,fig,data):
         ax = Axes3D(fig)
-        ax.view_init(0,0)
+        #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='Flight Path')
         Limit = np.concatenate((data.X_TR.Z/2,data.X_TR.X,data.X_TR.Y))
         ax = self.ThreeDLimLabels(ax,Limit)
@@ -41,7 +41,7 @@ class PlotBase:
 
     def TSFlightPlot(self,fig,data):
         ax=Axes3D(fig)
-        ax.view_init(0,0)
+        #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='LowerStage')
         ax.plot(data.X_US.X,data.X_US.Y,data.X_US.Z,label='UpperStage')
         Limit = np.concatenate((data.X_TR.Z/2,data.X_TR.X,data.X_TR.Y,data.X_US.X,data.X_US.Y,data.X_US.Z/2))
@@ -83,7 +83,7 @@ class PlotBase:
 
     def OSMFlightPlot(self,fig,data):
         ax = Axes3D(fig)
-        ax.view_init(0,0)
+        #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='Flight Path')
         ax, Z1 = self.GaussEllipse(ax,data.LandVg.X,data.LandVg.Y,1)
         ax, Z2 = self.GaussEllipse(ax,data.LandVg.X,data.LandVg.Y,2)
@@ -92,7 +92,7 @@ class PlotBase:
 
     def TSMFlightPlot(self,fig,data):
         ax=Axes3D(fig)
-        ax.view_init(0,0)
+        #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='LowerStage')
         ax.plot(data.X_US.X,data.X_US.Y,data.X_US.Z,label='UpperStage')
         ax, Z1 = self.GaussEllipse(ax,data.LLandVg.X,data.LLandVg.Y,1)
@@ -104,7 +104,7 @@ class PlotBase:
 
     def OSMCluster(self,fig,data):
         ax=Axes3D(fig)
-        ax.view_init(0,0)
+        #ax.view_init(0,0)
         for Fpath in data.FpathList:
             ax.plot(Fpath.X,Fpath.Y,Fpath.Z,label='FlightPath')
             Limit = np.concatenate((data.X_TR.Z/2,data.X_TR.X,data.X_TR.Y,data.LandVg.X,data.LandVg.Y))
@@ -113,7 +113,7 @@ class PlotBase:
         
     def TSMCluster(self,fig,data):
         ax=Axes3D(fig)
-        ax.view_init(0,0)
+        #ax.view_init(0,0)
         for Fpath in data.LFpathList:
             ax.plot(Fpath.X,Fpath.Y,Fpath.Z,label='LowerStage')
         for Fpath in data.UFpathList:

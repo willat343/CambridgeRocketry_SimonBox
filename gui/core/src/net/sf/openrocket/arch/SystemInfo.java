@@ -686,6 +686,8 @@ import net.sf.openrocket.util.BugException;
 public class SystemInfo {
 	
 	public static String DATA_FOLDER = "Data";
+	public static String SIMULATOR_FOLDER = "simulator";
+	public static String PLOTTER_FOLDER = "Plotter";
 	public static String ATMOSPHERES_FOLDER = "Atmospheres";
 	public static String MOTORS_FOLDER = "Motors";
 	public static String INPUT_SIMULATION = "SimulationInput.xml";
@@ -743,18 +745,18 @@ public class SystemInfo {
 		case WINDOWS:
 			String appdata = System.getenv("APPDATA");
 			if (appdata != null) {
-				dir = new File(appdata, "OpenRocket/");
+				dir = new File(appdata, "camrocsim/");
 			} else {
-				dir = new File(homeDir, "OpenRocket/");
+				dir = new File(homeDir, "camrocsim/");
 			}
 			break;
 		
 		case MAC_OS:
-			dir = new File(homeDir, "Library/Application Support/OpenRocket/");
+			dir = new File(homeDir, "Library/Application Support/camrocsim/");
 			break;
 		
 		case UNIX:
-			dir = new File(homeDir, ".openrocket/");
+			dir = new File(homeDir, ".camrocsim/");
 			break;
 		
 		default:

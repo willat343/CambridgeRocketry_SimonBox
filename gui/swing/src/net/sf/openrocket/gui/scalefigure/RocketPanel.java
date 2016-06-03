@@ -1482,13 +1482,13 @@ public class RocketPanel extends JPanel implements TreeSelectionListener, Change
 		updateExtras();
 		
 		figure.clearRelativeExtra();
-		//figure.addRelativeExtra(extraCP);
+		figure.addRelativeExtra(extraCP);
 		figure.addRelativeExtra(extraCG);
 		figure.addAbsoluteExtra(extraText);
 		
 		
 		figure3d.clearRelativeExtra();
-		//figure3d.addRelativeExtra(extraCP);
+		figure3d.addRelativeExtra(extraCP);
 		figure3d.addRelativeExtra(extraCG);
 		figure3d.addAbsoluteExtra(extraText);
 		

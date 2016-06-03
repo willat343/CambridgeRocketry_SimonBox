@@ -904,7 +904,7 @@ public class RocketComponentConfig extends JPanel {
 		combo.setToolTipText(trans.get("RocketCompCfg.combo.ttip.componentmaterialaffects"));
 		subPanel.add(combo, "spanx 4, growx, wrap paragraph");
 		
-		
+		/*
 		if (component instanceof ExternalComponent) {
 			label = new JLabel(finishString);
 			////<html>The component finish affects the aerodynamic drag of the component.<br>
@@ -943,7 +943,8 @@ public class RocketComponentConfig extends JPanel {
 				}
 			});
 			subPanel.add(button, "wrap paragraph");
-		}
+		} */
+		
 		return subPanel;
 	}
 	

@@ -726,7 +726,7 @@ public class DesignPreferencesPanel extends PreferencesPanel {
 
 		// // Default Mach number
 		JLabel dfn = new JLabel(trans.get("pref.dlg.lbl.DefaultMach"));
-		//this.add(dfn, "gapright para");
+		this.add(dfn, "gapright para");
 		dfn.setToolTipText(trans.get("pref.dlg.ttip.DefaultMach1")
 				+ trans.get("pref.dlg.ttip.DefaultMach2"));
 
@@ -737,7 +737,7 @@ public class DesignPreferencesPanel extends PreferencesPanel {
 		spin.setEditor(new SpinnerEditor(spin));
 		spin.setToolTipText(trans.get("pref.dlg.ttip.DefaultMach1")
 				+ trans.get("pref.dlg.ttip.DefaultMach2"));
-		//this.add(spin, "wrap");
+		this.add(spin, "wrap");
 
 		final JCheckBox autoOpenDesignFile = new JCheckBox(
 				trans.get("pref.dlg.but.openlast"));
