@@ -722,8 +722,7 @@ public class SimulationConditionsPanel extends JPanel {
 	
 	JTextField text = new JTextField("Not initialised");
 	
-	
-	Path jarPath = SystemInfo.getJarLocation();
+	// Path jarPath = SystemInfo.getJarLocation();
 	
 	SimulationConditionsPanel(final Simulation simulation) {
 		super(new MigLayout("fill"));
@@ -1424,7 +1423,8 @@ public class SimulationConditionsPanel extends JPanel {
 private void saveAtmosphere(Simulation simulation) {
 		
 		// file location
-		File fileAtmosphere = new File(jarPath.toFile(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.ATMOSPHERES_FOLDER);
+		File fileAtmosphere = new File(SystemInfo.getUserApplicationDirectory(), 
+				SystemInfo.DATA_FOLDER + File.separator + SystemInfo.ATMOSPHERES_FOLDER);
 				
 		String FileName = null;
 		
@@ -1456,7 +1456,8 @@ private void saveAtmosphere(Simulation simulation) {
 	
 	private void loadAtmosphere(Simulation simulation) {
 		
-		File fileAtmosphere = new File(jarPath.toFile(), SystemInfo.DATA_FOLDER + 
+		File fileAtmosphere = new File(SystemInfo.getUserApplicationDirectory(), 
+				SystemInfo.DATA_FOLDER + 
 				File.separator + SystemInfo.ATMOSPHERES_FOLDER);
 		
 		String FileName = null;

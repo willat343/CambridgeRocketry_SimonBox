@@ -786,7 +786,6 @@ public class panelCamRockSim extends JPanel {
 	private final JButton runButton;
 	private final JButton plotButton;
 	
-	Path jarPath = SystemInfo.getJarLocation();
 	
 
 	public panelCamRockSim(OpenRocketDocument doc) {
@@ -1409,7 +1408,7 @@ public class panelCamRockSim extends JPanel {
 		
 		// System.out.println("jar path: " + jarPath.toString());
 		
-		File fileSimulationInput = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
+		File fileSimulationInput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
 		
 		// System.out.println(fileSimulationInput.toString());
 		
@@ -1429,7 +1428,7 @@ public class panelCamRockSim extends JPanel {
 				isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
 		
 		// edit information on uncertainty for monte carlo
-		File fileUncertainty = new File(jarPath.toFile(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.UNCERTAINTY_SIMULATION);
+		File fileUncertainty = new File(SystemInfo.getUserApplicationDirectory(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.UNCERTAINTY_SIMULATION);
 		
 		// System.out.println(fileUncertainty.toString());
 		
@@ -1453,7 +1452,8 @@ public class panelCamRockSim extends JPanel {
 		// use relative paths
 		// Path jarPath = SystemInfo.getJarLocation();
 		
-		File fileSimulationInput = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
+		File fileSimulationInput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
+		File thisSimulationOutput = new File(SystemInfo.getUserApplicationDirectory(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION);
 		
 		// run program
 		try{
@@ -1461,7 +1461,7 @@ public class panelCamRockSim extends JPanel {
 			// create dialog
 			final RunningDialog dialog = new RunningDialog();
 			
-			File fileRocketc = new File(SystemInfo.getUserApplicationDirectory(),  SystemInfo.SIMULATOR_FOLDER + File.separator + SystemInfo.CPP_CODE);
+			File fileRocketc = new File(SystemInfo.getInstallationDirectory(),  SystemInfo.SIMULATOR_FOLDER + File.separator + SystemInfo.CPP_CODE);
 			
 			// System.out.println(fileRocketc.toString());
 			
@@ -1561,10 +1561,10 @@ public class panelCamRockSim extends JPanel {
 	
 	private void plotSimulation() {
 		
-		File filePlotter = new File(SystemInfo.getUserApplicationDirectory(),  "Plotter" + File.separator);
+		File filePlotter = new File(SystemInfo.getInstallationDirectory(),  "Plotter" + File.separator);
 		
 		PlotLauncher thisPlotLauncher = new PlotLauncher(filePlotter.toString());
-		File thisFile = new File(jarPath.toFile(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION);
+		File thisFile = new File(SystemInfo.getUserApplicationDirectory(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION);
 		
 		thisPlotLauncher.MakePlots(thisFile);
 	}
@@ -1572,7 +1572,7 @@ public class panelCamRockSim extends JPanel {
 	private void exportCSV() {
 		// exports the trajectories to a CSV file
 		
-		File fileSimulationOutput = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION));
+		File fileSimulationOutput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION));
 		
 		RWsimOutXML thisSimulationOutput = new RWsimOutXML(fileSimulationOutput.toString());
 		
@@ -1580,7 +1580,7 @@ public class panelCamRockSim extends JPanel {
 		
 		Vector<SimulationOutputData> DataList = thisSimulationOutput.getDataList();
 		
-		File fileSimulationOutputCSV = new File(jarPath.toFile(), (SystemInfo.DATA_FOLDER + File.separator + "output.csv"));
+		File fileSimulationOutputCSV = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + "output.csv"));
 		
 		try
 		{

@@ -727,7 +727,43 @@ public class SystemInfo {
 	}
 	
 	
-	
+	/**
+	 * Return the program installation directory of camrocsim.  The location depends
+	 * on the current platform.
+	 * <p>
+	 * The directory will not be created by this method.
+	 * 
+	 * @return	the installation directory for camrocsim
+	 */
+	public static File getInstallationDirectory() {
+		final String homeDir = System.getProperty("user.home");
+		final File dir;
+		
+		switch (getPlatform()) {
+		case WINDOWS:
+			String instDir = System.getProperty("user.dir"); // System.getenv("INSTALLDIR");
+			if (instDir != null) {
+				dir = new File(instDir);
+			} else {
+				dir = new File(homeDir, "camrocsim/");
+			}
+			break;
+		
+		case MAC_OS:
+			dir = new File(homeDir, "Library/Application Support/camrocsim/");
+			break;
+		
+		case UNIX:
+			dir = new File("/usr/share/camrocsim/");
+			break;
+		
+		default:
+			throw new BugException("Not implemented for platform " + getPlatform());
+		}
+		
+		return dir;
+		
+	}
 	
 	/**
 	 * Return the application data directory of this user.  The location depends
@@ -735,7 +771,7 @@ public class SystemInfo {
 	 * <p>
 	 * The directory will not be created by this method.
 	 * 
-	 * @return	the application directory for OpenRocket
+	 * @return	the application directory for camrocsim
 	 */
 	public static File getUserApplicationDirectory() {
 		final String homeDir = System.getProperty("user.home");
@@ -756,7 +792,8 @@ public class SystemInfo {
 			break;
 		
 		case UNIX:
-			dir = new File(homeDir, ".camrocsim/");
+			// dir = new File(homeDir, ".camrocsim/");
+			dir = new File("/usr/share/camrocsim/");
 			break;
 		
 		default:

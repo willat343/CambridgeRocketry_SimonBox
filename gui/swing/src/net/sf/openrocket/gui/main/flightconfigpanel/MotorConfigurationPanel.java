@@ -1057,11 +1057,11 @@ public class MotorConfigurationPanel extends FlightConfigurablePanel<MotorMount>
 		// write MotorData to XML
 		String FileName = null;
 		
-		Path jarPath = SystemInfo.getJarLocation();
+		// Path jarPath = SystemInfo.getUserApplicationDirectory();
 		
 		JFileChooser fc = new JFileChooser();
 		// File thisFile = new File("Data/Motors/");
-		File thisFile = new File(jarPath.toFile(), ("Data" + File.separator + 
+		File thisFile = new File(SystemInfo.getUserApplicationDirectory(), ("Data" + File.separator + 
 				"Motors" + File.separator));
 		
 		fc.setCurrentDirectory(thisFile);
