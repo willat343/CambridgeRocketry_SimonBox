@@ -62,6 +62,7 @@ public class SimulationOutputData {
 	private Boolean Converted;
 	
 	public String StageName;
+	public String ID;
 	
 	//RawMembersFromFILE
 	public Vector<Vector<Double>> mTime = new Vector<Vector<Double>>();

@@ -691,6 +691,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
@@ -699,6 +701,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -1007,7 +1010,7 @@ public class panelCamRockSim extends JPanel {
 				
 			}
 		});
-		this.add(plotButton2, "wrap para");
+		this.add(plotButton2, "gapright para");
 		
 		exportButtonCsv = new JButton("Export CSV");
 		exportButtonCsv.addActionListener(new ActionListener() {
@@ -1034,7 +1037,7 @@ public class panelCamRockSim extends JPanel {
 				
 			}
 		});
-		// this.add(exportButtonCsv, "wrap para");
+		this.add(exportButtonCsv, "wrap para");
 		
 		////////  The simulation table
 
@@ -1453,7 +1456,7 @@ public class panelCamRockSim extends JPanel {
 		// Path jarPath = SystemInfo.getJarLocation();
 		
 		File fileSimulationInput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
-		File thisSimulationOutput = new File(SystemInfo.getUserApplicationDirectory(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION);
+		
 		
 		// run program
 		try{
@@ -1572,40 +1575,86 @@ public class panelCamRockSim extends JPanel {
 	private void exportCSV() {
 		// exports the trajectories to a CSV file
 		
-		File fileSimulationOutput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION));
 		
-		RWsimOutXML thisSimulationOutput = new RWsimOutXML(fileSimulationOutput.toString());
+		// get simulation output
+		File thisSimulationOutputF = new File(SystemInfo.getUserApplicationDirectory(), 
+				SystemInfo.DATA_FOLDER + File.separator + SystemInfo.OUTPUT_SIMULATION);
 		
+		RWsimOutXML thisSimulationOutput = new RWsimOutXML( thisSimulationOutputF.toString() );
+		
+		// fill structure from XML
 		thisSimulationOutput.ReadXMLtoSimOdata();
 		
 		Vector<SimulationOutputData> DataList = thisSimulationOutput.getDataList();
 		
+		// save as
+		
 		File fileSimulationOutputCSV = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + "output.csv"));
 		
-		try
-		{
-			FileWriter thisFileWriter = new FileWriter(fileSimulationOutputCSV.toString());
-			
-			for (SimulationOutputData thisData : DataList)
-			{
-				// extract x y z
-				Vector<Vector<Double>> thesePositions = thisData.mPosition;
-				
-				thisFileWriter.append( thesePositions.toString() );
-				
-				// next line
-				thisFileWriter.append( "\n" );
-				
-			}
-			
-			thisFileWriter.flush();
-			thisFileWriter.close();
-		}
-		catch(IOException e3)
-		{
-			e3.printStackTrace();
+		
+		String FileName = null;
+		
+		JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(fileSimulationOutputCSV);
+		int RetVal = fc.showSaveDialog(null);
+		if (RetVal == fc.APPROVE_OPTION) {
+			FileName = fc.getSelectedFile().getPath();
 		}
 		
+		
+		if (FileName != null)
+		{
+			
+			try {
+				
+				// success
+				FileWriter thisFileWriter = new FileWriter( FileName );
+				
+				// formatting output
+				NumberFormat fd = new DecimalFormat("#0.0000"); 
+				
+				// headers
+				thisFileWriter.append( "INDEX, ID_STR, ID_STAGE_STR, TIME_SECONDS_DOUBLE, EASTINGS_METERS_DOUBLE, NORTHINGS_METERS_DOUBLE, ALTITUDE_METERS_DOUBLE \n" );
+				
+				int iTraj = 1;
+				
+				for (SimulationOutputData thisData : DataList)
+				{
+					
+					// obtain size
+					int sizeVec = thisData.mTime.get(0).size();
+					
+					for (int i = 0; i < sizeVec; i++) {
+						
+						double time1 = thisData.mTime.get(0).get(i);
+						double east1 = thisData.mPosition.get(0).get(i);
+						double nort1 = thisData.mPosition.get(1).get(i);
+						double alti1 = thisData.mPosition.get(2).get(i);
+						
+						String stag1 = thisData.StageName;
+						String id1 = thisData.ID;
+						
+						thisFileWriter.append( 
+								Integer.toString(i) + ", " + id1 + ", " + stag1 + ", " + 
+										fd.format(time1) + ", " + fd.format(east1) + ", " + fd.format(nort1) + 
+										", " + fd.format(alti1) + "\n");
+						
+					}
+					
+					iTraj++; // next trajectory
+					
+				}
+				
+				thisFileWriter.flush();
+				thisFileWriter.close();
+				
+			}
+			catch (Exception e1) {
+				JOptionPane.showMessageDialog(null, ("Something is wrong with the data that you entered"));
+				FileName = null; // set back to null, don't want to use it.
+			}
+		}
+				
 	}
 	
 	private class RunningDialog extends JDialog {

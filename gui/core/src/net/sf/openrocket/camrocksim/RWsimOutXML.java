@@ -54,29 +54,61 @@ public class RWsimOutXML extends RWXML {
 		NodeList Runs = Doc.getElementsByTagName("Run");
 		
 		for (int i = 0; i < Runs.getLength(); i++) {
+			
 			Element thisRun = (Element) Runs.item(i);
 			
-			Vector<Element> ElList = new Vector<Element>();
-			
-			ElList.add((Element) thisRun.getElementsByTagName("FlightData").item(0));
-			
+			// check for single-stage / two-stage rocket
 			NodeList Stages = thisRun.getElementsByTagName("LowerStage");
-			if (Stages.getLength() != 0) {
-				ElList.clear();
+			
+			if (Stages.getLength() == 0) {
+				// single-stage
+				
+				Vector<Element> ElList = new Vector<Element>();
+				ElList.add((Element) thisRun.getElementsByTagName("FlightData").item(0));
+				
+				for (Element Dat : ElList) {
+					SimulationOutputData SOD = new SimulationOutputData();
+					SOD.mTime = MatDbyName(Dat, "Time");
+					SOD.mPosition = MatDbyName(Dat, "Position");
+					SOD.StageName = "SingleStage";
+					SOD.ID = Integer.toString(i);
+					DataList.add(SOD);
+					
+				}
+				
+				
+			} else {
+				// two-stage
+				Vector<Element> ElList = new Vector<Element>();
 				
 				Element MainStage = (Element) thisRun.getElementsByTagName("UpperStage").item(0);
 				ElList.add((Element) MainStage.getElementsByTagName("FlightData").item(0));
 				
+				for (Element Dat : ElList) {
+					SimulationOutputData SOD = new SimulationOutputData();
+					SOD.mTime = MatDbyName(Dat, "Time");
+					SOD.mPosition = MatDbyName(Dat, "Position");
+					SOD.StageName = "UpperStage";
+					SOD.ID = Integer.toString(i);
+					DataList.add(SOD);
+				}
+				
+				ElList.clear();
+				
 				Element BoosterStage = (Element) thisRun.getElementsByTagName("LowerStage").item(0);
 				ElList.add((Element) BoosterStage.getElementsByTagName("FlightData").item(0));
+				
+				for (Element Dat : ElList) {
+					SimulationOutputData SOD = new SimulationOutputData();
+					SOD.mTime = MatDbyName(Dat, "Time");
+					SOD.mPosition = MatDbyName(Dat, "Position");
+					SOD.StageName = "LowerStage";
+					SOD.ID = Integer.toString(i);
+					DataList.add(SOD);
+				}
+				
 			}
 			
-			for (Element Dat : ElList) {
-				SimulationOutputData SOD = new SimulationOutputData();
-				SOD.mTime = MatDbyName(Dat, "Time");
-				SOD.mPosition = MatDbyName(Dat, "Position");
-				DataList.add(SOD);
-			}
 		}
 		
 		/*
