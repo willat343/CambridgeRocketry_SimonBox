@@ -28,7 +28,7 @@ def main(argv,dir):
     try:
         opts, args = getopt.getopt(argv, "f:x:y:", ["file=","Xaxis=","Yaxis"])
     except getopt.GetoptError:
-        print "Incorrect specification of command line arguments"
+        print("Incorrect specification of command line arguments")
         sys.exit(2)
 
    
