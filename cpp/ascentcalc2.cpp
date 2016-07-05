@@ -27,24 +27,30 @@
 
 FlightDataShort ascent::getShortData(void)
 {
-	FlightDataShort temp;
+	FlightDataShort tempdat;
 	try{
 		if (DatPop != true){throw 20;}
 
-		temp.time=RKd1.t;
+		tempdat.time=RKd1.t;
+
+		// store last time only as event
+		double end_time = RKd1.t.back();
+		//cout << end_time << endl;
+		tempdat.events.push_back( end_time );
+
 		vector<vector<double> >::iterator z_it;
 		for (z_it=RKd1.z.begin(); z_it!=RKd1.z.end(); z_it++)
 		{
 			vector<double> B = *z_it;
 			vector3 A(B[0],B[1],B[2]);
-			temp.X.push_back(A);
+			tempdat.X.push_back(A);
 		}
 	}
 	catch (int ErrorCode){
 		cout<<"Error "<<ErrorCode<<": Attempt to populate flight data before the simulation has been run"<<endl;
 	}
 
-	return(temp);
+	return(tempdat);
 }
 
 FlightDataLong ascent::getLongData(void)
@@ -55,6 +61,13 @@ FlightDataLong ascent::getLongData(void)
 		if(DatPop != true){throw 20;}
 
 		tempdat.time=RKd1.t;
+
+		// store last time only as event
+		double end_time = RKd1.t.back();
+		//cout << end_time << endl;
+		tempdat.events.push_back( end_time );
+
+
 		vector<vector<double> >::iterator z_it;
 		vector<double>::iterator t_it;
 		t_it=tempdat.time.begin();

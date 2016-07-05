@@ -26,6 +26,7 @@
 FlightDataShort FlightDataShort::operator + (FlightDataShort added){
 	FlightDataShort Temp = *this;
 	Temp.time.insert(Temp.time.end(), added.time.begin(), added.time.end());
+	Temp.events.insert(Temp.events.end(), added.events.begin(), added.events.end());
 	Temp.X.insert(Temp.X.end(), added.X.begin(), added.X.end());
 	return(Temp);
 }
@@ -65,6 +66,8 @@ boost::property_tree::ptree FlightDataShort::BuildPropertyTree(int RN){
 
 	TreeIfy(&TempTree,Apogee,"FlightStats.Apogee");
 	TreeIfy(&TempTree,Landing,"FlightStats.Landing");
+	TreeIfy(&TempTree,events,"FlightStats.Events"); // store events
+
 	TempTree.put<double>("FlightStats.AscentTime", ApoTime);
 
 	TreeIfy(&TempTree,time,"FlightData.Time");
@@ -89,6 +92,7 @@ boost::property_tree::ptree FlightDataLong::BuildPropertyTree(int RN){
 
 	TreeIfy(&TempTree,Apogee,"FlightStats.Apogee");
 	TreeIfy(&TempTree,Landing,"FlightStats.Landing");
+	TreeIfy(&TempTree,events,"FlightStats.Events"); // store events
 
 	double DList[] = {MaxSpeed,MaxG,ApoTime,FlightTime};
 	string NameDList[] = {"MaxSpeed","Maxg","AscentTime","TotalFlightTime"};

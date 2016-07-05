@@ -32,6 +32,12 @@ FlightDataShort descent::getShortData(void)
 		if(DatPop != true){throw 20;}
 
 		tempdat.time=RKd1.t;
+
+		// store last time only as event
+		double end_time = RKd1.t.back();
+		//cout << end_time << endl;
+		tempdat.events.push_back( end_time );
+
 		vector<vector<double> >::iterator z_it;
 		for (z_it=RKd1.z.begin(); z_it!=RKd1.z.end(); z_it++)
 		{
@@ -55,6 +61,12 @@ FlightDataLong descent::getLongData(void)
 			if(DatPop != true){throw 20;}
 
 			tempdat.time=RKd1.t;
+
+			// store last time only as event
+			double end_time = RKd1.t.back();
+			//cout << end_time << endl;
+			tempdat.events.push_back( end_time );
+
 			vector<vector<double> >::iterator z_it;
 			vector<double>::iterator t_it;
 			t_it=tempdat.time.begin();

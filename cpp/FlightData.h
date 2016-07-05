@@ -43,6 +43,7 @@ class FlightData{
 public:
 	//Class members
 	vector<double> time;
+	vector<double> events;
 	vector<vector3> X;
 
 	//Constructor
