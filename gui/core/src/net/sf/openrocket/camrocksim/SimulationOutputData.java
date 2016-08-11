@@ -64,6 +64,9 @@ public class SimulationOutputData {
 	public String StageName;
 	public String ID;
 	
+	// stores timing of new event
+	public Vector<Double> mEvents = new Vector<Double>();
+	
 	//RawMembersFromFILE
 	public Vector<Vector<Double>> mTime = new Vector<Vector<Double>>();
 	public Vector<Vector<Double>> mAoA = new Vector<Vector<Double>>();

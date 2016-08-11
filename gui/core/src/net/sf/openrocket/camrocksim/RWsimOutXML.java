@@ -63,15 +63,27 @@ public class RWsimOutXML extends RWXML {
 			if (Stages.getLength() == 0) {
 				// single-stage
 				
+				// extract FlightStats.Events
+				Vector<Double> vecEvents = new Vector<Double>();
+				Vector<Element> ElList1 = new Vector<Element>();
+				ElList1.add((Element) thisRun.getElementsByTagName("FlightStats").item(0));
+				for (Element Dat : ElList1) {
+					vecEvents = VDbyName(Dat, "Events");
+				}
+				
 				Vector<Element> ElList = new Vector<Element>();
+				
+				// FlightData
 				ElList.add((Element) thisRun.getElementsByTagName("FlightData").item(0));
 				
 				for (Element Dat : ElList) {
+					
 					SimulationOutputData SOD = new SimulationOutputData();
 					SOD.mTime = MatDbyName(Dat, "Time");
 					SOD.mPosition = MatDbyName(Dat, "Position");
 					SOD.StageName = "SingleStage";
 					SOD.ID = Integer.toString(i);
+					SOD.mEvents = vecEvents; // store events
 					DataList.add(SOD);
 					
 				}
@@ -82,6 +94,16 @@ public class RWsimOutXML extends RWXML {
 				Vector<Element> ElList = new Vector<Element>();
 				
 				Element MainStage = (Element) thisRun.getElementsByTagName("UpperStage").item(0);
+				
+				// extract FlightStats.Events
+				Vector<Double> vecEvents = new Vector<Double>();
+				Vector<Element> ElList1 = new Vector<Element>();
+				ElList1.add((Element) MainStage.getElementsByTagName("FlightStats").item(0));
+				for (Element Dat : ElList1) {
+					vecEvents = VDbyName(Dat, "Events");
+				}
+				
+				
 				ElList.add((Element) MainStage.getElementsByTagName("FlightData").item(0));
 				
 				for (Element Dat : ElList) {
@@ -90,12 +112,21 @@ public class RWsimOutXML extends RWXML {
 					SOD.mPosition = MatDbyName(Dat, "Position");
 					SOD.StageName = "UpperStage";
 					SOD.ID = Integer.toString(i);
+					SOD.mEvents = vecEvents; // store events
 					DataList.add(SOD);
 				}
 				
 				ElList.clear();
+				ElList1.clear();
 				
 				Element BoosterStage = (Element) thisRun.getElementsByTagName("LowerStage").item(0);
+				
+				// extract FlightStats.Events
+				ElList1.add((Element) BoosterStage.getElementsByTagName("FlightStats").item(0));
+				for (Element Dat : ElList1) {
+					vecEvents = VDbyName(Dat, "Events");
+				}
+				
 				ElList.add((Element) BoosterStage.getElementsByTagName("FlightData").item(0));
 				
 				for (Element Dat : ElList) {
@@ -104,6 +135,7 @@ public class RWsimOutXML extends RWXML {
 					SOD.mPosition = MatDbyName(Dat, "Position");
 					SOD.StageName = "LowerStage";
 					SOD.ID = Integer.toString(i);
+					SOD.mEvents = vecEvents; // store events
 					DataList.add(SOD);
 				}
 				
@@ -160,11 +192,28 @@ public class RWsimOutXML extends RWXML {
 		return DataList;
 	}
 	
-	//function to return Vector<double> under Doc given a name
+	//function to return Vector<double> under element e
+	protected Vector<Double> VDbyName(Element e, String name) {
+		return (DstringToVector2(e.getElementsByTagName(name).item(0).getTextContent()));
+	}
+	
+	protected Vector<Double> DstringToVector2(String Dstring) {
+		
+		Dstring = Dstring.replace(";", "");
+		
+		Vector<Double> miniTemp = new Vector<Double>();
+		String[] SplitString = Dstring.split(",");
+		for (String sS : SplitString) {
+			miniTemp.add(Double.parseDouble(sS));
+		}
+		
+		return (miniTemp);
+	}
+	
+	//function to return Vector<Vector<double>> under element e
 	protected Vector<Vector<Double>> MatDbyName(Element e, String name) {
 		return (DstringToMatrix(e.getElementsByTagName(name).item(0).getTextContent()));
 	}
-	
 	
 	protected Vector<Vector<Double>> DstringToMatrix(String Dstring) {
 		String[] SuperSplitString = Dstring.split(";");
@@ -181,7 +230,5 @@ public class RWsimOutXML extends RWXML {
 		}
 		return (Temp);
 	}
-	
-	
 	
 }
