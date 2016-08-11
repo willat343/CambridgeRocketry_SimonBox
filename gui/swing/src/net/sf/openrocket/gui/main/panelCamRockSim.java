@@ -1614,7 +1614,7 @@ public class panelCamRockSim extends JPanel {
 				NumberFormat fd = new DecimalFormat("#0.0000"); 
 				
 				// headers
-				thisFileWriter.append( "INDEX, ID_STR, ID_STAGE_STR, TIME_SECONDS_DOUBLE, EASTINGS_METERS_DOUBLE, NORTHINGS_METERS_DOUBLE, ALTITUDE_METERS_DOUBLE, DISTANCE_METERS_DOUBLE, EVENT_INT \n" );
+				thisFileWriter.append( "INDEX,ID_STR,ID_STAGE_STR,TIME_SECONDS_DOUBLE,EASTINGS_METERS_DOUBLE,NORTHINGS_METERS_DOUBLE,ALTITUDE_METERS_DOUBLE,DISTANCE_METERS_DOUBLE,EVENT_INT\n" );
 				
 				int iTraj = 1;
 				
@@ -1658,14 +1658,14 @@ public class panelCamRockSim extends JPanel {
 						}
 						
 						thisFileWriter.append( 
-										Integer.toString(i) + ", " + 
-										id1 + ", " + 
-										stag1 + ", " + 
-										fd.format(time1) + ", " + 
-										fd.format(east1) + ", " + 
-										fd.format(nort1) + ", " + 
-										fd.format(alti1) + ", " + 
-										fd.format(dist1) + ", " + 
+										Integer.toString(i) + "," + 
+										id1 + "," + 
+										stag1 + "," + 
+										fd.format(time1) + "," + 
+										fd.format(east1) + "," + 
+										fd.format(nort1) + "," + 
+										fd.format(alti1) + "," + 
+										fd.format(dist1) + "," + 
 										Integer.toString(iEvent) + "\n");
 						
 						
