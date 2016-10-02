@@ -1,20 +1,5 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 %## RocketFlight.cpp
 
 %## Author: S.Box
@@ -88,7 +73,7 @@ vector<double> Rocket_Flight::getInitialTime(void) {
 
 vector<double> Rocket_Flight::getInitialState(double sigmaDeclinationAngle) {
 	//	returns the initial state
-	
+
 	vector<double> z0;
 
 	z0.push_back(X0.e1);
@@ -125,12 +110,12 @@ vector<double> Rocket_Flight::getInitialState(double sigmaDeclinationAngle) {
 
 OutputData Rocket_Flight::OneStageFlight(void){
 
-	// Create the initial conditions 
+	// Create the initial conditions
 	vector<double> tt, z0;
 
 	tt = getInitialTime();
 	z0 = getInitialState(0);
-	
+
 	// Initialize rocket ascent simulation
 	ascent as1(tt, z0, IntabTR, RL);
 
@@ -179,14 +164,14 @@ OutputData Rocket_Flight::OneStageFlight(void){
 
 	OutputData OD;
 	OD.InitializePropertyTree("OneStageFlight");
-	
+
 	if (ShortData == true){
 		FlightDataShort FDS = (as1.getShortData() + ds1.getShortData() + ds2.getShortData());
 		OD.FillPropertyTree(&FDS, 1);
 	}
 	else{
 		FlightDataLong FDL = (as1.getLongData() + ds1.getLongData() + ds2.getLongData());
-		OD.FillPropertyTree(&FDL, 1);  
+		OD.FillPropertyTree(&FDL, 1);
 	}
 
     return(OD);
@@ -310,7 +295,7 @@ OutputData Rocket_Flight::TwoStageFlight(){
 		FDp.push_back(&FDLU);
 		OD.FillPropertyTree(FDp, 1);
 	}
-	
+
 	return(OD);
         //OD.WriteToXML("SimulationOutput.xml");
 
@@ -318,7 +303,7 @@ OutputData Rocket_Flight::TwoStageFlight(){
 
 OutputData Rocket_Flight::OneStageMonte(int noi){
 
-	//Create the initial conditions 
+	//Create the initial conditions
 	vector<double> tt, z0;
 
 	tt = getInitialTime();
@@ -326,9 +311,9 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 
     string Upath = FilePath;
     Upath.append("Uncertainty.xml");
-	
+
 	MonteFy StochTab(IntabTR,Upath);
-	
+
 	OutputData OD;
 	OD.InitializePropertyTree("OneStageMonte");
 	int Frun = 0;
@@ -391,11 +376,11 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 			/*
 			ascent as1(tt,z0,Ftab,RL);
 			BallisticSwitch(&as1);
-			
+
 			//Fly the rocket!
 			RKF_data updata=as1.fly();
 
-			//Take the final state of the rocket to define the 
+			//Take the final state of the rocket to define the
 			//initial conditions for the parachute
 			vector<double> tt2, z02;
 			ParachuteTransfer(&tt2,&z02,updata);
@@ -403,7 +388,7 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 			//Initialize parachute descent simulation
 			descent ds1(tt2,z02,IntabTR);
 			RKF_data downdata=ds1.fall();
-			
+
 			*/
 
 			if (ShortData == true){
@@ -414,7 +399,7 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 				FlightDataLong FDL = (as1.getLongData() + ds1.getLongData() + ds2.getLongData());
 				OD.FillPropertyTree(&FDL,(i-Frun+1));
 			}
-		
+
 		}
 		catch(exception e){
 			Frun++;
@@ -424,12 +409,12 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 
 		// finished a single run
 		cout << "(" << (i+1) << "," << noi << ")" << endl;
-	
+
 	}
 	return(OD);
         //OD.WriteToXML("SimulationOutput.xml");
-	
-	
+
+
 }
 
 OutputData Rocket_Flight::TwoStageMonte(int noi){
@@ -465,7 +450,7 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
 				// vary initial declination angle
 				z0 = getInitialState(StochTabTR.sigmaLaunchDeclination);
 			}
-			
+
 			// Initialize the simulation from launch to separation
 			tt[1] = Tsep;
 
@@ -579,13 +564,13 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
 			Frun++;
 			cout<<"Run failed, number of failed runs is: "<<Frun<<endl;
 		}
-	
+
 		// finished a single run
 		cout << "(" << (i+1) << "," << noi << ")" << endl;
 
 	}
 
-	
+
 	return(OD);
         //OD.WriteToXML("SimulationOutput.xml");
 }
@@ -614,7 +599,7 @@ void Rocket_Flight::TimeTransfer(vector<double> * ttp, RKF_data Stage){
 	*/
 	double t1 = Stage.t.back();
 	double t2 = t1 + Tspan;
-	
+
 	ttp->push_back(t1);
 	ttp->push_back(t2);
 }
@@ -627,12 +612,12 @@ void Rocket_Flight::StateTransferRocket(vector<double> *zp, RKF_data StagePrevio
 		IntabPrevious: the rocket data from the previous stage
 		IntabNext: the rocket data for the next stage
 	*/
-	
+
 	vector3 TransitionMomentum(StagePrevious.z.back()[7],StagePrevious.z.back()[8],StagePrevious.z.back()[9]);
 	vector3 TransitionVelocity = TransitionMomentum/IntabPrevious.intab1.Mass.back();
-	
+
 	vector3 Momentum_next = TransitionVelocity*IntabNext.intab1.Mass.front();
-	
+
 	vector3 TransitionAngMom(StagePrevious.z.back()[10],StagePrevious.z.back()[11],StagePrevious.z.back()[12]);
 	quaternion TransitionQ(StagePrevious.z.back()[3],StagePrevious.z.back()[4],StagePrevious.z.back()[5],StagePrevious.z.back()[6]);
 	matrix3x3 TransitionR = TransitionQ.to_matrix();
@@ -642,9 +627,9 @@ void Rocket_Flight::StateTransferRocket(vector<double> *zp, RKF_data StagePrevio
 	vector3 TransitionOmega = TransitionInverse*TransitionAngMom;
 
 	matrix3x3 Tensor_next(IntabNext.intab1.Ixx.front(),IntabNext.intab1.Ixy.front(),IntabNext.intab1.Ixz.front(),IntabNext.intab1.Ixy.front(),IntabNext.intab1.Iyy.front(),IntabNext.intab1.Iyz.front(),IntabNext.intab1.Ixz.front(),IntabNext.intab1.Iyz.front(),IntabNext.intab1.Izz.front());
-	
+
 	matrix3x3 Inverse_next = TransitionR*Tensor_next.inv()*TransitionR.transpose();
-    
+
 	vector3 AngMom_next = Inverse_next.inv()*TransitionOmega;
 
 	for (int i=0; i<7; i++){
@@ -662,7 +647,7 @@ void Rocket_Flight::StateTransferRocket(vector<double> *zp, RKF_data StagePrevio
 
 void Rocket_Flight::BallisticSwitch(ascent * a1){
 	if (ballisticfailure==true){
-		a1->Kill.index = 2;      //Change the stop flag settings so that the 
+		a1->Kill.index = 2;      //Change the stop flag settings so that the
 		a1->Kill.Kval = -0.01;   //the ground
 	}
 }
@@ -701,13 +686,13 @@ double Rocket_Flight::SampleTruncated (double mean, double sigma, double truncat
 		// Create a Mersenne twister random number generator
 		// that is seeded once with #seconds since 1970
 		static mt19937 rng(static_cast<unsigned> (std::time(0)));
-	 
+
 		// select Gaussian probability distribution
 		normal_distribution<double> norm_dist(mean, sigma);
-	 
+
 		// bind random number generator to distribution, forming a function
 		variate_generator<mt19937&, normal_distribution<double> >  normal_sampler(rng, norm_dist);
-	 	
+
 	 	// sample from the distribution
 		double Out = normal_sampler();
 

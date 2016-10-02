@@ -1,19 +1,4 @@
 ## Copyright (C) 2010 S.Box
-## 
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-## 
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-## 
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 ## PlotBase.py
 
 ## Author: S.Box
@@ -46,7 +31,7 @@ class PlotBase:
         ax.plot(data.X_US.X,data.X_US.Y,data.X_US.Z,label='UpperStage')
         Limit = np.concatenate((data.X_TR.Z/2,data.X_TR.X,data.X_TR.Y,data.X_US.X,data.X_US.Y,data.X_US.Z/2))
         ax = self.ThreeDLimLabels(ax,Limit)
-       
+
 
 
     def OSApScatter(self,fig,data):
@@ -110,7 +95,7 @@ class PlotBase:
             Limit = np.concatenate((data.X_TR.Z/2,data.X_TR.X,data.X_TR.Y,data.LandVg.X,data.LandVg.Y))
             ax = self.ThreeDLimLabels(ax,Limit)
 
-        
+
     def TSMCluster(self,fig,data):
         ax=Axes3D(fig)
         #ax.view_init(0,0)
@@ -123,8 +108,8 @@ class PlotBase:
 
 
 
-        
-        
+
+
     def GaussEllipse(self,ax,X,Y,sigma):
         Landing = np.row_stack([X,Y])
         mean = np.array([np.mean(X),np.mean(Y)])
@@ -153,7 +138,7 @@ class PlotBase:
         ax.plot(data1,data2,label=AD.getLabel(label2.split(':')[0]))
         ax.set_xlabel(AD.getLabel(label1.split(':')[0]))
         ax.legend()
-        
+
 
 
     def LaunchFigs(self):
@@ -212,8 +197,7 @@ class AxisData:
     "Wind_Y":"Y Wind (m/s)",
     "Wind_Z":"Z Wind (m/s)",
     "Wind_Mag":"Absolute Wind (m/s)"}
-    
-    
+
+
     def getLabel(self,label):
         return self.LabelDict[label]
-

@@ -1,20 +1,5 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 %## RKF45.cpp
 
 %## Author: S.Box
@@ -30,7 +15,7 @@ ordinary differential equations */
 
 
 RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
-	
+
 	bool stopper;
 	double h=h_init;
 	double x=xs[0];
@@ -53,7 +38,7 @@ RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
 	//static const double b [7] = {35.0/384.0,  0,  500.0/1113.0, 125.0/192.0, -2187.0/6784.0,  11.0/84.0,  0};
 	//static const double bstar [7] = {5179.0/57600.0,  0,  7571.0/16695.0,  393.0/640.0,  -92097.0/339200.0, 187.0/2100.0,  1.0/40.0};
 	static const double b [7] = {71.0/57600.0,   0,  -71.0/16695.0,  71.0/1920.0,  -17253.0/339200.0,  22.0/525.0,   -1.0/40.0};
-	
+
 	vector<double> ttab;
 	vector<vector<double> > ztab;
 	vector<vector<double> > etab;
@@ -79,7 +64,7 @@ RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
 			K[i]=vecop::scalmult(pint->step(xnew,ynew),h);
 
 		}
-		
+
 
 		for (int i=0; i<7; i++)
 		{
@@ -89,47 +74,47 @@ RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
     //******************************************************************
     //Step size control method roughly the same as that given in sec 17.2
     //of Numerical Recipes 3rd Ed.**************************************
-     
+
     vector<double>::iterator e_it;
 		for (e_it=e.begin();e_it!=e.end();e_it++){//modulus of e
 			*e_it=fabs(*e_it);
-		}			
-		
+		}
+
     vector<double>::iterator y_it;
     vector<double> ymod;
 		for(y_it=y.begin();y_it!=y.end();y_it++){//modulus of y
       ymod.push_back(fabs(*y_it));
-    }    			
-    
+    }
+
     //error normalisation
     vector<double> scale=vecop::scaladd(vecop::scalmult(ymod,Retol),Abtol);
-    
+
     vector<double> ediv=vecop::vecdiv(e,scale);
     double sqerr=0.0;
     for(e_it=ediv.begin();e_it!=ediv.end();e_it++){
       sqerr+=pow(*e_it,2);
     }
     double err=sqrt(sqerr/ediv.size());
-    
-		
-	
+
+
+
 		//double eloc=*max_element(e.begin(),e.end());
 
 		if (err<=1.0){
-		
+
 			x=x+h;
 			y=yn;
-		
+
 			ttab.push_back(x);
 			ztab.push_back(y);
 			etab.push_back(e);
-			
-			
+
+
 			sucstep++;
 		}
-		
+
 		//choose new stepsize
-		
+
 		if (err==0) h*=5.0;
 		else{
 		double htest=0.9*h*pow(fabs(1.0/err),0.2);
@@ -140,7 +125,7 @@ RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
     //*****************************************************************
 		itnum++;
 
-					
+
 		stopper = pint->stop_flag(x,y);
 	}while ((x<xs[1] && itnum < max_it && stopper == false) || (sucstep == 0));
 
@@ -152,4 +137,3 @@ RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
 	RKF_data output(num,ttab,ztab,etab);
 return(output);
 }
-

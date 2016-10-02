@@ -1,20 +1,5 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 %## FlightData.cpp
 
 %## Author: S.Box
@@ -73,14 +58,14 @@ boost::property_tree::ptree FlightDataShort::BuildPropertyTree(int RN){
 	TreeIfy(&TempTree,time,"FlightData.Time");
 	TreeIfy(&TempTree,X,"FlightData.Position");
 
-	
+
 	return(TempTree);
-		
+
 }
 
 
 boost::property_tree::ptree FlightDataLong::BuildPropertyTree(int RN){
-	
+
 	boost::property_tree::ptree TempTree;
 	TempTree.put<int>("Number",RN);
 
@@ -96,7 +81,7 @@ boost::property_tree::ptree FlightDataLong::BuildPropertyTree(int RN){
 
 	double DList[] = {MaxSpeed,MaxG,ApoTime,FlightTime};
 	string NameDList[] = {"MaxSpeed","Maxg","AscentTime","TotalFlightTime"};
-	
+
 	int N_it = 0;
 	BOOST_FOREACH(double L,DList){
 		TempTree.put<double>(("FlightStats." + NameDList[N_it]),L);
@@ -105,20 +90,20 @@ boost::property_tree::ptree FlightDataLong::BuildPropertyTree(int RN){
 
 	vector<double> DoubleData[] = {time,alpha,Thrust,Mass,CofM,aDensity,aTemp};
 	string DataName[] = {"Time","AngleOfAttack","Thrust","Mass", "CentreOfMass", "AtmosphericDensity", "AtmosphericTemperature"};
-	
+
 	N_it = 0;
 	BOOST_FOREACH(vector<double> DData, DoubleData){
 		TreeIfy(&TempTree,DData,("FlightData." + DataName[N_it]));
-		N_it++;	
+		N_it++;
 	}
 
 	vector<vector3> VecData[] = {X,Xdot,Xddot,Raxis,Thetadot,Thetaddot,Force,Torque,Wind};
 	string VecName[] = {"Position","Velocity","Accelleration","Pose","AngularVelocity","AngularAccelleration","Force","Torque","Wind"};
-	
+
 	N_it = 0;
 	BOOST_FOREACH(vector<vector3> VData, VecData){
 		TreeIfy(&TempTree,VData,("FlightData." + VecName[N_it]));
-		N_it++;	
+		N_it++;
 	}
 
 	return(TempTree);
@@ -147,15 +132,15 @@ void OutputData::FillPropertyTree(vector<FlightData *> TRun,int RN){
 		Temp.add_child("LowerStage",TempTree1);
 		Temp.add_child("UpperStage",TempTree2);
 		PropTree.add_child("SimulationOutput.Runs.Run",Temp);
-			
-		
+
+
 }
 void OutputData::FillPropertyTree(FlightData * Run,int RN){
-		
+
 		boost::property_tree::ptree TempTree = Run->BuildPropertyTree(RN);
 		PropTree.add_child("SimulationOutput.Runs.Run",TempTree);
 		RN++;
-		
+
 
 }
 
@@ -163,14 +148,14 @@ void OutputData::FillPropertyTree(FlightData * Run,int RN){
 void FlightData::ApogeeLanding(std::vector<double> * ApoP, std::vector<double> * LandP, double * AtP){
 	double apogee[3] = {0.0,0.0,0.0};
 	double Apotime = 0.0;
-	
+
 	vector<double>::iterator t_it;
 	t_it = time.begin();
 	for (vector<vector3>::iterator Z_it = X.begin(); Z_it != X.end(); Z_it++){
 		vector3 temp =*Z_it;
 		if (temp.e3>apogee[2]){
-			apogee[0]=temp.e1; 
-			apogee[1]=temp.e2; 
+			apogee[0]=temp.e1;
+			apogee[1]=temp.e2;
 			apogee[2]=temp.e3;
 			Apotime = *t_it;
 		}
@@ -224,7 +209,7 @@ void FlightDataLong::SpeedAndG(double* Sp,double* Gp){
 			MaxSpeed = MSP;
 		}
 	}
-	
+
 	double Maxg = 0;
 	for (vector<vector3>::iterator Z_it = Xddot.begin(); Z_it != Xddot.end(); Z_it++){
 		vector3 temp =*Z_it;
@@ -234,7 +219,7 @@ void FlightDataLong::SpeedAndG(double* Sp,double* Gp){
 		}
 	}
 	Maxg = Maxg/9.81;
-	
+
 	*Sp = MaxSpeed;
 	*Gp = Maxg;
 }

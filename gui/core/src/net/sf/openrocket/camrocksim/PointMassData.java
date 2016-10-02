@@ -47,16 +47,18 @@ public class PointMassData extends RockPartsData {
 		BuildFromXML(Nin);
 	}
 	
-	public PointMassData(double d1, double d2, double d3, String s1) {
-		Mass = d1;
-		Xp = d2;
-		RadialPosition = d3;
+	/*
+	 * PointMassData
+	 * 
+	 * @param mass [kg]
+	 * @param position [m]
+	 * @param radial_position [m]
+	 * @param name
+	 */
+	public PointMassData(double mass, double position, double radial_position,
+			String name) {
 		
-		Name = s1;
-		Body = false;
-		
-		XcomPointMass();
-		InertialPointMass();
+		PopulatePointMass(mass, position, radial_position, name);
 	}
 	
 	public void PopulatePointMass(double d1, double d2, double d3, String s1) {
@@ -69,6 +71,8 @@ public class PointMassData extends RockPartsData {
 		
 		XcomPointMass();
 		InertialPointMass();
+		
+		built = true;
 	}
 	
 	//*Class Functions

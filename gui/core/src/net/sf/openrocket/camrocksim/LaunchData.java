@@ -50,6 +50,14 @@ public class LaunchData {
 		this.Built = false; // set not built.
 	}
 	
+	/*
+	 * LaunchData()
+	 * 
+	 * @param railLength [m]
+	 * @param azimuth [deg]
+	 * @param declination [deg]
+	 * @param altitude [m]
+	 */
 	public LaunchData(double railLength, double azimuth, double declination, double altitude) {
 		// constructor for parameters.
 		

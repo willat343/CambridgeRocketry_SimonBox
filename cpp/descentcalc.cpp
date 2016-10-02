@@ -1,19 +1,6 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 
 %## descentcalc.cpp
 
@@ -44,15 +31,15 @@ floatdown::floatdown(INTAB4 IT4,INTAB1 IT1,ParaTab P1){
 
 //Ascent::fly function*******************************************
 RKF_data descent::fall(void){
-	
+
 	floatdown fall1(intab4,intab1,paratab);
-	
+
 	integrator* pfall1=&fall1;
 
 	RKF paraint;
 	paraint.max_it=2000;
 	paraint.max_step=1.0;
-	
+
 	RKd1 = paraint.RKF45(tt,z0,pfall1);
 	DatPop=true;
 	return(RKd1);
@@ -63,7 +50,7 @@ RKF_data descent::fall(void){
 EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
 
 	//Constants****************************************************************
-	const double G=6.6741e-11;  //Universal gravitational constant 
+	const double G=6.6741e-11;  //Universal gravitational constant
 
 	//Unpack z*****************************************************************
 	double xn=z[0];//postion vector
@@ -81,7 +68,7 @@ EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
 	vector<double> ztb=intab4.Alt; //Get altitude data from input table
 
 	double Wxi,Wyi,Wzi,rho,temp;
-	
+
 
 	if (zn<=ztb.back () && zn>=ztb.front()){
 		Wxi=interp::one(ztb,intab4.Wx,zn);//Wind velocity vector
@@ -99,7 +86,7 @@ EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
 		double Pressure=0.002488*pow((temp/216.6),-11.388);
 		rho=Pressure/287*temp;
 	}
-	
+
 	//INTAB1*******************************************************
 	double Mi = intab1.Mass.back();//mass of the burned out rocket
 
@@ -131,7 +118,7 @@ EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
 	vector3 Fdnorm = Vtnorm*(-1.0);
 
 	double Fd=CdA*0.5*rho*pow(Vtmag,2.0);//drag force
-	
+
 
 	vector3 Fdt=Fdnorm*Fd;
 	vector3 grav(0,0,(-mg));
@@ -155,7 +142,7 @@ EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
 	Output.Xddot = F/Mi;
 	Output.Force = F;
 	Output.Wind = Wt;
-	
+
   return(Output);
 };
 
@@ -179,4 +166,3 @@ vector<double> floatdown::step(double tt, vector<double> z){
 
 	return(Z);
 }
-

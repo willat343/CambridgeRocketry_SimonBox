@@ -55,24 +55,25 @@ public class FinsetData extends RockPartsData {
 		BuildFromXML(Nin);
 	}
 	
-	public FinsetData(int i1, double d1, double d2, double d4, double d5, double d6, double d7, double d9, double d10, String s1) {
-		NoOfFins = i1;
-		RootChord = d1;
-		TipChord = d2;
-		Span = d4;
-		Sweep = d5;
-		Thickness = d6;
-		BodyDiam = d7;
-		RefDiam = BodyDiam;
-		Mass = d9;
-		Xp = d10;
-		Name = s1;
-		
-		Body = true;
-		
-		BarrowmanFinset();
-		XcomFinset();
-		InertialFinset();
+	/*
+	 * FinsetData
+	 * 
+	 * @param number_of_fins
+	 * @param root_chord
+	 * @param tip_chord
+	 * @param span
+	 * @param sweep
+	 * @param thickness
+	 * @param body_diameter
+	 * @param mass
+	 * @param position
+	 * @param name
+	 */
+	public FinsetData(int number_of_fins, double root_chord, double tip_chord,
+			double span, double sweep, double thickness, double body_diameter,
+			double mass, double position, String name) {
+		PopulateFinset(number_of_fins, root_chord, tip_chord, span, sweep, thickness,
+				body_diameter, mass, position, name);
 	}
 	
 	public void PopulateFinset(int i1, double d1, double d2, double d4, double d5, double d6, double d7, double d9, double d10, String s1) {
@@ -93,6 +94,8 @@ public class FinsetData extends RockPartsData {
 		BarrowmanFinset();
 		XcomFinset();
 		InertialFinset();
+		
+		built = true;
 	}
 	
 	//*Class Functions

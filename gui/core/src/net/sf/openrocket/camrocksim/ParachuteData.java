@@ -47,20 +47,25 @@ public class ParachuteData extends RockPartsData {
 		EditMe();
 	}
 	
-	public ParachuteData(double d1, double d2, double d3, double d4, double d5, double d6, double d7, boolean b1, String s1) {
-		PackedLength = d1;
-		PackedDiameter = d2;
-		Mass = d3;
-		Xp = d4;
-		Area = d5;
-		DragCoefficient = d6;
-		Altitude = d7;
-		apogee = b1;
-		Name = s1;
-		Body = false;
+	/*
+	 * ParachuteData
+	 * 
+	 * @param packed_length length before deployment (mass object) [m]
+	 * @param packed_diameter diameter before deployment (mass object) [m]
+	 * @param mass  [kg]
+	 * @param position [m]
+	 * @param surface_area surface area parachute after deployment [m^2]
+	 * @param drag_coefficient [-]
+	 * @param altitude altitude to deploy parachute (after apogee) [m]
+	 * @param deploy_apogee (bool to deploy at apogee)
+	 * @param name
+	 */
+	public ParachuteData(double packed_length, double packed_diameter, double mass, double position,
+			double surface_area, double drag_coefficient, double altitude,
+			boolean deploy_apogee, String name) {
 		
-		XcomCylinder();
-		InertiaCylinder();
+		PopulateParachute(packed_length, packed_diameter, mass, position,
+				surface_area, drag_coefficient, altitude, deploy_apogee, name);
 	}
 	
 	public ParachuteData(Node Nin) {
@@ -82,6 +87,8 @@ public class ParachuteData extends RockPartsData {
 		
 		XcomCylinder();
 		InertiaCylinder();
+		
+		built = true;
 	}
 	
 	//*Class functions

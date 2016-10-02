@@ -41,9 +41,17 @@ public class RocketMotor extends RockPartsData {
 	public RocketMotor() {
 	}
 	
-	public RocketMotor(MotorData M, double X) {
+	/*
+	 * RocketMotor()
+	 * 
+	 * @param MotorData
+	 * @param position
+	 * 
+	 */
+	public RocketMotor(MotorData M, double position) {
 		Mot = M;
-		MountX = X;
+		MountX = position;
+		built = true;
 	}
 	
 	public RocketMotor(Node Nin) {

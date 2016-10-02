@@ -42,10 +42,15 @@ public class TransitionData extends RockPartsData {
 	public TransitionData() {
 	}
 	
-	public TransitionData(double d1, double d2) {
-		separationTime = d1;
-		ignitionDelay = d2;
-		built = true;
+	/*	
+	 *  TransitionData 
+	 *  
+	 *  @param separationtime second stage releases [s]
+	 *  @param ignitiondelay time after separation to ignite [s]
+	 * 
+	 */
+	public TransitionData(double separationtime, double ignitiondelay) {
+		PopulateTransition(separationtime, ignitiondelay);
 	}
 	
 	public TransitionData(Node Nin) {

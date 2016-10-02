@@ -817,8 +817,6 @@ public abstract class MassObject extends InternalComponent {
 	@Override
 	public RockPartsData getRockPartsData(Simulation thisSimulation) {
 		
-		// TODO: model as tube?
-		
 		// extract data
 		double thisMass = this.getMass();
 		double thisPosition = this.getAbsolutePosition();

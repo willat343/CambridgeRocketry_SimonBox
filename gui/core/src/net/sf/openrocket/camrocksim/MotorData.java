@@ -64,8 +64,21 @@ public class MotorData {
 		built = false;
 	}
 	
+	/*
+	 * MotorData()
+	 * 
+	 * @param name
+	 * @param length
+	 * @param diameter
+	 * @param loadedMass
+	 * @param dryMass
+	 * @param time
+	 * @param thrust
+	 * 
+	 */
 	public MotorData(String name, double length, double diameter,
 			double loadedMass, double dryMass, double[] time, double[] thrust) {
+		
 		AddToList = true;
 		Name = name;
 		Length = length;
@@ -74,36 +87,11 @@ public class MotorData {
 		DryMass = dryMass;
 		Time = fromArray2Vector(time);
 		Thrust = fromArray2Vector(thrust);
-		built = true;
+		
 		CalculateSimpson();
 		
-		// extra
-		// this.setEjectionDelay(ejectionDelay);
-		//this.setIgnitionDelay(ignitionDelay);
+		built = true;
 	}
-	
-	/*
-	private void setEjectionDelay(double ejectionDelay) {
-		// do not set external
-		this.ejectionDelay = ejectionDelay;
-	}
-	
-	public double getEjectionDelay() {
-		// return value later on
-		return this.ejectionDelay;
-	}
-	
-	
-	private void setIgnitionDelay(double ignitionDelay) {
-		// do not set external - delay after separation
-		this.ignitionDelay = ignitionDelay;
-	}
-	
-	public double getIgnitionDelay() {
-		// returns delay (seconds) after separation
-		return this.ignitionDelay;
-	}
-	*/
 	
 	private Vector<Double> fromArray2Vector(double[] inputArray) {
 		// converts from array to vector
@@ -169,11 +157,6 @@ public class MotorData {
 			Iyy.add(IIs[1]);
 			Izz.add(IIs[2]);
 		}
-		
-		
-		
-		
-		
 	}
 	
 	private void XcomCylinder() {

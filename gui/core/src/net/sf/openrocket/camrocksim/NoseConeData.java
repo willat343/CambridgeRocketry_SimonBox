@@ -50,18 +50,17 @@ public class NoseConeData extends RockPartsData {
 		BuildFromXML(Nin);
 	}
 	
-	public NoseConeData(double d1, double d2, double d3, double d4, int i1, String S1) {
-		Ln = d1;
-		Dn = d2;
-		Xp = d3;
-		Mass = d4;
-		ShapeID = i1;
-		Body = true;
-		Name = S1;
-		
-		BarrowmanNose();
-		XCoMNose();
-		InertiaNose();
+	/* Constructor for Nose Cone
+	 * @param length length [m]
+	 * @param diameter base diameter [m]
+	 * @param pos position [m]
+	 * @param mass mass [kg]
+	 * @param shape shape parameter 0,1,2 = ogive, cone, parabola
+	 * @param name object name
+	 */
+	public NoseConeData(double length, double diameter, double pos, double mass, int shape, String name) {
+		// use existing function
+		PopulateNoseCone(length, diameter, pos, mass, shape, name);
 	}
 	
 	public void PopulateNoseCone(double d1, double d2, double d3, double d4, int i1, String S1) {
@@ -76,6 +75,8 @@ public class NoseConeData extends RockPartsData {
 		BarrowmanNose();
 		XCoMNose();
 		InertiaNose();
+		
+		built = true;
 	}
 	
 	//*Class Functions

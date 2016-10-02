@@ -966,14 +966,17 @@ public class panelCamRockSim extends JPanel {
 				selected = simulationTable.convertRowIndexToModel( selected );
 				simulationTable.clearSelection();
 				simulationTable.addRowSelectionInterval(selected, selected);
+				
+				// update XML
+				document.updateXML( selected );
 
 				// this simulation
-				Simulation thisSimulation = document.getSimulations().get( selected );
+				// Simulation thisSimulation = document.getSimulations().get( selected );
 				
 				// TODO: generate unique XML for each simulation (no need for re-run)
 				
 				// update XML
-				updateXML(thisSimulation);
+				// updateXML(thisSimulation);
 				
 				// run program
 				runProgram();
@@ -1374,82 +1377,6 @@ public class panelCamRockSim extends JPanel {
 		updateButtonStates();
 	}
 	
-	private void updateXML(Simulation thisSimulation) {
-
-		SimulationOptions thisSimulationOptions = thisSimulation.getOptions();
-		
-		// convert OpenRocketDocument (openrocket) to RocketDescription (camrocksim)
-		RocketDescription thisRocketDescription = document.getRocketDescription( thisSimulation );
-		
-		
-		/*
-			// (temporary) export XML of design, for testing
-			RWdesignXML thisDesign = new RWdesignXML("rocketDesign.xml");
-			// fill design with rocket description (easy comparison)
-			thisDesign.WriteDesign(thisRocketDescription);
-		*/
-		
-		// setup atmosphere
-		AtmosphereData thisAtmosphereData = thisSimulationOptions.atmosphereData;
-		
-		double thisRailLength = thisSimulationOptions.getLaunchRodLength(); // [m]
-		double thisAzimuthRad = thisSimulationOptions.getLaunchRodDirection(); // [rad]
-		double thisDeclinationRad = thisSimulationOptions.getLaunchRodAngle(); // [rad]
-		
-		// convert from rad to deg
-		double thisAzimuthDeg = thisAzimuthRad / (2*Math.PI) * 360;
-		double thisDeclinationDeg = thisDeclinationRad / (2*Math.PI) * 360;
-		
-		double thisAltitude = thisSimulationOptions.getLaunchAltitude();
-		
-		LaunchData thisLaunchData = new LaunchData(
-				thisRailLength,thisAzimuthDeg,thisDeclinationDeg,
-				thisAltitude);
-		
-		// use relative paths
-		// Path jarPath = SystemInfo.getJarLocation();
-		
-		// System.out.println("jar path: " + jarPath.toString());
-		
-		File fileSimulationInput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
-		
-		// System.out.println(fileSimulationInput.toString());
-		
-		RWsiminXML thisSimulationInput = new RWsiminXML(fileSimulationInput.toString());
-		
-		// RWsiminXML thisSimulationInput = new RWsiminXML("Data/SimulationInput.xml");
-		
-		boolean isMonteCarlo = thisSimulationOptions.getMonteCarloBool();
-		double numberOfMonteCarloDouble = thisSimulationOptions.getMonteCarloInteger();
-		int numberOfMonteCarloInt = (int) numberOfMonteCarloDouble;
-		
-		boolean isBallisticFailure = false;
-		
-		// writes all information to SimulationInput.xml
-		thisSimulationInput.WriteSimDataToXML(thisRocketDescription, 
-				thisAtmosphereData, thisLaunchData,
-				isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
-		
-		// edit information on uncertainty for monte carlo
-		File fileUncertainty = new File(SystemInfo.getUserApplicationDirectory(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.UNCERTAINTY_SIMULATION);
-		
-		// System.out.println(fileUncertainty.toString());
-		
-		RWuncertainty thisUncertainty = new RWuncertainty(fileUncertainty.toString());
-		
-		// get new values values
-		double sigmaLaunchDeclinationRad = thisSimulationOptions.getSigmaLaunchDeclination();
-		double sigmaLaunchDeclinationDeg = sigmaLaunchDeclinationRad / (2*Math.PI) * 360;
-		double sigmaThrust = thisSimulationOptions.getSigmaThrust() / 100.0; // percentage!
-		// set new values values
-		thisUncertainty.setSigmaLaunchDeclination(sigmaLaunchDeclinationDeg);
-		thisUncertainty.setSigmaThrust(sigmaThrust);
-		
-		// update xml (update with previous set values)
-		thisUncertainty.UpdateXML();
-		
-	}
-	
 	private void runProgram() {
 		
 		// use relative paths
@@ -1477,7 +1404,6 @@ public class panelCamRockSim extends JPanel {
 			Timer timer = new Timer(100, new ActionListener() {
 				
 				private int count = 0;
-				
 
 				BufferedReader thisBufferedReader = 
 						new BufferedReader(new InputStreamReader(thisProcess.getInputStream()));

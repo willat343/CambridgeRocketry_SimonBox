@@ -48,22 +48,22 @@ public class ConicTransData extends RockPartsData {
 		EditMe();
 	}
 	
-	public ConicTransData(double d1, double d2, double d3, double d5, double d6, double d7, String S1) {
-		length = d1;
-		UD = d2;
-		DD = d3;
-		Dr = Math.max(UD, DD);
-		Thickness = d5;
-		Mass = d6;
-		Xp = d7;
-		Name = S1;
-		Body = true;
-		
-		BarrowmanConic();
-		XcomConic();
-		InertiaConic();
-		
-		
+	/*
+	 * conic trans data
+	 * 
+	 * @param length [m]
+	 * @param upstream_diameter [m]
+	 * @param downstream_diameter [m]
+	 * @param thickness [m]
+	 * @param mass [kg]
+	 * @param position [m]
+	 * @param name
+	 * 
+	 */
+	public ConicTransData(double length, double upstream_diameter, double downstream_diameter,
+			double thickness, double mass, double position, String name) {
+		PopulateConicTrans(length, upstream_diameter, downstream_diameter,
+				thickness, mass, position, name);
 	}
 	
 	public ConicTransData(Node Nin) {
@@ -86,7 +86,7 @@ public class ConicTransData extends RockPartsData {
 		XcomConic();
 		InertiaConic();
 		
-		
+		built = true;
 	}
 	
 	//*Class functions

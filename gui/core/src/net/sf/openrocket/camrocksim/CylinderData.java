@@ -48,18 +48,18 @@ public class CylinderData extends RockPartsData {
 		
 	}
 	
-	public CylinderData(double d1, double d2, double d3, double d4, double d5, String s1) {
-		length = d1;
-		Diameter = d2;
-		Mass = d3;
-		Xp = d4;
-		RadialPosition = d5;
-		Name = s1;
-		Body = false;
+	/*
+	 * @param length [m]
+	 * @param diameter [m]
+	 * @param mass [kg]
+	 * @param position [m]
+	 * @param radial_position [m]
+	 * @param name 
+	 */
+	public CylinderData(double length, double diameter, double mass, double position,
+			double radial_position, String name) {
 		
-		XcomCylinder();
-		InertiaCylinder();
-		built = true;
+		PopulateCylinder(length, diameter, mass, position, radial_position, name);
 	}
 	
 	public CylinderData(Node Nin) {

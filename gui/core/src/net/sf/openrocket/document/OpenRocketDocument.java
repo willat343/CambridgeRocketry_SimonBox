@@ -691,7 +691,12 @@ import org.slf4j.LoggerFactory;
 import net.sf.openrocket.appearance.Appearance;
 import net.sf.openrocket.appearance.Decal;
 import net.sf.openrocket.appearance.DecalImage;
+import net.sf.openrocket.arch.SystemInfo;
+import net.sf.openrocket.camrocksim.AtmosphereData;
+import net.sf.openrocket.camrocksim.LaunchData;
 import net.sf.openrocket.camrocksim.MotorData;
+import net.sf.openrocket.camrocksim.RWsiminXML;
+import net.sf.openrocket.camrocksim.RWuncertainty;
 import net.sf.openrocket.camrocksim.RockPartsData;
 import net.sf.openrocket.camrocksim.RocketDescription;
 import net.sf.openrocket.camrocksim.RocketMotor;
@@ -715,6 +720,7 @@ import net.sf.openrocket.rocketcomponent.Stage;
 import net.sf.openrocket.rocketcomponent.StageSeparationConfiguration;
 import net.sf.openrocket.rocketcomponent.StageSeparationConfiguration.SeparationEvent;
 import net.sf.openrocket.simulation.FlightDataType;
+import net.sf.openrocket.simulation.SimulationOptions;
 import net.sf.openrocket.simulation.customexpression.CustomExpression;
 import net.sf.openrocket.simulation.extension.SimulationExtension;
 import net.sf.openrocket.startup.Application;
@@ -1526,6 +1532,82 @@ public class OpenRocketDocument implements ComponentChangeListener {
 		//}
 		
 		return thisEjectionDelay;
+	}
+	
+	public void updateXML(int selected) {
+		/* updates XML file based on selected simulation
+		 * 
+		 * 
+		 */
+		
+		Simulation thisSimulation = this.getSimulations().get(selected);
+		
+		SimulationOptions thisSimulationOptions = thisSimulation.getOptions();
+		
+		// convert OpenRocketDocument (openrocket) to RocketDescription (camrocksim)
+		RocketDescription thisRocketDescription = this.getRocketDescription(thisSimulation);
+		
+		/*
+			// (temporary) export XML of design, for testing
+			RWdesignXML thisDesign = new RWdesignXML("rocketDesign.xml");
+			// fill design with rocket description (easy comparison)
+			thisDesign.WriteDesign(thisRocketDescription);
+		*/
+		
+		// setup atmosphere
+		AtmosphereData thisAtmosphereData = thisSimulationOptions.atmosphereData;
+		
+		double thisRailLength = thisSimulationOptions.getLaunchRodLength(); // [m]
+		double thisAzimuthRad = thisSimulationOptions.getLaunchRodDirection(); // [rad]
+		double thisDeclinationRad = thisSimulationOptions.getLaunchRodAngle(); // [rad]
+		
+		// convert from rad to deg
+		double thisAzimuthDeg = thisAzimuthRad / (2 * Math.PI) * 360;
+		double thisDeclinationDeg = thisDeclinationRad / (2 * Math.PI) * 360;
+		
+		double thisAltitude = thisSimulationOptions.getLaunchAltitude();
+		
+		// launch conditions
+		LaunchData thisLaunchData = new LaunchData(
+				thisRailLength, thisAzimuthDeg, thisDeclinationDeg,
+				thisAltitude);
+		
+		// use relative paths
+		File fileSimulationInput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
+		
+		// simulation input file
+		RWsiminXML thisSimulationInput = new RWsiminXML(fileSimulationInput.toString());
+		
+		// obtain parameters, settings MonteCarlo
+		boolean isMonteCarlo = thisSimulationOptions.getMonteCarloBool();
+		double numberOfMonteCarloDouble = thisSimulationOptions.getMonteCarloInteger();
+		int numberOfMonteCarloInt = (int) numberOfMonteCarloDouble;
+		
+		// never ballistic failure -- don't deploy parachute, or remove entirely
+		boolean isBallisticFailure = false;
+		
+		// writes all information to SimulationInput.xml
+		thisSimulationInput.WriteSimDataToXML(thisRocketDescription,
+				thisAtmosphereData, thisLaunchData,
+				isMonteCarlo, numberOfMonteCarloInt, isBallisticFailure);
+		
+		// edit information on uncertainty for monte carlo
+		File fileUncertainty = new File(SystemInfo.getUserApplicationDirectory(), SystemInfo.DATA_FOLDER + File.separator + SystemInfo.UNCERTAINTY_SIMULATION);
+		
+		// XML file for uncertainty
+		RWuncertainty thisUncertainty = new RWuncertainty(fileUncertainty.toString());
+		
+		// get values for uncertainty.xml
+		double sigmaLaunchDeclinationRad = thisSimulationOptions.getSigmaLaunchDeclination();
+		double sigmaLaunchDeclinationDeg = sigmaLaunchDeclinationRad / (2 * Math.PI) * 360;
+		double sigmaThrust = thisSimulationOptions.getSigmaThrust() / 100.0; // percentage!
+		
+		// set new values
+		thisUncertainty.setSigmaLaunchDeclination(sigmaLaunchDeclinationDeg);
+		thisUncertainty.setSigmaThrust(sigmaThrust);
+		
+		// update xml (update with previous set values)
+		thisUncertainty.UpdateXML();
 	}
 	
 	private RocketMotor getRocketMotor(RocketComponent thisRocketComponent, Simulation inputSimulation) {

@@ -1,19 +1,5 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %## ascentcalc.cpp
 
@@ -60,15 +46,15 @@ blastoff::blastoff(INTAB1 IT1,INTAB2 IT2,INTAB3 IT3,INTAB4 IT4,double d1,double 
 
 //Ascent::fly function*******************************************
 RKF_data ascent::fly(void){
-	
+
 	blastoff flight1(intab1,intab2,intab3,intab4,RBL,Ar,RL,X0,Kill);
-	
+
 	integrator* pflight1=&flight1;
 
 	RKF rocketint;
 	rocketint.max_it=2000;
 	rocketint.max_step=1.0;
-	
+
 	RKd1 = rocketint.RKF45(tt,z0,pflight1);
 	DatPop=true;
 	return(RKd1);
@@ -77,7 +63,7 @@ RKF_data ascent::fly(void){
 
 //ascent::SolveEqMotion function******************************************
 EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
-	
+
 	//Constants****************************************************************
 	const double gamma=1.4;		//Ratio if specific heats for air
 	const int    R=287;			//gas constant (cp-cv) for air
@@ -85,7 +71,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	const double pgl=0.8;		//Lower limit of prandtl glauert singularity (Mach #)
 	const double pgu=1.2;		//Upper limit of prandtl glauert singularity (Mach #)
 	const double mu=1.8e-5;		//Kinematic viscosity of air
-	const double G=6.6741e-11;  //Universal gravitational constant 
+	const double G=6.6741e-11;  //Universal gravitational constant
 	const vector3 YA0(1,0,0);	//Reference Yaw axis;
 	const vector3 PA0(0,1,0);	//Reference Pitch axis;
 	const vector3 RA0(0,0,1);   //Reference Roll axis;
@@ -128,7 +114,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	interp interper;
 	vector<double> t=intab1.time; //Get time data from input table
 	//t=scaladd(t,ig_delay); ig_delay not currently implemented. To be added later
-	
+
 	double Ti,Mi,Ixxi,Iyyi,Izzi,Ixyi,Ixzi,Iyzi,Xcmi,Cda1;
 
 	if (tt<=t.front()){
@@ -175,7 +161,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	vector<double> ztb=intab4.Alt; //Get altitude data from input table
 
 	double Wxi,Wyi,Wzi,rho,temp;
-	
+
 
 	if (zn<=ztb.back () && zn>=ztb.front()) {
 		Wxi=interper.one(ztb,intab4.Wx,zn);//Wind velocity vector
@@ -208,7 +194,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 		double Pressure=0.002488*pow((temp/216.6),-11.388);
 		rho=Pressure/287*temp;
 		*/
-	} 
+	}
 
 	//Calculate angle of attack (alpha)****************************************
 	vector3 Pt = vector3(Px,Py,Pz); // Rocket momentum vector
@@ -231,12 +217,12 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	vector3 Vt = Ut + Wt; // Rocket atmosphere relative velocity vector
 
 	qt = qt.norm();//Normalise the quaternion
-	
+
 	s=qt.e1;//quaternion scalar part;
 	vector3 vt(qt.e2,qt.e3,qt.e4);//quaternion vector part
 
 	matrix3x3 Rt=qt.to_matrix();//Transform quaternion to rotation matrix
-	
+
 	vector3 YA=Rt*YA0; // Yaw axis vector
 	vector3 PA=Rt*PA0; // Pitch axis vector
 	vector3 RA=Rt*RA0; // Roll axis vector
@@ -252,11 +238,11 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	// Calculate angle of attack alpha
 	if (Vtmag==0.0) {
 		alpha = 0.0;
-	} 
+	}
 	else {
 		double dprod = Vtnorm.dot(RAnorm);
 
-		if (dprod > 1) { 
+		if (dprod > 1) {
 			dprod = 1;
 		}
 
@@ -265,7 +251,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 		}
 
 		alpha = acos(dprod);
-	} 
+	}
 
 	double Re = rho*Utmag*RBL / mu; // Calculate Reynolds number
 
@@ -289,7 +275,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 		CdReBeg.push_back(temp.front());
 		temp.clear();
 	}
-	
+
 
 	if (alpha<an.back() && alpha>=0.0 && Re>=Ren.front() && Re<Ren.back()){
 		Cd = interper.two(an,Ren,Cddat,alpha,Re);
@@ -307,18 +293,18 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
       Cd = 0.5;
       cout << "Warning: Cd calculation is broken, check it, a:" << alpha << " R:" << Re << "\n" ;
 	}
-	
+
 	//INTAB 3*******************************************************************
 	double Cn = intab3.CNa; // Coefficient of normal force
 	double Cp = intab3.Xcp; // Centre of pressure
 	//*************************************************************************
-  
+
   //Prandtl-Glauert Compressibility Correction********************************
   double c = sqrt(gamma*R*temp); //Calculate local speed of sound
   double Ma = Vtmag / c;//Calculate Mach number
 
-  
-  
+
+
   if (Ma<cll){
     Cd=Cd;
     Cn=Cn;
@@ -335,43 +321,43 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
     //Cd=Cd/sqrt((pow(Ma,2))-1);
     //Cn=Cn/sqrt((pow(Ma,2))-1);
     Cd=Cd/sqrt(1-pow(pgl,2));
-    Cn=Cn/sqrt(1-pow(pgl,2));//High drag model of supersonic drag 
+    Cn=Cn/sqrt(1-pow(pgl,2));//High drag model of supersonic drag
   }
   else {
     cout<<"Error in prandtl glauert calculation\n";
   }
-  
+
   //**************************************************************************
 
   //CP AOA calculations*******************************************************
   matrix3x3 Itinv=Rt*Ibody.inv()*Rt.transpose();//Angular momentum to Angular velocity transform matrix
   double Xbar=Cp-Xcmi;//Torque moment arm
   vector3 omegat=Itinv*Lt;//Angular velocity vector
-  
+
   vector3 omegaax=omegat.norm();
   vector3 omegaax2=omegaax*(-1);
-  
+
   double omega= omegat.mag();
   double omegacp= omega*Xbar;
-  
+
   vector3 omegacpd=RAnorm.cross(omegaax);
   vector3 omegacpt=omegacpd*omegacp;
-  
+
   vector3 Vcpt=Vt+omegacpt;
-  
+
   double Vcptmag = Vcpt.mag();
   vector3 Vcptnorm = Vcpt.norm();
-  
+
   double alphacp;
-  
+
   if (Vcptmag == 0.0) {
   	alphacp = 0.0;
   }
-  else 
+  else
   {
 	double dprod = Vcptnorm.dot(RAnorm);
-    if (dprod > 1) 
-    { 
+    if (dprod > 1)
+    {
     	dprod = 1;
     }
 
@@ -386,7 +372,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 
 
   //**************************************************************************
-  
+
   //Force Vector Calculation**************************************************
   double mg=Mi*g; 				// Gravity
 
@@ -399,33 +385,33 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	}
 
   double FA=Cd*0.5*rho*pow(Utmag,2)*Ar;//Axial Drag
-  
+
   double FNcp=Cn*0.5*rho*(pow(Vcptmag,2))*Ar*sin(alphacp);//Normal Force
-  
+
   vector3 Tt = RAnorm * Ti; 	// Trust Vector
-  
+
   vector3 FAt=RAnorm*(-1)*FA;	// Axial drag vector
-  
+
   vector3 momaxcp = RAnorm.cross(Vcptnorm);//Axis of pitching motoion
   momaxcp = momaxcp.norm();//check normalized
-  
+
   vector3 FNn = RAnorm.cross(momaxcp);//Normal force direction vector;
   vector3 FNt=FNn*FNcp;// Normal Force Vector
   //**************************************************************************
-  
+
   //Torque vector calculations************************************************
   vector3 Tqf=momaxcp*FNcp*Xbar; //Torque due to normal force
   vector3 Tqm=omegaax2*Cda1*omega;//Torgue due to motor plume
   vector3 Tqp=Tqf+Tqm;
   //**************************************************************************
-  
-  
+
+
   //quaternion derivative*****************************************************
   double sdot = omegat.dot(vt)*(-1)*0.5;
   vector3 vtdot=((omegat*s)+(omegat.cross(vt)))*0.5;
   quaternion Qdot = qt.deriv(omegat);
   //**************************************************************************
-  
+
   //Launch Rail Constraints***************************************************
   vector3 Ft(0.0,0.0,0.0);//Total Force Vector
   vector3 Tqt(0.0,0.0,0.0);//Total Torque Vector
@@ -436,7 +422,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
   if ( (Ft.e3 <= 0.0) && ((Xt - X0).mag() < 0.1) ) {
 	  Ft.e1=0.0; Ft.e2=0.0; Ft.e3=0.0;
   } // Solid base to launch pad ** change zn < 0.1 in future
-  
+
   if ( (Xt-X0).mag()<=RL ) { } //Rocket constrained on rail
 
   else{
@@ -455,7 +441,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
   else if (xddot.mag() > 10e6) {
   	xddot = Ft.norm()*10e6;
   } */
-  
+
   //OUTPUT*******************************************************************
 	EqMotionData Output;
 	Output.alpha = alphacp;
@@ -476,7 +462,7 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	Output.Inertia = Ibody;
 	Output.Qdot = Qdot;
 
-	
+
   return(Output);
 };
 
@@ -507,4 +493,3 @@ vector<double> blastoff::step(double tt, vector<double> z){
 
 	return(Z);
 }
-

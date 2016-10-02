@@ -1,20 +1,5 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 %## intabread.cpp
 
 %## Author: S.Box
@@ -38,7 +23,7 @@ void INTAB1::FileFill(const char* filename){
 			istringstream myline (line);
 			for(int i=0;i<11;i++)
 			{
-				
+
 				getline (myline,number,'\t');
 				stringstream(number) >> fnum;
 
@@ -79,7 +64,7 @@ void INTAB1::FileFill(const char* filename){
 					default:
 						cout<<"Error in case number for intab1\n";
 				}
-				
+
 			}
 		}
     myfile.close();
@@ -98,7 +83,7 @@ void INTAB1::FileFill(const char* filename){
   }
 
 	else cout << "Unable to open file";
-	
+
 }
 
 void INTAB1::addDelay(double secs){
@@ -115,7 +100,7 @@ void INTAB2::FileFill(const char* filename){
 	int i=0;
 	vector<double>
 		cdtemp;
-	
+
 	ifstream myfile (filename);
 		if (myfile.is_open())
 		  {
@@ -139,23 +124,23 @@ void INTAB2::FileFill(const char* filename){
 						alpha.push_back(fnum);
 					else
 						cdtemp.push_back(fnum);
-						
+
 					on=1;
 				}
 				if (!cdtemp.empty())CD.push_back(cdtemp);
-				
+
 				i++;
 			}
 			myfile.close();
 			alpha.pop_back();
-			
-			
+
+
 		}
-		
+
 else cout << "Unable to open file";
 
 }
-				
+
 //***********************************************************************
 
 //INTAB3 Function********************************************************
@@ -175,8 +160,8 @@ void INTAB3::FileFill(const char* filename){
 			else if(i==1)Xcp=fnum;
 			else if (i>2)cout<<"Error too much data in INTAB3 file\n";
 
-				
-				
+
+
 			i++;
 		}
     myfile.close();
@@ -201,7 +186,7 @@ void INTAB4::FileFill(const char* filename){
 			istringstream myline (line);
 			for(int i=0;i<6;i++)
 			{
-				
+
 				getline (myline,number,'\t');
 				stringstream(number) >> fnum;
 
@@ -227,7 +212,7 @@ void INTAB4::FileFill(const char* filename){
 					default:
 						cout<<"Error in case number for intab1\n";
 				}
-				
+
 			}
 		}
     myfile.close();
@@ -241,7 +226,7 @@ void INTAB4::FileFill(const char* filename){
   }
 
 	else cout << "Unable to open file";
-	
+
 }
 //***********************************************************************
 
@@ -293,7 +278,7 @@ INTAB::INTAB(boost::property_tree::ptree IntabTree){
 vector<double> INTAB::TreeToVector(boost::property_tree::ptree Tree, std::string Key){
 	vector<string> DatString;
 	vector<double> Temp;
-	
+
 	string vecstring = Tree.get<string>(Key);
 	boost::algorithm::split(DatString,vecstring,boost::algorithm::is_any_of(",;"));
 	DatString.pop_back();
@@ -308,7 +293,7 @@ vector<double> INTAB::TreeToVector(boost::property_tree::ptree Tree, std::string
 vector<vector<double> > INTAB::TreeToMatrix(boost::property_tree::ptree Tree, std::string Key){
 	vector<string> LineString;
 	vector<vector<double> > Temp;
-	
+
 	string vecstring = Tree.get<string>(Key);
 	boost::algorithm::split(LineString,vecstring,boost::algorithm::is_any_of(";"));
 	LineString.pop_back();
@@ -325,6 +310,6 @@ vector<vector<double> > INTAB::TreeToMatrix(boost::property_tree::ptree Tree, st
 		}
 		Temp.push_back(Tsmall);
 	}
-	
+
 	return(Temp);
 }

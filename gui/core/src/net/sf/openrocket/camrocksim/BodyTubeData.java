@@ -49,18 +49,20 @@ public class BodyTubeData extends RockPartsData {
 		BuildFromXML(Nin);
 	}
 	
-	public BodyTubeData(double d1, double d2, double d3, double d4, double d5, String s1) {
-		length = d1;
-		ID = d2;
-		OD = d3;
-		Mass = d4;
-		Xp = d5;
-		Name = s1;
-		Body = true;
-		
-		BarrowmanBody();
-		XcomBody();
-		InertiaBody();
+	/*
+	 * building a body tube
+	 * 
+	 * @param length length [m]
+	 * @param inner_diameter [m]
+	 * @param outer_diameter [m]
+	 * @param mass [kg]
+	 * @param position [m]
+	 * @param name
+	 */
+	public BodyTubeData(double length, double inner_diameter, double outer_diameter,
+			double mass, double position, String name) {
+		PopulateBodyTube(length, inner_diameter, outer_diameter, mass,
+				position, name);
 	}
 	
 	//function for populating the class members
@@ -76,6 +78,8 @@ public class BodyTubeData extends RockPartsData {
 		BarrowmanBody();
 		XcomBody();
 		InertiaBody();
+		
+		built = true;
 	}
 	
 	//*Class functions

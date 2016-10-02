@@ -1,20 +1,5 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 %## MonteFy.cpp
 
 %## Author: S.Box
@@ -37,10 +22,10 @@ MonteFy::MonteFy(INTAB I1, string FileName)
 	CDpm = PropTree.get<double>("Uncertainty.StochasticCoefficients.CDp");
 	sigmaLaunchDeclination = PropTree.get<double>("Uncertainty.StochasticCoefficients.LaunchDeclination");
 	sigmaThrust = PropTree.get<double>("Uncertainty.StochasticCoefficients.Thrust");
-	
+
 	ReadInVector(&Mu,"Mu",15);
 	ReadInVector(&HScale,"HScale",121);
-	
+
 	ReadInMatrix(&Sigma,"Sigma",15,15);
 	ReadInMatrix(&EigenValue,"Eigenvalues",15,15);
 	ReadInMatrix(&EigenVector,"Eigenvectors",15,15);
@@ -49,7 +34,7 @@ MonteFy::MonteFy(INTAB I1, string FileName)
 }
 
 void MonteFy::ReadInVector(boost::numeric::ublas::vector<double> * V1,string Name, int d1){
-	
+
 	vector<string> MuS;
 
 	string XMLString = "Uncertainty.StochasticCoefficients.";
@@ -63,21 +48,21 @@ void MonteFy::ReadInVector(boost::numeric::ublas::vector<double> * V1,string Nam
 
 	unsigned i = 0;
 	BOOST_FOREACH(string s, MuS){
-	
+
 		D1(i) = boost::lexical_cast<double>(s);
 		i++;
 	}
 	*V1=D1;
-	
+
 }
 
 void MonteFy::ReadInMatrix(boost::numeric::ublas::matrix<double> * M1,string Name,int d1, int d2){
 	vector<string> Line;
 	vector<string> Element;
-	
+
 	string XMLstring = "Uncertainty.StochasticCoefficients.";
 	XMLstring += Name;
-	
+
 	string SigmaLS = PropTree.get<string>(XMLstring);
 	boost::algorithm::split(Line,SigmaLS,boost::algorithm::is_any_of(";"));
 	Line.pop_back();
@@ -94,7 +79,7 @@ void MonteFy::ReadInMatrix(boost::numeric::ublas::matrix<double> * M1,string Nam
 		}
 		i++;
 	}
-	
+
 	*M1 = S1;
 
 
@@ -105,19 +90,19 @@ INTAB MonteFy::Wiggle(void){
 		using namespace boost::numeric::ublas;
 
 		boost::numeric::ublas::vector<double> Wxp,Wyp;
-		
+
 		Wxp = prod(gsamp(),trans(PHI));
 		Wyp = prod(gsamp(),trans(PHI));
-		
+
 		double CDc = SampleNormal(1, CDm);
 		double CoPc = SampleNormal(1, CoPm);
 		double CNc = SampleNormal(1, CNm);
-		// parachute 
+		// parachute
 		double CDdc = SampleNormal(1, CDdm);
 		double CDpc = SampleNormal(1, CDpm);
 		// thrust (truncated)
 		double Thrustc = SampleNormalTruncated(1, sigmaThrust, 1.0);
-		
+
 		std::vector<double> Wx,Wy,hscale,X,Y;
 		Wx = ToStdVec(Wxp);
 		Wy = ToStdVec(Wyp);
@@ -137,7 +122,7 @@ INTAB MonteFy::Wiggle(void){
 		vecop Vop;
 		TempTab.intab4.Wx = Vop.vecadd(TempTab.intab4.Wx, X);
 		TempTab.intab4.Wy = Vop.vecadd(TempTab.intab4.Wy, Y);
-		
+
 
 		// vary drag coefficient
 		CD_it = 0;
@@ -149,11 +134,11 @@ INTAB MonteFy::Wiggle(void){
 		// vary normal coefficient and centre of pressure
 		TempTab.intab3.CNa = TempTab.intab3.CNa*CNc;
 		TempTab.intab3.Xcp = TempTab.intab3.Xcp*CoPc;
-		
+
 		// vary parachute data
 		CD_it = 0;
 		BOOST_FOREACH(double pcd,TempTab.paratab.CdA){
-			
+
 			if(CD_it == 0){
 				TempTab.paratab.CdA[CD_it]=pcd*CDdc;
 			}
@@ -180,7 +165,7 @@ INTAB MonteFy::Wiggle(void){
 		return(TempTab);
 	}
 
-	
+
 }
 
 INTAB MonteFy::WiggleProtect(INTAB thisIntab){
@@ -204,7 +189,7 @@ INTAB MonteFy::WiggleProtect(INTAB thisIntab){
 		else if (thrust1 <= 0) {
 			thrust1 = 0.0001;
 		}
-		
+
 		// overwrite
 		thisIntab.intab1.Thrust[intLoop] = thrust1;
 		intLoop++; // next point
@@ -213,7 +198,7 @@ INTAB MonteFy::WiggleProtect(INTAB thisIntab){
 	// INTAB2
 
 	intLoop = 0;
-	
+
 	BOOST_FOREACH(vector<double> cd2, thisIntab.intab2.CD) {
 
 		int intLoop2 = 0;
@@ -275,14 +260,14 @@ boost::numeric::ublas::vector<double> MonteFy::gsamp(void){
 		coeffs = prod(randn,SqEigenValue);
 
 		boost::numeric::ublas::vector<double> Out (Dim);
-		
+
 		Out = Mu + prod(coeffs,trans(EigenVector));
 
 		return(Out);
 	}
 }
 
- 
+
 double MonteFy::SampleNormal (double mean, double sigma)
 {
 	{
@@ -290,13 +275,13 @@ double MonteFy::SampleNormal (double mean, double sigma)
 		// Create a Mersenne twister random number generator
 		// that is seeded once with #seconds since 1970
 		static mt19937 rng(static_cast<unsigned> (std::time(0)));
-	 
+
 		// select Gaussian probability distribution
 		normal_distribution<double> norm_dist(mean, sigma);
-	 
+
 		// bind random number generator to distribution, forming a function
 		variate_generator<mt19937&, normal_distribution<double> >  normal_sampler(rng, norm_dist);
-	 
+
 		double Out = normal_sampler();
 		// sample from the distribution
 		return(Out);
@@ -310,13 +295,13 @@ double MonteFy::SampleNormalTruncated (double mean, double sigma, double truncat
 		// Create a Mersenne twister random number generator
 		// that is seeded once with #seconds since 1970
 		static mt19937 rng(static_cast<unsigned> (std::time(0)));
-	 
+
 		// select Gaussian probability distribution
 		normal_distribution<double> norm_dist(mean, sigma);
-	 
+
 		// bind random number generator to distribution, forming a function
 		variate_generator<mt19937&, normal_distribution<double> >  normal_sampler(rng, norm_dist);
-	 
+
 		double Out = normal_sampler();
 		// sample from the distribution
 

@@ -1,27 +1,12 @@
 /*
 %## Copyright (C) 2008 S.Box
-%## 
-%## This program is free software; you can redistribute it and/or modify
-%## it under the terms of the GNU General Public License as published by
-%## the Free Software Foundation; either version 2 of the License, or
-%## (at your option) any later version.
-%## 
-%## This program is distributed in the hope that it will be useful,
-%## but WITHOUT ANY WARRANTY; without even the implied warranty of
-%## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%## GNU General Public License for more details.
-%## 
-%## You should have received a copy of the GNU General Public License
-%## along with this program; if not, write to the Free Software
-%## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 %## vmaths.cpp
 
 %## Author: S.Box
 %## Created: 2008-05-27
 */
 
-/*This file contains three classes "vector2", "vector3" and "quaternion" 
+/*This file contains three classes "vector2", "vector3" and "quaternion"
 it also contains functions for vector and quaternion addition, subtraction,
 multiplication, dot and cross products and functions to return the magnitude
 of a vector and normalize a vector.*/
@@ -293,7 +278,7 @@ bearing vector2::to_bearing(){
 
 	temp.range=sqrt(pow(e1,2)+pow(e2,2));
 
-	return(temp); 
+	return(temp);
 }
 
 //******************************************************
@@ -306,7 +291,7 @@ vector3 vector3::operator *(matrix3x3 b){
 	temp.e1=e1*b.e11+e2*b.e21+e3*b.e31;
 	temp.e2=e1*b.e12+e2*b.e22+e3*b.e32;
 	temp.e3=e1*b.e13+e2*b.e23+e3*b.e33;
-	
+
 	return(temp);
 };
 
@@ -392,7 +377,7 @@ matrix3x3 matrix3x3::cofactor(void){
 };
 
 matrix3x3 matrix3x3::inv(void){
-	matrix3x3 temp=*this; 
+	matrix3x3 temp=*this;
 	double dettemp;
 	matrix3x3 coftemp;
 	matrix3x3 tcoftemp;
@@ -402,7 +387,6 @@ matrix3x3 matrix3x3::inv(void){
 	dettemp=temp.det();
 
 	out=tcoftemp*(1/dettemp);
-	
+
 	return(out);
 };
-
