@@ -8,44 +8,41 @@
 
 \usepackage[]{cleveref} % run last [noabbrev]
 
-\title{Generating rocket flight trajectories with the Cambridge Rocketry Simulator}
+\title{The Cambridge Rocketry Simulator User Guide}
 
-% \date{\today}
-% \author{Willem Eerland, Postgraduate researcher\\ Transportation Research Group, Southampton University
-% \and
-% Simon Box, Lecturer\\ Transportation Research Group, Southampton University}
+\author{Willem Eerland}
+
+\date{\emph{last updated:} \today}
+
+% custom command for folders and files
+\newcommand{\loc}[1]{{\footnotesize \textsc{#1}}}
+
+\usepackage{tikz}
+\usetikzlibrary{trees}
+
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{closed}=[dashed, fill=gray!10]
 
 \begin{document}
 
-
 \maketitle
 
-
 \newpage
-
 
 \tableofcontents
 
-
 \newpage
-
 
 \section{Introduction}
 
-
-
-
 This report provides an overview of the various components, and how these can be used to generate rocket trajectories. The program itself is published under the GNU General Public License v3.0 (GPLv3), as the Graphical User Interface (GUI) is taken from an open-source rocket simulator, OpenRocket. The latest version of the Cambridge Rocketry Simulator can be found at \url{https://sourceforge.net/projects/camrocsim/}.
 
-The report starts in \cref{sec:design}, where all parts available for the rocket design are described. This also includes the rocket motor, and the corresponding thrust curve in \cref{subsec:motor}. Next, \cref{sec:simulation} discusses the setting of launch conditions. Finally, \cref{sec:export} explains how the rocket design and launch conditions are used to produce trajectories. 
+The report starts in \cref{sec:design}, where all parts available for the rocket design are described. This also includes the rocket motor, and the corresponding thrust curve in \cref{subsec:motor}. Next, \cref{sec:simulation} discusses the setting of launch conditions. Finally, \cref{sec:export} explains how the rocket design and launch conditions are used to produce trajectories.
 
-% \newpage
-%
 \section{Designing a rocket} \label{sec:design}
 
-
 % intro
-This section describes how a single stage rocket is build. The components in this section are added in the tab \emph{Rocket design}, except the rocket motor, which is added in the tab \emph{Motors \& Configuration}. 
+This section describes how a single stage rocket is build. The components in this section are added in the tab \emph{Rocket design}, except the rocket motor, which is added in the tab \emph{Motors \& Configuration}.
 %
 While there are no restrictions in the software, it is advised that only design with positive stability values are launched (note the stability value in the upper-right corner of the rocket drawing, seen in \cref{fig:tab-design}). When simulating a rocket that is unstable by design, the output trajectories will reflect this.
 %
@@ -53,18 +50,17 @@ Furthermore, a rocket cannot be launched without a rocket motor. The external pa
 %
 By convention the rocket design is built up starting with the most upstream component -- that is -- the nose cone.
 
-
-\begin{figure}[]
-  \caption{The \emph{Rocket design} tab.}
-  \label{fig:tab-design}
+\begin{figure}
   \centering
     \includegraphics[width=0.9\textwidth]{r-design.png}
+  \caption{The \emph{Rocket design} tab.}
+  \label{fig:tab-design}
 \end{figure}
 
 \subsection{Nose cone}
 
 The nose cone fits at the top of the rocket, and has three options as a shape: ogive, parabolic, and conical. Furthermore, properties such as length, base diameter, thickness, and density. The mass is determined automatically based on the shape and density, but can be overridden in the tab \emph{override}. If desired, a shoulder can be added in the \emph{Shoulder} tab. The shoulder connects the nose cone with the body tube.
-% 
+%
 The centre of pressure is calculated according to the Barrowman equations seen in \cref{table:barrowman}.
 
 \begin{table}[]
@@ -98,7 +94,7 @@ The inner tube is an internal component and only influences the centre of gravit
 
 \subsection{Bulkhead}
 
-The bulkhead is an internal component and is very similar to the inner tube, except it is solid all the way through. Because of this, only the parameters diameter, thickness, and density are available. 
+The bulkhead is an internal component and is very similar to the inner tube, except it is solid all the way through. Because of this, only the parameters diameter, thickness, and density are available.
 
 \subsection{Parachute}
 
@@ -106,53 +102,338 @@ The parachute is required to activate the parachute model. Before deployment, it
 
 \subsection{Mass component} \label{subsec:masscomp}
 
-Any component that has no specific shape can be modelled as a mass component. The properties are similar to the bulkhead, it has a length, diameter, and a mass. It also has a radial position, found in the \emph{Radial position} tab. 
+Any component that has no specific shape can be modelled as a mass component. The properties are similar to the bulkhead, it has a length, diameter, and a mass. It also has a radial position, found in the \emph{Radial position} tab.
 
 \subsection{Rocket motor} \label{subsec:motor}
 
-Finally, the rocket needs a rocket motor to fly. The rocket motor is added to any part that is set as a mount-point, a property available for both the body tube and the inner tube. The rocket motor is added in the top tab \emph{Motors \& Configuration}, seen in \cref{fig:motor}. It takes the shape of a cylinder, and therefore has the properties length, diameter, and a mass. 
-Where both a `loaded mass' and an `empty mass' are defines. These are respectively the mass of the motor before and after the propellant is burned. 
+Finally, the rocket needs a rocket motor to fly. The rocket motor is added to any part that is set as a mount-point, a property available for both the body tube and the inner tube. The rocket motor is added in the top tab \emph{Motors \& Configuration}, seen in \cref{fig:motor}. It takes the shape of a cylinder, and therefore has the properties length, diameter, and a mass.
+Where both a `loaded mass' and an `empty mass' are defines. These are respectively the mass of the motor before and after the propellant is burned.
 In order to model the thrust as a function of time, a thrust versus time curve needs to be included. This curve has to go through the point $(0,0)$ at the start, and through the point $(t_{end},0)$ at the end. The interface to edit a rocket motor is seen in \cref{fig:motor-edit}.
 
 It is possible to add different configurations to the rocket, with varying rocket engines, and/or parachute deployment.
 
-\begin{figure}[]
-  \caption{The \emph{Motors \& Configuration} tab.}
-  \label{fig:motor}
+\begin{figure}
   \centering
     \includegraphics[width=0.9\textwidth]{r-motor.png}
+  \caption{The \emph{Motors \& Configuration} tab.}
+  \label{fig:motor}
 \end{figure}
 
-\begin{figure}[]
-  \caption{Editing a motor via \emph{Edit motor}.}
-  \label{fig:motor-edit}
+\begin{figure}
   \centering
     \includegraphics[width=0.9\textwidth]{r-motor-edit.png}
+  \caption{Editing a motor via \emph{Edit motor}.}
+  \label{fig:motor-edit}
 \end{figure}
 
 \section{Setting the launch conditions} \label{sec:simulation}
 
-\begin{figure}[]
-  \caption{The \emph{Simulation} tab.}
-  \label{fig:simulation}
+\begin{figure}
   \centering
     \includegraphics[width=0.9\textwidth]{r-simulation.png}
+  \caption{The \emph{Simulation} tab.}
+  \label{fig:simulation}
 \end{figure}
 
 Once the rocket configuration is complete, the specific launch conditions can be set in the final tab \emph{simulations}, seen in \cref{fig:simulation}. For each simulation it is possible to set-up multiple launch conditions. Each simulation loads a specific atmosphere model, consisting of the wind speed, density, and temperature. And it includes the uncertainties to be taken into account while running the simulation. The options directly available to the user are the launch angle and the thrust. These parameters are available when pressing \emph{Edit simulation}.
-The uncertainty in the launch angle allows a range of angles to be evaluated. The value seen in the program provides a measure of maximum deviation from the average. 
+The uncertainty in the launch angle allows a range of angles to be evaluated. The value seen in the program provides a measure of maximum deviation from the average.
 The uncertainty in the thrust is included as a multiplier to the thrust curve, moving the entire thrust curve up or down by a maximum percentage set in the program. For instance, setting the parameter to $2$ moves the entire curve up or down by a maximum of $2\%$.
 
-While there are other uncertain quantities included in the simulation, such as the drag coefficient, normal coefficient, and centre of pressure. These are included in the file \emph{Uncertainty.xml}, and are not available as user input. These parameters are set based on the confidence in the models used and should not be altered without a good reason.
+While there are other uncertain quantities included in the simulation, such as the drag coefficient, normal coefficient, and centre of pressure. These are included in the file \loc{Uncertainty.xml}, and are not available as user input. These parameters are set based on the confidence in the models used and should not be altered without a good reason.
 
 Finally, it is possible to run the simulation multiple times to explore all possible options. This parameter is called the number of Monte Carlo runs. In theory, there is no minimum number, as only an infinite number of runs assure that all options are covered. In practice, it has a lot to do with the uncertainty in the input domain. The input domain is vastly greater if there is an input angle of plus/minus 10 degrees, or an input angle of plus/minus 1 degree. It is left the user to decide what number of trajectories is sufficient.
 
 \section{Producing trajectories} \label{sec:export}
 
-Once all the parameters are set for a simulation, the process can be started by pressing \emph{Run simulation}. This is in the same tab \emph{simulations}, seen in \cref{fig:simulation}. After pressing \emph{Run simulation}, a window will pop-up to show the progress. The duration of each individual run depends on how far the rocket travels, and the total duration has a linear relation with the number of simulation (the number of Monte Carlo runs). In the background the program \emph{rocketc.exe} takes the files \emph{Uncertainty.xml} and \emph{SimulationInput.xml} and produces the output in \emph{SimulationOutput.xml}. The resulting trajectories can be viewed by pressing \emph{Plot simulation}. The order of producing trajectories after creating a new, or altering an existing design or configuration is:
+Once all the parameters are set for a simulation, the process can be started by pressing \emph{Run simulation}. This is in the same tab \emph{simulations}, seen in \cref{fig:simulation}. After pressing \emph{Run simulation}, a window will pop-up to show the progress. The duration of each individual run depends on how far the rocket travels, and the total duration has a linear relation with the number of simulation (the number of Monte Carlo runs). In the background the program \loc{rocketc.exe} takes the files \loc{Uncertainty.xml} and \loc{SimulationInput.xml} and produces the output in \loc{SimulationOutput.xml}. The resulting trajectories can be viewed by pressing \emph{Plot simulation}. The order of producing trajectories after creating a new, or altering an existing design or configuration is:
 \begin{enumerate}
 \item Run simulation
 \item Plot simulation
 \end{enumerate}
+
+\section{Producing rocket trajectories via an example rocket}
+
+Producing rocket trajectories with minimal effort is made easy by using one of the example rockets. This section demonstrates how to do exactly that. First, when starting the program, please navigate to and click
+\emph{File} \textsc{->} \emph{Open Example...} \textsc{->} \emph{simple-rocket}. A screen will pop-up asking for a description, after which the rocket is displayed as seen in \cref{fig:crs_1}.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.9\textwidth]{crs_1_new_rocket.png}
+  \caption{Create a new rocket.}
+  \label{fig:crs_1}
+\end{figure}
+
+This example rocket comes with pre-loaded launch and flight conditions. These are visible by clicking on the \emph{Simulations} tab at the top. This tab has been marked with red in \cref{fig:crs_2}. There are two configurations available, \emph{With wind} and \emph{No wind}. The output trajectories seen in \cref{fig:crs_31,fig:crs_32,fig:crs_33} has been produced by selecting \emph{With wind}, then \emph{Run simulation}, and once this is completed, by pressing \emph{Plot simulation}. All of these buttons have been marked in \cref{fig:crs_2}.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.9\textwidth]{crs_2_select_simulation.png}
+  \caption{Selecting specific conditions and running the simulation.}
+  \label{fig:crs_2}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.9\textwidth]{crs_3_output_1.png}
+  \caption{First output figure.}
+  \label{fig:crs_31}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.9\textwidth]{crs_3_output_2.png}
+  \caption{Second output figure.}
+  \label{fig:crs_32}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.9\textwidth]{crs_3_output_3.png}
+  \caption{Third output figure.}
+  \label{fig:crs_33}
+\end{figure}
+
+\section{Accessing the core simulator from the command-line and XML structure}
+
+The Cambridge Rocketry Simulator actually consists of three separate components, where the core, the simulator that takes care of all the physics, takes an XML file as input, and produces an XML file as output. Because of this, the input XML can actually be generated or manipulated manually using a notepad. In a similar fashion, the output XML is also readable by any editor.
+
+
+command for Cpp
+command for Python
+
+
+\begin{figure}
+  \centering
+    \begin{tikzpicture}[%
+      grow via three points={one child at (0.5,-0.7) and
+      two children at (0.5,-0.7) and (0.5,-1.4)},
+      edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+      \node {SimulationInput}
+        child { node {Time, string}}
+        child { node {Function, string}}
+        child { node {SimulationSettings}
+          child { node {BallisticFailure, bool}}
+          child { node {ShortData, bool}}
+          child { node {NumberOfIterations, int}}
+          child { node {MaxTimeSpan, int}}
+        }
+        child [missing] {}
+        child [missing] {}
+        child [missing] {}
+        child [missing] {}
+        child { node {LaunchSettings}
+          child { node {Eastings, double}}
+          child { node {Northings, double}}
+          child { node {Altitude, double}}
+          child { node {LaunchRailLength, double}}
+          child { node {LaunchAzimuth, double}}
+          child { node {LaunchDeclination, double}}
+        }
+        child [missing] {}
+        child [missing] {}
+        child [missing] {}
+        child [missing] {}
+        child [missing] {}
+        child [missing] {}
+        child { node {StageTransition}
+          child { node {SeparationTime, double}}
+          child { node {IgnitionDelay, double}}
+        }
+        child [missing] {}
+        child [missing] {}
+        child { node [closed] {INTAB\_TR}}
+        child { node [closed] {INTAB\_BS}}
+        child { node [closed] {INTAB\_US}};
+    \end{tikzpicture}
+  \caption{SimulationInput.xml}
+  \label{fig:input_simulation_xml}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \begin{tikzpicture}[%
+      grow via three points={one child at (0.5,-0.7) and
+      two children at (0.5,-0.7) and (0.5,-1.4)},
+      edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+      \node {INTAB\_\textbf{xx}}
+          child { node {intab1}
+            child { node {time, array[double]}}
+            child { node {Thrust, array[double]}}
+            child { node {Mass, array[double]}}
+            child { node {Ixx, array[double]}}
+            child { node {Iyy, array[double]}}
+            child { node {Izz, array[double]}}
+            child { node {Ixy, array[double]}}
+            child { node {Ixz, array[double]}}
+            child { node {Iyz, array[double]}}
+            child { node {CentreOfMass, array[double]}}
+            child { node {ThrustDampingCoefficient, array[double]}}
+          }
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child { node {intab2}
+            child { node {AngleOfAttack, array[double]}}
+            child { node {ReynoldsNumber, array[double]}}
+            child { node {CD, array[double,double]}}
+          }
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child { node {intab3}
+            child { node {CN, double}}
+            child { node {CentreOfPressure, double}}
+          }
+          child [missing] {}
+          child [missing] {}
+          child { node [closed] {intab4}}
+          child { node [closed] {LengthAndArea}}
+          child { node [closed] {ParachuteData}};
+    \end{tikzpicture}
+  \caption{SimulationInput.xml}
+  \label{fig:input_simulation_xml_intab_1}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \begin{tikzpicture}[%
+      grow via three points={one child at (0.5,-0.7) and
+      two children at (0.5,-0.7) and (0.5,-1.4)},
+      edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+      \node {INTAB\_\textbf{xx}}
+          child { node [closed] {intab1}
+          }
+          child { node [closed] {intab2}
+          }
+          child { node [closed] {intab3}
+          }
+          child { node {intab4}
+            child { node {Altitude, array[double]}}
+            child { node {XWind, array[double]}}
+            child { node {YWind, array[double]}}
+            child { node {ZWind, array[double]}}
+            child { node {AtmosphericDensity, array[double]}}
+            child { node {AtmosphericTemperature, array[double]}}
+          }
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child { node {LengthAndArea}
+            child { node {RocketLength, double}}
+            child { node {RocketXsectionArea, double}}
+          }
+          child [missing] {}
+          child [missing] {}
+          child { node {ParachuteData}
+            child { node {ParachuteSwitchAltitude, double}}
+            child { node {ParachuteCDxA, double}}
+          }
+          child [missing] {}
+          child [missing] {};
+    \end{tikzpicture}
+  \caption{SimulationInput.xml}
+  \label{fig:input_simulation_xml_intab_2}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \begin{tikzpicture}[%
+      grow via three points={one child at (0.5,-0.7) and
+      two children at (0.5,-0.7) and (0.5,-1.4)},
+      edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+      \node {SimulationOutput}
+        child { node {Version, string}}
+        child { node {Time, string}}
+        child { node {Function, string}}
+        child { node {Runs}
+          child { node {Run}
+            child { node {Number, int}}
+            child { node {LowerStage}
+              child { node {Number, int}}
+              child { node {FlightStats}
+                child { node {Apogee, array[double]}}
+                child { node {Landing, array[double]}}
+                child { node {Events, array[double]}}
+                child { node {AscentTime, double}}
+              }
+              child [missing] {}
+              child [missing] {}
+              child [missing] {}
+              child [missing] {}
+              child { node {FlightData}
+                child { node {Time, array[double]}}
+                child { node {Position, array[double, double]}}
+              }
+              child [missing] {}
+              child [missing] {}
+            }
+            child [missing] {}
+            child [missing] {}
+            child [missing] {}
+            child [missing] {}
+            child [missing] {}
+            child [missing] {}
+            child [missing] {}
+            child [missing] {}
+            child [missing] {}
+            child { node [closed] {UpperStage (identical to LowerStage)}}
+          }
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child [missing] {}
+          child {node [closed] {Run (repeats)}}
+        };
+    \end{tikzpicture}
+  \caption{SimulationOutput.xml}
+  \label{fig:output_simulation_xml}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \begin{tikzpicture}[%
+      grow via three points={one child at (0.5,-0.7) and
+      two children at (0.5,-0.7) and (0.5,-1.4)},
+      edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+      \node {Uncertainty}
+        child { node {Type}}
+        child { node {StochasticCoefficients}
+          child { node {CD, double}}
+          child { node {CoP, double}}
+          child { node {CN, double}}
+          child { node {CDd, double}}
+          child { node {CDp, double}}
+          child { node {LaunchDeclination, double}}
+          child { node {Thrust, double}}
+          child { node {Mu, double}}
+          child { node {HScale, array[double]}}
+          child { node {Sigma, array[double,double]}}
+          child { node {Eigenvectors, array[double,double]}}
+          child { node {Eigenvalues, array[double]}}
+          child { node {PHI, array[double,double]}}
+        };
+    \end{tikzpicture}
+  \caption{Uncertainty.xml}
+  \label{fig:uncertainty_xml}
+\end{figure}
 
 \end{document}
