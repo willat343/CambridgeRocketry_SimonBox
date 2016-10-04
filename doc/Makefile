@@ -1,6 +1,6 @@
 # use this compile command
 LATEX=pdflatex
-TARGET=report
+TARGET=user_guide
 
 all: build clean
 

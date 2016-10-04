@@ -2,6 +2,8 @@
 
 \usepackage[hidelinks]{hyperref} % run first
 
+\usepackage[a4paper, width=14cm]{geometry}
+
 \usepackage[english]{babel}
 \usepackage{graphicx}
 \graphicspath{ {./figures/} }
@@ -193,14 +195,122 @@ This example rocket comes with pre-loaded launch and flight conditions. These ar
   \label{fig:crs_33}
 \end{figure}
 
-\section{Accessing the core simulator from the command-line and XML structure}
+\section{Command-line access and XML structure}
 
 The Cambridge Rocketry Simulator actually consists of three separate components, where the core, the simulator that takes care of all the physics, takes an XML file as input, and produces an XML file as output. Because of this, the input XML can actually be generated or manipulated manually using a notepad. In a similar fashion, the output XML is also readable by any editor.
 
+% command line access CPP
+The simulator core can be invoked by the command line using \loc{./rocketc SimulationInput.xml}, where \loc{SimulationInput.xml} is the default value and can left out, or be replaced by another input XML.
+%
+In a similar fashion, the Python module, used for plotting the graphs can be invoked with \loc{python FlightPlotter.py SimulationOutput.xml}, where \loc{SimulationOutput.xml} is not the default value and needs to be specified.
 
-command for Cpp
-command for Python
+% structure xml
+The structure belonging to input XML file is visible in \cref{fig:input_simulation_xml}, where due to space restriction the cases {INTAB\_TR} (transition, complete rocket), {INTAB\_BS} (booster stage), {INTAB\_US} (upper stage) are collapsed. They have identical properties, therefore, they are shown as {INTAB\_xx} in \cref{fig:input_simulation_xml_intab_1,fig:input_simulation_xml_intab_2}, which represents the expanded tree for each of these.
+% extra information
+Information on the expected values of the parameters is available in \cref{tab:input_simulation_xml,tab:input_simulation_xml_1}.
 
+In a similar fashion, the tree of the output XML file is available in \cref{fig:output_simulation_xml}, with a description of the parameters in \cref{tab:output_simulation_xml}.
+Finally, the XML file holding the uncertainty information of the input parameters has a tree structure as seen in \cref{fig:output_simulation_xml}, with a description of the parameters in \cref{tab:uncertainty_xml}.
+
+\begin{table}
+  \centering
+  \caption{InputSimulation.xml}
+  \label{tab:input_simulation_xml}
+  \begin{tabular}{l p{8cm}}
+    \textbf{name} & \textbf{description} \\
+    \hline \\
+    Time & timestamp \\
+    Function & type of simulation; OneStageFlight, TwoStageFlight,  OneStageMonte, or TwoStageMonte \\
+    BallisticFailure & deploy parachute \\
+    ShortData & include more information in output \\
+    NumberOfIterations & monte carlo setting \\
+    MaxTimeSpan & maximum number of steps per run \\
+    Eastings & start location [m] \\
+    Nortings & start location [m] \\
+    Altitude & start location [m] \\
+    LaunchRailLength & launch rail length [m] \\
+    LaunchAzimuth & launch azimuth angle [deg] \\
+    LaunchDeclination & launch declination angle [deg] \\
+    SeparationTime & timing to release booster stage [s] \\
+    IgnitionDelay & activate second stage after separation [s] \\
+  \end{tabular}
+\end{table}
+
+\begin{table}
+  \centering
+  \caption{InputSimulation.xml, INTAB\_\emph{xx}}
+  \label{tab:input_simulation_xml_1}
+  \begin{tabular}{l p{8cm}}
+    \textbf{name} & \textbf{description} \\
+    \hline \\
+    time & timesteps, sets size of all parameters [s] \\
+    Thrust & thrust as a function of time [N] \\
+    Mass & mass as a function of time [kg] \\
+    I\emph{xx} & ineratia as a function of time \\
+    CentreOfMass & centre of mass from the nose as a function of time [m] \\
+    ThrustDampingCoefficient & thrust damping coefficient as a function of time \\
+    AngleOfAttack & angle of attack [deg] \\
+    ReynoldsNumber & Reynolds number [-] \\
+    CD & drag coefficient as a function of  \\
+     & angle of attack and Reynolds number [-] \\
+    Cn & normal coefficient [-] \\
+    CentreOfPressure & centre of pressure from the nose [m] \\
+    Altitude & altitude [m] \\
+    Xwind & \emph{x}-direction wind as a function of altitude [m/s] \\
+    AtmosphericDensity & atmopsheric density as a function of altitude [kg/$m^3$] \\
+    AtmosphericTemperature & temperature as a function of altitude [K] \\
+    RocketLength & total length of the rocket [m] \\
+    RocketXsectionArea & frontal area of rocket [$m^2$] \\
+    ParachuteSwitchAltitude & altitude to activate parachute [m] \\
+    ParachuteCDxA & parachute drag coefficient times area [$m^2$] \\
+  \end{tabular}
+\end{table}
+
+\begin{table}
+  \centering
+  \caption{OutputSimulation.xml}
+  \label{tab:output_simulation_xml}
+  \begin{tabular}{l p{8cm}}
+    \textbf{name} & \textbf{description} \\
+    \hline \\
+    Version & identifier for format \\
+    Time & identifier for data-set \\
+    Function & type of simulation; OneStageFlight, TwoStageFlight,  OneStageMonte, or TwoStageMonte \\
+    Number & number of the run \\
+    Apogee & x, y, z position of apogee [m] \\
+    Landing & x, y, z position of landing [m] \\
+    Events & timing of events; activation second stage,  \\
+     & apogee, and parachute deployment [s] \\
+    AscentTime & timing of apogee [s] \\
+    Time & time [s] \\
+    Position & x, y, z position as a function of time [m] \\
+  \end{tabular}
+\end{table}
+
+\begin{table}
+  \centering
+  \caption{Uncertainty.xml}
+  \label{tab:uncertainty_xml}
+  \begin{tabular}{l p{11cm}}
+    \textbf{name} & \textbf{description} \\
+    \hline \\
+    Type & \\
+    CD & drag coefficient standard deviation, varied as a percentage [-] \\
+    CoP & centre of pressure standard deviation, varied as a percentage [-] \\
+    CN & normal coefficient standard deviation, varied as a percentage [-] \\
+    CDd & primary (first) parachute drag coefficient standard deviation, varied as a percentage [-] \\
+    CDp & secondary (any after the first) parachute drag coefficient standard deviation, varied as a percentage [-] \\
+    LaunchDeclination & launch declination standard deviation, varied as an absolute value [deg] \\
+    Thrust & thrust curve standard deviation, by moving an entire curve up and down [N] \\
+    \multicolumn{2}{l}{\textbf{parameters for wind profile} applied in \loc{MonteFy.cpp} } \\
+    Mu & average wind speed [m/s] \\
+    HScale & altitudes at which to evaluate the wind profile [m] \\
+    Sigma & covariance matrix of the basis functions \\
+    Eigenvectors & eigenvectors of the covariance matrix Sigma \\
+    Eigenvalues & eigenvalues of the covariance matrix Sigma \\
+    PHI & basis functions to transform between parameter- and real space \\
+  \end{tabular}
+\end{table}
 
 \begin{figure}
   \centering
@@ -248,6 +358,8 @@ command for Python
   \caption{SimulationInput.xml}
   \label{fig:input_simulation_xml}
 \end{figure}
+
+
 
 \begin{figure}
   \centering
