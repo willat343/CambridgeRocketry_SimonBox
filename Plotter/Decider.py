@@ -16,15 +16,24 @@ import Rdata as Rd
 import PlotBase as Pb
 
 class Decider:
+    """This class decides which subfunctions to use, based on Function element
+    """
 
     def __init__(self,Filename):
+        """Initialise the class with a Filename and Function found in xml
+
+        Keyword arguments:
+        Filename -- name of the XML file
+        """
         self.Filename = Filename
         DOM = md.parse(Filename)
         Fnode = DOM.getElementsByTagName("Function")[0]
         self.Function = Fnode.firstChild.data
-        
+
 
     def FlightPlots(self):
+        """This function links the name of the Function (set at init), to the relevant function.
+        """
         {
         "OneStageFlight":self.OSFProcess,
         "TwoStageFlight":self.TSFProcess,
@@ -35,6 +44,8 @@ class Decider:
 
 
     def OSFProcess(self):
+        """Produces figure for one stage flight, nominal trajectory.
+        """
         Data = Rd.RdataOSF(self.Filename)
         Plotter = Pb.PlotBase()
         Fig = Plotter.NewFigWin()
@@ -42,6 +53,8 @@ class Decider:
         Plotter.LaunchFigs()
 
     def TSFProcess(self):
+        """Produces figure for two stage flight, nominal trajectory.
+        """
         Data = Rd.RdataTSF(self.Filename)
         Plotter = Pb.PlotBase()
         Fig = Plotter.NewFigWin()
@@ -49,6 +62,8 @@ class Decider:
         Plotter.LaunchFigs()
 
     def OSMProcess(self):
+        """Produces figure for one stage flights, based on monte carlo runs.
+        """
         Data = Rd.RdataOSM(self.Filename)
         Plotter = Pb.PlotBase()
 
@@ -64,6 +79,8 @@ class Decider:
 
 
     def TSMProcess(self):
+        """Produces figure for two stage flights, based on monte carlo runs.
+        """
         Data = Rd.RdataTSM(self.Filename)
         Plotter = Pb.PlotBase()
 
@@ -78,9 +95,18 @@ class Decider:
         Plotter.LaunchFigs()
 
 
-
 class LaunchUDataFig:
+    """This class handles all the trajectory data
+    """
+
     def __init__(self,FileName,Label1,Label2):
+        """Initialise the class
+
+        Keyword arguments:
+        Filename -- XML file to read
+        Label1 --
+        Label2 --
+        """
         RD = Rd.Rdata(FileName)
         LabArr1 = Label1.split(',')
         LabArr2 = Label2.split(',')
@@ -96,4 +122,3 @@ class LaunchUDataFig:
                 PB.DataPlot(Fig,AxD[0],Lab1,AxD[1],Lab2)
                 i=i+1
         PB.LaunchFigs()
-
