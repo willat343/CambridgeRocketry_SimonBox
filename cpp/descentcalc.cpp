@@ -7,10 +7,22 @@
 %## Author: S.Box
 %## Created: 2008-05-27
 */
+
 #include "descentcalc.h"
 
 //DESCENTCALC Builder**************************
-descent::descent(vector<double> v1,vector<double> v2,INTAB IT1){
+descent::descent(vector<double> v1, vector<double> v2, INTAB IT1){
+	/*
+	\brief constructor of descent class
+
+	this simulates the parachute dynamics
+
+	\param v1 a vector for the time
+	\param v2 a vector for the start position
+	\param IT1 INTAB values for the rocket properties, see intabread.cpp
+
+	\return void
+	*/
 
 	tt=v1,
 	z0=v2;
@@ -23,6 +35,17 @@ descent::descent(vector<double> v1,vector<double> v2,INTAB IT1){
 //FLOATDOWN Builder****************************
 
 floatdown::floatdown(INTAB4 IT4,INTAB1 IT1,ParaTab P1){
+	/*
+	\brief initialises the floatdown phase
+
+	this simulates the parachute dynamics
+
+	\param IT4 intab4, see intabread.h
+	\param IT1 intab1, see intabread.h
+	\param P1 paratab, see intabread.h
+
+	\return void
+	*/
 
 	intab4=IT4;
 	intab1=IT1;

@@ -10,7 +10,19 @@
 #include "ascentcalc.h"
 
 //ASCENTCALC Builder**************************
-ascent::ascent(vector<double> v1,vector<double> v2,INTAB IT1,double d1){
+ascent::ascent(vector<double> v1, vector<double> v2, INTAB IT1, double d1){
+	/*
+	\brief constructor of ascent class
+
+	this simulates the rocket dynamics
+
+	\param v1 a vector for the time
+	\param v2 a vector for the start position
+	\param IT1 INTAB values for the rocket properties, see intabread.cpp
+	\param d1 parameter for rail-length, only non-zero at launch
+
+	\return void
+	*/
 
 	tt=v1,
 	z0=v2;
@@ -32,6 +44,23 @@ ascent::ascent(vector<double> v1,vector<double> v2,INTAB IT1,double d1){
 //BLASTOFF Builder****************************
 
 blastoff::blastoff(INTAB1 IT1,INTAB2 IT2,INTAB3 IT3,INTAB4 IT4,double d1,double d2,double d3,vector3 v1,KillSwitch k1){
+	/*
+	\brief initialise the start
+
+	this simulates the rocket dynamics
+
+	\param IT1 holds rocket properties, see intabread.cpp
+	\param IT2 holds rocket properties, see intabread.cpp
+	\param IT3 holds rocket properties, see intabread.cpp
+	\param IT4 holds rocket properties, see intabread.cpp
+	\param d1 parameter related to Reynolds number [-]
+	\param d2 frontal area surface [m2]
+	\param d3 rail-length at launch (no rotation)
+	\param v1 start position x,y,z
+	\param K1 KillSwitch to determine when to stop the simulation
+
+	\return void
+	*/
 
 	intab1=IT1;
 	intab2=IT2;
@@ -46,6 +75,13 @@ blastoff::blastoff(INTAB1 IT1,INTAB2 IT2,INTAB3 IT3,INTAB4 IT4,double d1,double 
 
 //Ascent::fly function*******************************************
 RKF_data ascent::fly(void){
+	/*
+	\brief method for runga-kutta integration
+
+	this simulates the rocket dynamics
+
+	\return RKF_data
+	*/
 
 	blastoff flight1(intab1,intab2,intab3,intab4,RBL,Ar,RL,X0,Kill);
 
@@ -63,6 +99,17 @@ RKF_data ascent::fly(void){
 
 //ascent::SolveEqMotion function******************************************
 EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
+	/*
+	\brief solves the equations of motion
+
+	this simulates the rocket dynamics
+
+	\param tt indicates the current time in the simulation
+	\param z holds the current state
+
+	\return EqMotionData
+	*/
+
 
 	//Constants****************************************************************
 	const double gamma=1.4;		//Ratio if specific heats for air
@@ -153,9 +200,6 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 		Xcmi=intab1.Xcm.back();
 		Cda1=intab1.Cda1.back();
 	}
-
-
-
 
 	//INTAB4***********************************************************
 	vector<double> ztb=intab4.Alt; //Get altitude data from input table
@@ -428,21 +472,8 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
   else{
     Tqt = Tqp;
   }
-  //*************************************************************************
 
-  // limit acceleration to a reasonable number 10e12 is proton speed? .. changed it to limit thrust/mass ratio!
-  /*
-  vector3 xddot = Ft/Mi;
-
-  if (xddot.mag() != xddot.mag())
-  {
-  	xddot = Ft.norm()*10e6;
-  }
-  else if (xddot.mag() > 10e6) {
-  	xddot = Ft.norm()*10e6;
-  } */
-
-  //OUTPUT*******************************************************************
+  // OUTPUT
 	EqMotionData Output;
 	Output.alpha = alphacp;
 	Output.Thrust = Ti;
@@ -462,11 +493,20 @@ EqMotionData ascent::SolveEqMotion(double tt, vector<double> z){
 	Output.Inertia = Ibody;
 	Output.Qdot = Qdot;
 
-
   return(Output);
 };
 
 bool blastoff::stop_flag(double t,vector<double> z){
+	/*
+	\brief checks for stop_flag
+
+	checks whether the simulation should continue
+
+	\param t current time
+	\param z holds the current states
+
+	\return whether the simulation should continue
+	*/
 	bool temp;
 	if (z[Kill.index]<Kill.Kval)temp=true;
 	else temp=false;
@@ -475,6 +515,16 @@ bool blastoff::stop_flag(double t,vector<double> z){
 
 //blastoff::step function*******************************
 vector<double> blastoff::step(double tt, vector<double> z){
+	/*
+	\brief calculate one time-step
+
+	calculates the new equations of motion and returns those as EqMotionData
+
+	\param tt current step
+	\param z holds the current states
+
+	\return whether the simulation should continue
+	*/
 	EqMotionData SuperZ = SolveEqMotion(tt,z);
 	vector<double> Z;
 	Z.push_back(SuperZ.Xdot.e1);
