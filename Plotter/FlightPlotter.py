@@ -10,6 +10,14 @@ import sys
 
 
 def main(argv,dir):
+    """main function, to be executed with arguments
+
+    Keyword arguments
+    -f / --file -- filename (default: SimulationOutput.xml)
+    -x / --Xaxis -- x axis label (default: "")
+    -y / --Yaxis -- y axis label (default: "")
+    """
+
     try:
         opts, args = getopt.getopt(argv, "f:x:y:", ["file=","Xaxis=","Yaxis"])
     except getopt.GetoptError:
@@ -17,7 +25,7 @@ def main(argv,dir):
         sys.exit(2)
 
 
-    FileName = "/usr/local/CambridgeRocketrySimulator/data/SimulationOutput.cro"
+    FileName = "SimulationOutput.xml"
     Xlb = ""
     Ylb = ""
 
@@ -34,9 +42,6 @@ def main(argv,dir):
     else:
         D = Decider.Decider(FileName)
         D.FlightPlots()
-
-
-
 
 if __name__ == "__main__":
     main(sys.argv[1:],sys.argv[0])

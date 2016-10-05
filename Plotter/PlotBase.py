@@ -12,11 +12,21 @@ import Rdata
 import scipy.linalg as la
 
 class PlotBase:
+    """This class produces the plots using matplotlib
+    """
     def NewFigWin(self):
+        """Produces a new window.
+        """
         fig = plt.figure()
         return(fig)
 
-    def OSFlightPlot(self,fig,data):
+    def OSFlightPlot(self, fig, data):
+        """Produces trajectories for a one stage, nominal flight
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax = Axes3D(fig)
         #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='Flight Path')
@@ -25,6 +35,12 @@ class PlotBase:
 
 
     def TSFlightPlot(self,fig,data):
+        """Produces trajectories for a one stage, nominal flight
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax=Axes3D(fig)
         #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='LowerStage')
@@ -32,15 +48,25 @@ class PlotBase:
         Limit = np.concatenate((data.X_TR.Z/2,data.X_TR.X,data.X_TR.Y,data.X_US.X,data.X_US.Y,data.X_US.Z/2))
         ax = self.ThreeDLimLabels(ax,Limit)
 
-
-
     def OSApScatter(self,fig,data):
+        """Produces scatter plot for apogee, single stage rocket
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax=Axes3D(fig)
         ax.scatter3D(data.ApoVg.X,data.ApoVg.Y, data.ApoVg.Z,label='ApogeeScatter')
         Limit = np.concatenate((data.ApoVg.X,data.ApoVg.Y,data.ApoVg.Z/2))
         ax = self.ThreeDLimLabels(ax,Limit)
 
     def TSApScatter(self,fig,data):
+        """Produces scatter plot for apogee, two stage rocket
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax=Axes3D(fig)
         ax.scatter3D(data.LApoVg.X,data.LApoVg.Y, data.LApoVg.Z,label='LowerApogeeScatter')
         ax.scatter3D(data.UApoVg.X,data.UApoVg.Y, data.UApoVg.Z,label='UpperApogeeScatter')
@@ -48,6 +74,12 @@ class PlotBase:
         ax = self.ThreeDLimLabels(ax,Limit)
 
     def OSSplashPlot(self,fig,data):
+        """Produces a landing scatter plot, single stage rocket
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax = fig.add_subplot(111, aspect="equal")
         ax.scatter(data.LandVg.X,data.LandVg.Y,label='LandingScatter')
         ax, Z = self.GaussEllipse(ax,data.LandVg.X,data.LandVg.Y,1)
@@ -56,6 +88,12 @@ class PlotBase:
         ax.set_ylabel("Northings (m)")
 
     def TSSplashPlot(self,fig,data):
+        """Produces a landing scatter plot, two stage rocket
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax = fig.add_subplot(111, aspect="equal")
         ax.scatter(data.LLandVg.X,data.LLandVg.Y,label='LowerStageLandingScatter')
         ax.scatter(data.ULandVg.X,data.ULandVg.Y,label='UpperStageLandingScatter')
@@ -67,6 +105,13 @@ class PlotBase:
         ax.set_ylabel("Northings (m)")
 
     def OSMFlightPlot(self,fig,data):
+        """Produces trajectories for a one stage, monte carlo
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
+
         ax = Axes3D(fig)
         #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='Flight Path')
@@ -76,6 +121,12 @@ class PlotBase:
         ax = self.ThreeDLimLabels(ax,Limit)
 
     def TSMFlightPlot(self,fig,data):
+        """Produces trajectories for a two stage rocket, monte carlo
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax=Axes3D(fig)
         #ax.view_init(0,0)
         ax.plot(data.X_TR.X,data.X_TR.Y,data.X_TR.Z,label='LowerStage')
@@ -88,6 +139,12 @@ class PlotBase:
         ax = self.ThreeDLimLabels(ax,Limit)
 
     def OSMCluster(self,fig,data):
+        """Produces trajectories for a one stage rocket, monte carlo
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax=Axes3D(fig)
         #ax.view_init(0,0)
         for Fpath in data.FpathList:
@@ -97,6 +154,12 @@ class PlotBase:
 
 
     def TSMCluster(self,fig,data):
+        """Produces trajectories for a two stage rocket, monte carlo
+
+        Keyword arguments:
+        fig -- figure handle
+        data -- trajectory data, see Rdata
+        """
         ax=Axes3D(fig)
         #ax.view_init(0,0)
         for Fpath in data.LFpathList:
@@ -106,11 +169,15 @@ class PlotBase:
         Limit = np.concatenate((data.X_TR.Z/2,data.X_TR.X,data.X_TR.Y,data.X_US.X,data.X_US.Y,data.X_US.Z/2,data.LLandVg.X,data.LLandVg.Y,data.ULandVg.X,data.ULandVg.Y))
         ax = self.ThreeDLimLabels(ax,Limit)
 
-
-
-
-
     def GaussEllipse(self,ax,X,Y,sigma):
+        """Returns the coordinates of a Gaussian ellipse, based on data and sigma (standard deviation)
+
+        Keyword arguments:
+        ax -- axes handle
+        X -- x-axis data
+        Y -- y-axis data
+        sigma -- standard deviation
+        """
         Landing = np.row_stack([X,Y])
         mean = np.array([np.mean(X),np.mean(Y)])
         covariance = np.matrix(np.cov(Landing))
@@ -130,21 +197,33 @@ class PlotBase:
         ax.plot(Z[:,0],Z[:,1])
         return(ax,Z)
 
-
-
     def DataPlot(self,Fig,data1,label1,data2,label2):
+        """plot all data available, obtain a complete overview of the rocket behaviour
+
+        keyword arguments:
+        Fig -- figure handle
+        data1 -- first dataset (see Rdata for format)
+        label1 -- label of first dataset
+        data2 -- second dataset (see Rdata for format)
+        label2 -- label of second dataset
+        """
         AD = AxisData()
         ax = Fig.add_subplot(111)
         ax.plot(data1,data2,label=AD.getLabel(label2.split(':')[0]))
         ax.set_xlabel(AD.getLabel(label1.split(':')[0]))
         ax.legend()
 
-
-
     def LaunchFigs(self):
+        """shows the figures"""
         plt.show()
 
     def ThreeDLimLabels(self,ax,Limit):
+        """sets the axis, limit and labels
+
+        keyword arguments:
+        ax -- axes figure
+        Limit -- set limits for plotting
+        """
         TopAlt = np.max(Limit)
         Lim = TopAlt*1.1
         ax.set_zlim3d([0,2*Lim])
@@ -158,6 +237,8 @@ class PlotBase:
 
 
 class AxisData:
+    """class to match all data with a suitable label
+    """
     LabelDict ={"Time_0":"Time (s)",
     "AngleOfAttack_0":"Angle of Attack (rad)",
     "Thrust_0":"Thrust (N)",
@@ -198,6 +279,10 @@ class AxisData:
     "Wind_Z":"Z Wind (m/s)",
     "Wind_Mag":"Absolute Wind (m/s)"}
 
-
     def getLabel(self,label):
+        """returns a label based on the dictionary
+
+        keyword argument:
+        label -- label as seen in the data
+        """
         return self.LabelDict[label]

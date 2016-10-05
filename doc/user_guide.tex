@@ -202,7 +202,7 @@ The Cambridge Rocketry Simulator actually consists of three separate components,
 % command line access CPP
 The simulator core can be invoked by the command line using \loc{./rocketc SimulationInput.xml}, where \loc{SimulationInput.xml} is the default value and can left out, or be replaced by another input XML.
 %
-In a similar fashion, the Python module, used for plotting the graphs can be invoked with \loc{python FlightPlotter.py SimulationOutput.xml}, where \loc{SimulationOutput.xml} is not the default value and needs to be specified.
+In a similar fashion, the Python module, used for plotting the graphs can be invoked with \loc{python FlightPlotter.py}, where the file location is \loc{SimulationOutput.xml} by default. The argument \loc{-f --file} allows pointing to a new location. Furthermore, the arguments \loc{-x --Xaxis} and \loc{-y --Yaxis} allow labeling of the relevant axis, which defaults to an empty string.
 
 % structure xml
 The structure belonging to input XML file is visible in \cref{fig:input_simulation_xml}, where due to space restriction the cases {INTAB\_TR} (transition, complete rocket), {INTAB\_BS} (booster stage), {INTAB\_US} (upper stage) are collapsed. They have identical properties, therefore, they are shown as {INTAB\_xx} in \cref{fig:input_simulation_xml_intab_1,fig:input_simulation_xml_intab_2}, which represents the expanded tree for each of these.
