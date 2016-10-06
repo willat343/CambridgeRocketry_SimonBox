@@ -52,8 +52,32 @@ gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 
 ***
 
-[BUILD INFORMATION]
+[[[BUILD INFORMATION]]]
 
-[LINUX]
+[[LINUX]]
 
-[WINDOWS]
+[GUI]
+
+The JAR file is build via Eclipse (eclipse.org) by selecting
+
+File -> Export, Java/Runnable JAR file
+
+and input these data
+
+Launch configuration: SwingStartup - OpenRocket Swing
+Export destination: <user choice>
+Library handling: Extract required libraries into generated JAR
+
+Finish
+
+[SIMULATOR CORE]
+
+from the console, execute "make" in the cpp folder
+
+this generates rocketc and moves it towards the /simulator folder
+
+[PLOTTER]
+
+no compiling required, as this is Python
+
+[[WINDOWS]]

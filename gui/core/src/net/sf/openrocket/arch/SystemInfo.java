@@ -694,6 +694,7 @@ public class SystemInfo {
 	public static String OUTPUT_SIMULATION = "SimulationOutput.xml";
 	public static String UNCERTAINTY_SIMULATION = "Uncertainty.xml";
 	public static String CPP_CODE = "rocketc";
+	public static String LINUX_FOLDER = "/usr/share/camrocsim/";
 	
 	/**
 	 * Enumeration of supported operating systems.
@@ -754,7 +755,7 @@ public class SystemInfo {
 			break;
 		
 		case UNIX:
-			dir = new File("/usr/share/camrocsim/");
+			dir = new File(LINUX_FOLDER);
 			break;
 		
 		default:
@@ -793,7 +794,7 @@ public class SystemInfo {
 		
 		case UNIX:
 			// dir = new File(homeDir, ".camrocsim/");
-			dir = new File("/usr/share/camrocsim/");
+			dir = new File(LINUX_FOLDER);
 			break;
 		
 		default:
