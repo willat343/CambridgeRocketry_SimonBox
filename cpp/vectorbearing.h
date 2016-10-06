@@ -24,15 +24,16 @@ class vector2;// predeclared to avoid conflicts
 //Bearing class definition************************************
 
 class bearing{
-public:
-	double bea,range;
-	bearing(){};
-	bearing(double a,double b){
-		bea=a;
-		range=b;
-	}
-	bearing(vector2);
-	vector2 to_vector();
+	// class to handle bearings
+	public:
+		double bea,range;
+		bearing(){};
+		bearing(double a,double b){
+			bea=a;
+			range=b;
+		}
+		bearing(vector2);
+		vector2 to_vector();
 };
 //************************************************************
 

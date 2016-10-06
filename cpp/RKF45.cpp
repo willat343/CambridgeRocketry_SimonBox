@@ -13,9 +13,18 @@ ordinary differential equations */
 #include"vectorops.h"
 
 
-
 RKF_data RKF::RKF45(vector<double> xs, vector<double> ys, integrator* pint){
+	/*
+	\brief Runge Kutta Fehlrberg integration algortihm
 
+	Runge Kutta Fehlberg  4th/5th order numerical integration algorithm for systems of ordinary differential equations
+
+	\param xs
+	\param ys
+	\param pint
+
+	\return RKF_data
+	*/
 	bool stopper;
 	double h=h_init;
 	double x=xs[0];

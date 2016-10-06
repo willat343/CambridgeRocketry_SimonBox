@@ -23,9 +23,10 @@ from z is returned*/
 using namespace std;
 
 class interp{
-public:
-	interp(){};
-	static double one(vector<double>,vector<double>,double);
-	static double two(vector<double>,vector<double>,vector<vector<double> >,double,double);
+	// class to interpolate values
+	public:
+		interp(){};
+		static double one(vector<double>,vector<double>,double);
+		static double two(vector<double>,vector<double>,vector<vector<double> >,double,double);
 };
 #endif

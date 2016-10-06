@@ -26,22 +26,23 @@ using namespace std;
 
 //Class Definition****************
 class HandleInputFile{
-public:
-	boost::property_tree::ptree PropTree;
-        string FilePath;
-        OutputData WriteData;
+	// class to handle the input file (read, etc.)
+	public:
+		boost::property_tree::ptree PropTree;
+	        string FilePath;
+	        OutputData WriteData;
 
-	//Construnctor
-	HandleInputFile(string);
-private:
-	//Functions
-	void DealWithOSF();
-	void DealWithTSF();
-	void DealWithOSM();
-	void DealWithTSM();
-	Rocket_Flight OneStageSetUp();
-	Rocket_Flight TwoStageSetUp();
-	Rocket_Flight TestMiscData(Rocket_Flight);
+		//Construnctor
+		HandleInputFile(string);
+	private:
+		//Functions
+		void DealWithOSF();
+		void DealWithTSF();
+		void DealWithOSM();
+		void DealWithTSM();
+		Rocket_Flight OneStageSetUp();
+		Rocket_Flight TwoStageSetUp();
+		Rocket_Flight TestMiscData(Rocket_Flight);
 };
 
 #endif

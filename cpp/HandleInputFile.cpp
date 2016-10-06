@@ -9,6 +9,15 @@
 #include "HandleInputFile.h"
 
 HandleInputFile::HandleInputFile(std::string FileName){
+	/*
+	\brief constructor of HandleInputFile
+
+	this initialises the HandleInputFile
+
+	\param FileName this is the file which is to be handled
+
+	\return void
+	*/
 	try{
 		//Read data from file into property tree
 		boost::property_tree::xml_parser::read_xml(FileName,PropTree);
@@ -52,33 +61,36 @@ HandleInputFile::HandleInputFile(std::string FileName){
         string OutputFileName = FilePath.append("SimulationOutput.xml");
         WriteData.WriteToXML(OutputFileName);
         cout << "Simulation Complete." << endl;
-}
+};
 
 void HandleInputFile::DealWithOSF(){
-
+	// deals with nominal flight, single stage rocket
 	Rocket_Flight RF1 = OneStageSetUp();
 	WriteData = RF1.OneStageFlight();
-}
+};
 
 void HandleInputFile::DealWithTSF(){
-
+	// deals with nominal flight, two stage rocket
 	Rocket_Flight RF1 = TwoStageSetUp();
 	WriteData = RF1.TwoStageFlight();
-}
+};
 
 void HandleInputFile::DealWithOSM(){
+	// deals with monte carlo runs, one stage rocket
 	Rocket_Flight RF1 = OneStageSetUp();
 	int NoI = PropTree.get<int>("SimulationInput.SimulationSettings.NumberOfIterations");
 	WriteData = RF1.OneStageMonte(NoI);
-}
+};
 
 void HandleInputFile::DealWithTSM(){
+	// deals with monte carlo runs, two stage rocket
 	Rocket_Flight RF1 = TwoStageSetUp();
 	int NoI = PropTree.get<int>("SimulationInput.SimulationSettings.NumberOfIterations");
 	WriteData = RF1.TwoStageMonte(NoI);
-}
+};
 
 Rocket_Flight HandleInputFile::OneStageSetUp(){
+	// reads data for a one stage rocket
 	boost::property_tree::ptree IntabTree;
 	IntabTree = PropTree.get_child("SimulationInput.INTAB_TR");
 	INTAB IT(IntabTree);
@@ -86,9 +98,10 @@ Rocket_Flight HandleInputFile::OneStageSetUp(){
 	RF1 = TestMiscData(RF1);
         RF1.setFilePath(FilePath);
 	return(RF1);
-}
+};
 
 Rocket_Flight HandleInputFile::TwoStageSetUp(){
+	// reads data for a two stage rocket
 	boost::property_tree::ptree IntabTree;
 	IntabTree = PropTree.get_child("SimulationInput.INTAB_TR");
 	INTAB IT_TR(IntabTree);
@@ -110,6 +123,13 @@ Rocket_Flight HandleInputFile::TwoStageSetUp(){
 }
 
 Rocket_Flight HandleInputFile::TestMiscData(Rocket_Flight RF){
+	/*
+	\brief handles the misc data of the file, (LaunchSettings, SimulationSettings)
+
+	\param RF Rocket_Flight containing XML tree
+
+	\return Rocket_Flight filled with information from XML tree
+	*/
 	boost::property_tree::ptree TempTree;
 
 	TempTree = PropTree.get_child("SimulationInput.LaunchSettings.Eastings");

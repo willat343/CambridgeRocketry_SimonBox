@@ -10,6 +10,13 @@
 
 //INTAB1 function************************************************************
 void INTAB1::FileFill(const char* filename){
+	/*
+	\brief build INTAB1 from a file
+
+	\param filename points to file
+
+	\return void
+	*/
 	string number;
 	string line;
 	double fnum;
@@ -87,6 +94,13 @@ void INTAB1::FileFill(const char* filename){
 }
 
 void INTAB1::addDelay(double secs){
+	/*
+	\brief adds a delay to the file
+
+	\param secs number of seconds to delay
+
+	\return void
+	*/
 	vecop VoP;
 	time = VoP.scaladd(time,secs);
 }
@@ -94,6 +108,13 @@ void INTAB1::addDelay(double secs){
 
 //INTAB2 Function********************************************************
 void INTAB2::FileFill(const char* filename){
+	/*
+	\brief build INTAB2 from a file
+
+	\param filename points to file
+
+	\return void
+	*/
 	string number;
 	string line;
 	double fnum;
@@ -102,57 +123,59 @@ void INTAB2::FileFill(const char* filename){
 		cdtemp;
 
 	ifstream myfile (filename);
-		if (myfile.is_open())
-		  {
-			while (! myfile.eof() )
-			{
-				cdtemp.clear();
-				int on=0;
-				getline (myfile,line,'\n');
-				istringstream myline (line);
-				while (! myline.eof()){
-					getline(myline,number,'\t');
-					stringstream(number)>>fnum;
-					if(i==0 && on==0){
-						//Re.push_back(fnum);
-						//alpha.push_back(fnum);
-					}
 
-					else if (i==0)
-						Re.push_back(fnum);
-					else if (on==0)
-						alpha.push_back(fnum);
-					else
-						cdtemp.push_back(fnum);
+	if (myfile.is_open()) {
 
-					on=1;
+		while (! myfile.eof() ) {
+			cdtemp.clear();
+			int on=0;
+			getline (myfile,line,'\n');
+			istringstream myline (line);
+			while (! myline.eof()){
+				getline(myline,number,'\t');
+				stringstream(number)>>fnum;
+				if(i==0 && on==0){
+					//Re.push_back(fnum);
+					//alpha.push_back(fnum);
 				}
-				if (!cdtemp.empty())CD.push_back(cdtemp);
 
-				i++;
+				else if (i==0)
+					Re.push_back(fnum);
+				else if (on==0)
+					alpha.push_back(fnum);
+				else
+					cdtemp.push_back(fnum);
+
+				on=1;
 			}
-			myfile.close();
-			alpha.pop_back();
+			if (!cdtemp.empty())CD.push_back(cdtemp);
 
-
+			i++;
 		}
+		myfile.close();
+		alpha.pop_back();
+	}
+	else cout << "Unable to open file";
 
-else cout << "Unable to open file";
-
-}
+};
 
 //***********************************************************************
 
 //INTAB3 Function********************************************************
 void INTAB3::FileFill(const char* filename){
+	/*
+	\brief build INTAB3 from a file
+
+	\param filename points to file
+
+	\return void
+	*/
 	string number;
 	int i=0;
 	double fnum;
 	ifstream myfile (filename);
-	if (myfile.is_open())
-	  {
-		while (! myfile.eof() )
-		{
+	if (myfile.is_open()) {
+		while (! myfile.eof() ) {
 			getline (myfile,number,'\t');
 			stringstream(number) >> fnum;
 
@@ -166,27 +189,29 @@ void INTAB3::FileFill(const char* filename){
 		}
     myfile.close();
   }
-
 	else cout << "Unable to open file";
 }
 //***********************************************************************
 
 //INTAB4 function************************************************************
 void INTAB4::FileFill(const char* filename){
+	/*
+	\brief build INTAB4 from a file
+
+	\param filename points to file
+
+	\return void
+	*/
 	string number;
 	string line;
 	double fnum;
 
 	ifstream myfile (filename);
-	if (myfile.is_open())
-	  {
-		while (! myfile.eof() )
-		{
+	if (myfile.is_open()) {
+		while (! myfile.eof() ) {
 			getline (myfile,line,'\n');
 			istringstream myline (line);
-			for(int i=0;i<6;i++)
-			{
-
+			for(int i=0;i<6;i++) {
 				getline (myline,number,'\t');
 				stringstream(number) >> fnum;
 
@@ -212,26 +237,32 @@ void INTAB4::FileFill(const char* filename){
 					default:
 						cout<<"Error in case number for intab1\n";
 				}
-
 			}
 		}
     myfile.close();
-	Alt.pop_back();
-	Wx.pop_back();
-	Wy.pop_back();
-	Wz.pop_back();
-	rho.pop_back();
-	temp.pop_back();
-
+		Alt.pop_back();
+		Wx.pop_back();
+		Wy.pop_back();
+		Wz.pop_back();
+		rho.pop_back();
+		temp.pop_back();
   }
-
 	else cout << "Unable to open file";
-
 }
 //***********************************************************************
 
 //INTAB Function*********************************************************
 void INTAB::FileFill(const char* f1,const char* f2,const char* f3,const char* f4){
+	/*
+	\brief fill the INTAB 1,2,3,4 from the file
+
+	\param f1 file for intab1
+	\param f2 file for intab2
+	\param f3 file for intab3
+	\param f4 file for intab4
+
+	\return void
+	*/
 	intab1.FileFill(f1);
 	intab2.FileFill(f2);
 	intab3.FileFill(f3);
@@ -242,6 +273,13 @@ void INTAB::FileFill(const char* f1,const char* f2,const char* f3,const char* f4
 
 
 INTAB::INTAB(boost::property_tree::ptree IntabTree){
+	/*
+	\brief constructor for class that handles XML tree
+
+	\param IntabTree
+
+	\return void
+	*/
 
 	//Read in intab1 data
 	vector<double> * it1List [] = {&intab1.time, &intab1.Thrust, &intab1.Mass, &intab1.Ixx, &intab1.Iyy, &intab1.Izz, &intab1.Ixy, &intab1.Ixz, &intab1.Iyz, &intab1.Xcm, &intab1.Cda1};
@@ -276,6 +314,7 @@ INTAB::INTAB(boost::property_tree::ptree IntabTree){
 }
 
 vector<double> INTAB::TreeToVector(boost::property_tree::ptree Tree, std::string Key){
+	// converts an XML tree to a vector
 	vector<string> DatString;
 	vector<double> Temp;
 
@@ -291,6 +330,7 @@ vector<double> INTAB::TreeToVector(boost::property_tree::ptree Tree, std::string
 }
 
 vector<vector<double> > INTAB::TreeToMatrix(boost::property_tree::ptree Tree, std::string Key){
+	// converts an XML tree to a matrix
 	vector<string> LineString;
 	vector<vector<double> > Temp;
 

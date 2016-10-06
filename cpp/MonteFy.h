@@ -21,37 +21,36 @@
 #include "vectorops.h"
 
 class MonteFy{
-public:
-		INTAB SinTab;
-		double CDm,
-			CoPm,
-			CNm,
-			CDdm,
-			CDpm,
-			sigmaLaunchDeclination, // stochastic variable for launch angle
-			sigmaThrust; // stochastic variable for thrust
-		boost::numeric::ublas::vector<double> Mu;
-		boost::numeric::ublas::vector<double> HScale;
-		boost::numeric::ublas::matrix<double> Sigma;
-		boost::numeric::ublas::matrix<double> EigenValue;
-		boost::numeric::ublas::matrix<double> EigenVector;
-		boost::numeric::ublas::matrix<double> PHI;
-		boost::property_tree::ptree PropTree;
+	// class for the monte carlo simulation -- adds uncertainty
+	public:
+			INTAB SinTab;
+			double CDm, // drag coefficient, std
+				CoPm, // centre of pressure, std [m]
+				CNm, // normal coefficient, std
+				CDdm, // drag coefficient for the secondary+ parachute, std
+				CDpm, // drag coefficient for the primary parachute, std
+				sigmaLaunchDeclination, // stochastic variable for launch angle
+				sigmaThrust; // stochastic variable for thrust
+			// these parameters are used for stochastic wind conditions
+			// specifics on use are in the user_guide
+			boost::numeric::ublas::vector<double> Mu; // average
+			boost::numeric::ublas::vector<double> HScale; // altitutes to eval [m]
+			boost::numeric::ublas::matrix<double> Sigma; // covariance matrix
+			boost::numeric::ublas::matrix<double> EigenValue; // cov matrix eig val
+			boost::numeric::ublas::matrix<double> EigenVector; // cov matrix eig vec
+			boost::numeric::ublas::matrix<double> PHI; // basis functions
+			boost::property_tree::ptree PropTree; // XML property tree
 
-		MonteFy(){};
-		MonteFy(INTAB,string);
-		boost::numeric::ublas::vector<double> gsamp(void);
-		double SampleNormal(double mean, double sigma);
-		double SampleNormalTruncated(double mean, double sigma, double truncateSigma);
-		void ReadInVector(boost::numeric::ublas::vector<double>* ,string,int);
-		void ReadInMatrix(boost::numeric::ublas::matrix<double>*,string,int,int);
-		INTAB Wiggle();
-		INTAB WiggleProtect(INTAB thisIntab);
-		std::vector<double> ToStdVec (boost::numeric::ublas::vector<double>);
+			MonteFy(){};
+			MonteFy(INTAB,string);
+			boost::numeric::ublas::vector<double> gsamp(void);
+			double SampleNormal(double mean, double sigma);
+			double SampleNormalTruncated(double mean, double sigma, double truncateSigma);
+			void ReadInVector(boost::numeric::ublas::vector<double>* ,string,int);
+			void ReadInMatrix(boost::numeric::ublas::matrix<double>*,string,int,int);
+			INTAB Wiggle();
+			INTAB WiggleProtect(INTAB thisIntab);
+			std::vector<double> ToStdVec (boost::numeric::ublas::vector<double>);
 };
-
-
-
-
 
 #endif

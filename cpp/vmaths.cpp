@@ -240,6 +240,7 @@ quaternion quaternion::deriv(vector3 v){
 
 //quaternion to matrix**********************************
 matrix3x3 quaternion::to_matrix(){
+	// convert quaternion to matrix
 	double s,vx,vy,vz;
 	matrix3x3 m;
 
@@ -264,6 +265,7 @@ matrix3x3 quaternion::to_matrix(){
 };
 //bearing conversion***********************************
 bearing vector2::to_bearing(){
+	// convert a two-dim vector to a bearing
 	bearing temp;
 	if (e1>0)
 		if(e2>0)
