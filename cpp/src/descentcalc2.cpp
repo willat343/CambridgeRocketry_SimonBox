@@ -11,8 +11,14 @@
 
 //functions for extracting Rocket flight data
 
-FlightDataShort descent::getShortData(void)
-{
+FlightDataShort descent::getShortData(void) {
+	/*
+	\brief function to obtain the flight data
+
+	converts the states obtained with RKF_data to FlightData*
+
+	\return FlightDataShort
+	*/
 	FlightDataShort tempdat;
 	try{
 		if(DatPop != true){throw 20;}
@@ -37,10 +43,17 @@ FlightDataShort descent::getShortData(void)
 	}
 
 	return(tempdat);
-}
+};
 
-FlightDataLong descent::getLongData(void)
-{
+FlightDataLong descent::getLongData(void) {
+	/*
+	\brief function to obtain the flight data
+
+	converts the states obtained with RKF_data to FlightData*
+
+	\return FlightDataLong
+	*/
+	
 	FlightDataLong tempdat;
 
 		try{
@@ -92,4 +105,4 @@ FlightDataLong descent::getLongData(void)
 		}
 
 	return(tempdat);
-}
+};

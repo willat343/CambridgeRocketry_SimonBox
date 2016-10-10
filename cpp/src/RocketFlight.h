@@ -43,7 +43,6 @@ class Rocket_Flight{
 		Rocket_Flight();
 		Rocket_Flight(INTAB);
 		Rocket_Flight(INTAB, INTAB, INTAB, double, double);
-		Rocket_Flight(string);
 		// void InitialConditionsCalc(void);
 		vector<double> getInitialTime(void);
 		vector<double> getInitialState(double sigmaDeclinationAngle);

@@ -52,12 +52,23 @@ public class AtmosphereData {
 		AddToList = false;
 	}
 	
+	/**
+	 * Construct atmosphere
+	 * 
+	 * @param preFill		bool to pre-fill with ISA, no wind data
+	 * @return				void
+	 */
 	public AtmosphereData(boolean preFill) {
 		
 		PopulateISA();
 		
 	}
 	
+	/**
+	 * Populate atmosphere with ISA, no wind
+	 * 
+	 * @return				void
+	 */
 	private void PopulateISA() {
 		
 		name = "ISA";
@@ -85,6 +96,12 @@ public class AtmosphereData {
 		}
 	}
 	
+	/**
+	 * obtain ISA density
+	 * 
+	 * @param altitude		double with altitude
+	 * @return				double with density
+	 */
 	private double getDensity(double altitude) {
 		double dense = -(0.0001 * altitude) + 1.2208;
 		if (dense < 0) {
@@ -93,6 +110,12 @@ public class AtmosphereData {
 		return dense;
 	}
 	
+	/**
+	 * obtain ISA temperature
+	 * 
+	 * @param altitude		double with altitude
+	 * @return				double with temperature
+	 */
 	private double getTemperature(double altitude) {
 		
 		double temperature = 0;
@@ -137,6 +160,11 @@ public class AtmosphereData {
 		return temperature;
 	}
 	
+	/**
+	 * launch a window to edit the atmosphere
+	 * 
+	 * @return				void
+	 */
 	public void EditMeRaw() {
 		RawAtmosphereDialog RAD = new RawAtmosphereDialog(null, true);
 		if (built == true) {

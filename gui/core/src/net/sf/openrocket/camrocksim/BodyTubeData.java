@@ -29,8 +29,8 @@ package net.sf.openrocket.camrocksim;
 import org.w3c.dom.Node;
 
 /**
- *
- * @author simon
+ * BodyTubeData component, has aerodynamic properties
+ * 
  */
 public class BodyTubeData extends RockPartsData {
 	
@@ -40,11 +40,12 @@ public class BodyTubeData extends RockPartsData {
 			OD;
 	boolean built = false;
 	
-	//*Class Constructor
+	// constructor via pop-up dialogue
 	public BodyTubeData() {
 		EditMe();
 	}
 	
+	// constructor via property tree node
 	public BodyTubeData(Node Nin) {
 		BuildFromXML(Nin);
 	}
@@ -118,6 +119,7 @@ public class BodyTubeData extends RockPartsData {
 		
 	}
 	
+	// write part to xml
 	public void WriteToXML(RWdesignXML design) {
 		Node PartNode = design.CreateNode("BodyTube");
 		PartNode.appendChild(design.CreateDataNode("length", Double.toString(length)));

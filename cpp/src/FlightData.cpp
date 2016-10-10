@@ -201,6 +201,11 @@ void FlightData::TreeIfy(boost::property_tree::ptree * pPtree, std::vector<vecto
 
 
 void FlightDataLong::SpeedAndG(double* Sp,double* Gp){
+	/*
+	\brief function to obtain maximum speed and g-forces
+
+	\return void
+	*/
 	double MaxSpeed = 0;
 	for (vector<vector3>::iterator Z_it = Xdot.begin(); Z_it != Xdot.end(); Z_it++){
 		vector3 temp =*Z_it;

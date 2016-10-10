@@ -45,7 +45,7 @@ vector<double> vecop::scaldiv(vector<double> vec,double S){
 vector<double> vecop::vecadd(vector<double> vec1,vector<double> vec2){
 	int num=vec1.size();
 	int num2=vec2.size();
-	if(!num==num2)
+	if(!(num==num2))
 		cout<<"Error vector sizes don't match\n";
 	vector<double> out(num);
 	for (int i=0;i<num;i++)
@@ -56,7 +56,7 @@ vector<double> vecop::vecadd(vector<double> vec1,vector<double> vec2){
 vector<double> vecop::vecsub(vector<double> vec1,vector<double> vec2){
 	int num=vec1.size();
 	int num2=vec2.size();
-	if(!num==num2)
+	if(!(num==num2))
 		cout<<"Error vector sizes don't match\n";
 	vector<double> out(num);
 	for (int i=0;i<num;i++)
@@ -67,7 +67,7 @@ vector<double> vecop::vecsub(vector<double> vec1,vector<double> vec2){
 vector<double> vecop::vecmult(vector<double> vec1,vector<double> vec2){
 	int num=vec1.size();
 	int num2=vec2.size();
-	if(!num==num2)
+	if(!(num==num2))
 		cout<<"Error vector sizes don't match\n";
 	vector<double> out(num);
 	for (int i=0;i<num;i++)
@@ -78,7 +78,7 @@ vector<double> vecop::vecmult(vector<double> vec1,vector<double> vec2){
 vector<double> vecop::vecdiv(vector<double> vec1,vector<double> vec2){
 	int num=vec1.size();
 	int num2=vec2.size();
-	if(!num==num2)
+	if(!(num==num2))
 		cout<<"Error vector sizes don't match\n";
 	vector<double> out(num);
 	for (int i=0;i<num;i++)

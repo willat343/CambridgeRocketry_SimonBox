@@ -14,7 +14,7 @@ two element vectors to a bearing and vice versa*/
 //Functions***************************************************
 //vector_to_bearing
 bearing::bearing(vector2 vec){
-
+	// vector to bearing
 	if (vec.e1>0)
 		if(vec.e2>0)
 			bea=((PI/2)-atan(vec.e2/vec.e1))*180/PI;
@@ -32,6 +32,7 @@ bearing::bearing(vector2 vec){
 
 //bearing_to_vector
 vector2 bearing::to_vector(){
+	// bearing to vector
 	vector2 temp;
 	temp.e1=range*sin(bea*PI/180);
 	temp.e2=range*cos(bea*PI/180);

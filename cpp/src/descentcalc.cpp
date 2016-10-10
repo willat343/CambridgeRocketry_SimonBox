@@ -54,6 +54,13 @@ floatdown::floatdown(INTAB4 IT4,INTAB1 IT1,ParaTab P1){
 
 //Ascent::fly function*******************************************
 RKF_data descent::fall(void){
+	/*
+	\brief fall function for parachute dynamics
+
+	starts simulating the dynamics
+
+	\return RKF_data
+	*/
 
 	floatdown fall1(intab4,intab1,paratab);
 
@@ -71,6 +78,16 @@ RKF_data descent::fall(void){
 
 //descent:EqMotionSolve function******************************************
 EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
+	/*
+	\brief single step using equation of motion
+
+	uses the equation of motion for descent calculations of parachute
+
+	\param tt time-step
+	\param z a vector for the state
+
+	\return EqMotionData2
+	*/
 
 	//Constants****************************************************************
 	const double G=6.6741e-11;  //Universal gravitational constant
@@ -170,6 +187,16 @@ EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
 };
 
 bool floatdown::stop_flag(double t,vector<double> z){
+	/*
+	\brief sets when to stop
+
+	sets the flag to stop the simulation, always at 0 altitude
+
+	\param t (not used, but similar to KillSwitch)
+	\param z a vector for the states
+
+	\return bool
+	*/
 	bool temp;
 	if (z[2] < 0.001)temp=true;
 	else temp=false;
@@ -178,6 +205,14 @@ bool floatdown::stop_flag(double t,vector<double> z){
 
 //floatdown::step function******************************************
 vector<double> floatdown::step(double tt, vector<double> z){
+	/*
+	\brief updates state vector with calculations
+
+	\param tt a vector for the time
+	\param z a vector for the state
+
+	\return vector<double> new z
+	*/
 	EqMotionData2 SuperZ = EqMotionSolve(tt,z);
 	vector<double> Z;
 	Z.push_back(SuperZ.Xdot.e1);

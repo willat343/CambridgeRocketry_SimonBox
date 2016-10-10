@@ -758,7 +758,7 @@ import net.sf.openrocket.camrocksim.*;
 
 public class panelCamRockSim extends JPanel {
 	/**
-	 * 
+	 * this panel shows the simulations, to be run with the camrocsim simulator
 	 */
 	private static final long serialVersionUID = 4815038225984990190L;
 	private static final Logger log = LoggerFactory.getLogger(panelCamRockSim.class);
@@ -792,6 +792,7 @@ public class panelCamRockSim extends JPanel {
 	
 
 	public panelCamRockSim(OpenRocketDocument doc) {
+		// this is the panel to run camrocsim simulator
 		super(new MigLayout("fill", "[grow][][][][][][grow]"));
 
 		this.document = doc;
@@ -1378,6 +1379,10 @@ public class panelCamRockSim extends JPanel {
 	}
 	
 	private void runProgram() {
+		/*
+		 * this program takes the selected simulation configuration and uses this to run the camrocsim simulator
+		 * there is no output, put the output is written to SimulationOutput.xml
+		 */
 		
 		// use relative paths
 		// Path jarPath = SystemInfo.getJarLocation();
@@ -1489,6 +1494,9 @@ public class panelCamRockSim extends JPanel {
 	}
 	
 	private void plotSimulation() {
+		/*
+		 * this takes the SimulationOutput.xml and produces figures using the Python code found in the /Plotter directory
+		 */
 		
 		File filePlotter = new File(SystemInfo.getInstallationDirectory(),  "Plotter" + File.separator);
 		
@@ -1499,7 +1507,7 @@ public class panelCamRockSim extends JPanel {
 	}
 	
 	private void exportCSV() {
-		// exports the trajectories to a CSV file
+		// exports the trajectories to a CSV file, to be selected by the users
 		
 		
 		// get simulation output

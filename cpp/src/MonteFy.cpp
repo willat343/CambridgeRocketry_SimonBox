@@ -10,8 +10,7 @@
 
 #include "MonteFy.h"
 
-MonteFy::MonteFy(INTAB I1, string FileName)
-{
+MonteFy::MonteFy(INTAB I1, string FileName) {
 	SinTab = I1;
 	boost::property_tree::xml_parser::read_xml(FileName,PropTree);
 
@@ -30,7 +29,6 @@ MonteFy::MonteFy(INTAB I1, string FileName)
 	ReadInMatrix(&EigenValue,"Eigenvalues",15,15);
 	ReadInMatrix(&EigenVector,"Eigenvectors",15,15);
 	ReadInMatrix(&PHI,"PHI",121,15);
-
 }
 
 void MonteFy::ReadInVector(boost::numeric::ublas::vector<double> * V1,string Name, int d1){

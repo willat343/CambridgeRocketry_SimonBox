@@ -53,7 +53,7 @@ gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 
 ***
 
-[BUILD INFORMATION]
+[[[BUILD INFORMATION]]]
 
 [CPP - LINUX]
 

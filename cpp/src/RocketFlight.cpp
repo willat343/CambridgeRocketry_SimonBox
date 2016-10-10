@@ -13,8 +13,14 @@
 
 //Defing Constructors******************************************************************
 
-Rocket_Flight::Rocket_Flight()
-{
+Rocket_Flight::Rocket_Flight() {
+	/*
+	\brief initialises rocket flight conditions
+
+	initialises rocket flight conditions, such as launch location
+
+	\return void
+	*/
 	X0.e1=0.0; X0.e2=0.0; X0.e3=0.0;//default initial position
 	RL=2.0;                         //default rail length
 	Az=0.0;                         //default rail azimuth
@@ -22,10 +28,18 @@ Rocket_Flight::Rocket_Flight()
 	Tspan=2000;						//default maximum simulation time
 	ballisticfailure=false;			//default setting flight terminates at apogee
 	ShortData=false;			    //default output data format is long
-}
+};
 
-Rocket_Flight::Rocket_Flight(INTAB IT1)
-{
+Rocket_Flight::Rocket_Flight(INTAB IT1) {
+	/*
+	\brief initialises rocket flight conditions
+
+	initialises rocket flight conditions, such as launch location
+
+	\param IT1 intab1, see specifics intabread.h
+
+	\return void
+	*/
 	IntabTR=IT1;
 	X0.e1=0.0; X0.e2=0.0; X0.e3=0.0;//default initial position
 	RL=2.0;                         //default rail length
@@ -34,28 +48,35 @@ Rocket_Flight::Rocket_Flight(INTAB IT1)
 	Tspan=2000;						//default maximum simulation time
 	ballisticfailure=false;			//default setting flight terminates at apogee
 	ShortData=false;			    //default output data format is long
-}
+};
 
-Rocket_Flight::Rocket_Flight(INTAB IT1, INTAB IT2, INTAB IT3, double d1, double d2)
-{
+Rocket_Flight::Rocket_Flight(INTAB IT1, INTAB IT2, INTAB IT3, double d1, double d2) {
+	/*
+	\brief initialises rocket flight conditions
+
+	initialises rocket flight conditions, such as launch location
+
+	\param IT1 intab1, see specifics intabread.h
+	\param IT2 intab2, see specifics intabread.h
+	\param IT3 intab3, see specifics intabread.h
+	\param d1 separation time
+	\param d2 ignition delay (on top of separation time)
+
+	\return void
+	*/
 	IntabTR=IT1;
 	IntabBS=IT2;
 	IntabUS=IT3;
 	Tsep=d1;
 	IgDelay=d2;
-	X0.e1=0.0; X0.e2=0.0; X0.e3=0.0;//default initial position
-	RL=2.0;                         //default rail length
-	Az=0.0;                         //default rail azimuth
-	De=0.0;							//default rail declination
-	Tspan=2000;						//default maximum simulation time
-	ballisticfailure=false;			//default setting flight terminates at apogee
-	ShortData=false;			    //default output data format is long
-}
-
-Rocket_Flight::Rocket_Flight(std::string)
-{
-	//Impliment later
-}
+	X0.e1=0.0; X0.e2=0.0; X0.e3=0.0;// default initial position
+	RL=2.0;                         // default rail length
+	Az=0.0;                         // default rail azimuth
+	De=0.0;													// default rail declination
+	Tspan=2000;											// default maximum simulation time
+	ballisticfailure=false;					// default setting flight terminates at apogee
+	ShortData=false;			    			// default output data format is long
+};
 
 //****************************************************************************************
 
@@ -69,7 +90,7 @@ vector<double> Rocket_Flight::getInitialTime(void) {
 	tt.push_back(Tspan);
 
 	return tt;
-}
+};
 
 vector<double> Rocket_Flight::getInitialState(double sigmaDeclinationAngle) {
 	//	returns the initial state
@@ -80,7 +101,7 @@ vector<double> Rocket_Flight::getInitialState(double sigmaDeclinationAngle) {
 	z0.push_back(X0.e2);
 	z0.push_back(X0.e3);
 
-	// TODO: remove hardcode
+	// hardcoded limits here
 	double De_temp = SampleTruncated (De, sigmaDeclinationAngle, 1.0);
 	double De_rad = De_temp * PI / 180.0;
 	bearing AzOrth((Az-90.0),1.0);
@@ -104,11 +125,16 @@ vector<double> Rocket_Flight::getInitialState(double sigmaDeclinationAngle) {
 
 	return z0;
 
-}
+};
 
 //Flight Functions**********************************************************************
 
 OutputData Rocket_Flight::OneStageFlight(void){
+	/*
+	\brief runs all phases for a one stage flight
+
+	\return OutputData
+	*/
 
 	// Create the initial conditions
 	vector<double> tt, z0;
@@ -175,11 +201,14 @@ OutputData Rocket_Flight::OneStageFlight(void){
 	}
 
     return(OD);
-    //OD.WriteToXML("SimulationOutput.xml");
-
-}
+};
 
 OutputData Rocket_Flight::TwoStageFlight(){
+	/*
+	\brief runs all phases for a two stage flight
+
+	\return OutputData
+	*/
 
 	//Create the initial conditions
 	vector<double> tt, z0;
@@ -297,11 +326,19 @@ OutputData Rocket_Flight::TwoStageFlight(){
 	}
 
 	return(OD);
-        //OD.WriteToXML("SimulationOutput.xml");
 
-}
+};
 
 OutputData Rocket_Flight::OneStageMonte(int noi){
+	/*
+	\brief runs all phases for a one stage flight, with monte carlo
+
+	runs all phases for a one stage flight, using monte carlo to estimate the effect of the uncertainty. Note, first run is nominal
+
+	\param noi number of monte carlo runs
+
+	\return OutputData
+	*/
 
 	//Create the initial conditions
 	vector<double> tt, z0;
@@ -412,12 +449,19 @@ OutputData Rocket_Flight::OneStageMonte(int noi){
 
 	}
 	return(OD);
-        //OD.WriteToXML("SimulationOutput.xml");
-
-
-}
+};
 
 OutputData Rocket_Flight::TwoStageMonte(int noi){
+	/*
+	\brief runs all phases for a two stage flight, with monte carlo
+
+	runs all phases for a two stage flight, using monte carlo to estimate the effect of the uncertainty. Note, first run is nominal
+
+	\param noi number of monte carlo runs to execute
+
+	\return OutputData
+	*/
+
 	//Create the initial conditions
 	vector<double> tt, z0;
 
@@ -572,8 +616,7 @@ OutputData Rocket_Flight::TwoStageMonte(int noi){
 
 
 	return(OD);
-        //OD.WriteToXML("SimulationOutput.xml");
-}
+};
 
 void Rocket_Flight::StateTransferParachute(vector<double>* zp, RKF_data Stage){
 	/*
@@ -587,7 +630,7 @@ void Rocket_Flight::StateTransferParachute(vector<double>* zp, RKF_data Stage){
 	zp->push_back(Stage.z.back()[8]); // y dot
 	zp->push_back(Stage.z.back()[9]); // z dot
 	// 10, 11, 12 - 3x angular velocity
-}
+};
 
 
 
@@ -602,7 +645,7 @@ void Rocket_Flight::TimeTransfer(vector<double> * ttp, RKF_data Stage){
 
 	ttp->push_back(t1);
 	ttp->push_back(t2);
-}
+};
 
 void Rocket_Flight::StateTransferRocket(vector<double> *zp, RKF_data StagePrevious, INTAB IntabPrevious, INTAB IntabNext){
 	/*
@@ -679,33 +722,41 @@ double Rocket_Flight::getDeploymentAltitude(INTAB thisINTAB) {
 	return deployAtAltitude;
 }
 
-double Rocket_Flight::SampleTruncated (double mean, double sigma, double truncateSigma)
-{
-	{
-		using namespace boost;
-		// Create a Mersenne twister random number generator
-		// that is seeded once with #seconds since 1970
-		static mt19937 rng(static_cast<unsigned> (std::time(0)));
+double Rocket_Flight::SampleTruncated (double mean, double sigma, double truncateSigma) {
+	/*
+	\brief sample from a truncated Gaussian
 
-		// select Gaussian probability distribution
-		normal_distribution<double> norm_dist(mean, sigma);
+	provides a truncated Gaussian sampling method
 
-		// bind random number generator to distribution, forming a function
-		variate_generator<mt19937&, normal_distribution<double> >  normal_sampler(rng, norm_dist);
+	\param mean average
+	\param sigma standard deviation
+	\param truncateSigma at which sigma to truncate
 
-	 	// sample from the distribution
-		double Out = normal_sampler();
+	\return double with a sample
+	*/
+	using namespace boost;
+	// Create a Mersenne twister random number generator
+	// that is seeded once with #seconds since 1970
+	static mt19937 rng(static_cast<unsigned> (std::time(0)));
 
-		// truncate at +- 1 sigma
-		double lowerBound = mean - truncateSigma*sigma - 0.0001;
-		double upperBound = mean + truncateSigma*sigma + 0.0001; // added a little margin
+	// select Gaussian probability distribution
+	normal_distribution<double> norm_dist(mean, sigma);
 
-		while ((Out <= lowerBound) || (Out >= upperBound)) {
-			// re- sample
-			Out = normal_sampler();
-		}
+	// bind random number generator to distribution, forming a function
+	variate_generator<mt19937&, normal_distribution<double> >  normal_sampler(rng, norm_dist);
 
-		// return value
-		return(Out);
+ 	// sample from the distribution
+	double Out = normal_sampler();
+
+	// truncate at +- 1 sigma
+	double lowerBound = mean - truncateSigma*sigma - 0.0001;
+	double upperBound = mean + truncateSigma*sigma + 0.0001; // added a little margin
+
+	while ((Out <= lowerBound) || (Out >= upperBound)) {
+		// re- sample
+		Out = normal_sampler();
 	}
+
+	// return value
+	return(Out);
 }

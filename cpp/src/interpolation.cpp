@@ -15,9 +15,10 @@ title values for the rows of z and y is a vector containing title values for the
 columns of z. p and q are the variables that are interpolated in x and y
 respectively and the corresponing interpolated value from z is returned*/
 
-#include"interpolation.h"
+#include "interpolation.h"
 
 double interp::one(vector<double> x,vector<double> y,double v){
+	// interpolates a single dimension
 	vector<double>::pointer x_it,y_it;
 	x_it=&x.front();
 	y_it=&y.front();
@@ -39,8 +40,8 @@ double interp::one(vector<double> x,vector<double> y,double v){
 	return(yl+yplus);
 }
 
-double interp::two(vector<double> x, vector<double> y, vector<vector<double> > z, double p, double q)
-{
+double interp::two(vector<double> x, vector<double> y, vector<vector<double> > z, double p, double q) {
+	// interpolates in two dimensions
 	vector<double>::pointer x_it, y_it;
 
 	x_it=&x.front();
@@ -75,6 +76,4 @@ double interp::two(vector<double> x, vector<double> y, vector<vector<double> > z
 	double zout=zxl+(m1*(zxu-zxl));
 
 	return(zout);
-
-
 };
