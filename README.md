@@ -34,13 +34,14 @@ Plotter/
 This holds the Python code that provides the user with information. When writing an extension on the analysis or want to do anything with the data, this would be the best place to do so, leaving the Java and c++ code as it is.
 
 cpp/
-This holds the c++ code, the simulation core of the project. The simulator has been verified and tested, and the model has been peer-reviewed and published in a scientific journal.
+This holds the c++ code, the simulation core of the project. The simulator  model has been peer-reviewed and published in a scientific journal.
+( free copy found at http://eprints.soton.ac.uk/73938/ )
+
 
 gui/
-This holds all the Java code related to the GUI - most of this work comes from OpenRocket and additional functions have been added to suit the format for camrocksim. Several extra functions have been removed, as camrocksim doesn't model these or they were simply redundant. The starting file is located at:
+This holds all the Java code related to the GUI - most of this work comes from OpenRocket and additional functions have been added to suit the format for camrocksim. Several extra functions have been removed, as camrocksim doesn't model these or they were simply redundant because of the modifications. The starting file is located at:
 gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 
-[note that there have been problems compiling the Java code using OpenJDK, even when using version 1.7+]
 
 ***
 
@@ -54,6 +55,62 @@ gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 
 [BUILD INFORMATION]
 
-[LINUX]
+[CPP - LINUX]
 
-[WINDOWS]
+1) install Boost library (if required, this method is Ubuntu specific)
+>> sudo apt-get install libboost-all-dev
+
+2) compile binary in <main folder>/cpp/
+>> make
+
+[Python - LINUX]
+
+1) install Python 2.7 (no compiling required)
+
+[CPP - WINDOWS] via Visual Studio
+
+1) install Visual Studio
+
+2) install boost library (boost.org)
+
+2) compile binary in <main folder>/cpp/ , by typing in the Developer Command Prompt (installed with Visual Studio)
+>> cl /EHsc /I "<BOOST LIBRARY>" *.cpp
+
+3) rename output file to rocketc.exe
+
+[Python - Windows]
+
+1) in <main folder>\Plotter
+>> pyinstaller.exe --onefile --windowed FlightPlotter.py
+
+[JAVA] - [LINUX & WINDOWS] via Eclipse
+
+The JAR file is build via Eclipse (eclipse.org) by selecting
+
+File -> Export, Java/Runnable JAR file
+
+and input these data:
+Launch configuration: SwingStartup - OpenRocket Swing
+Export destination: <user choice>
+Library handling: Extract required libraries into generated JAR
+
+Finish
+
+***
+
+[TESTING - CPP]
+
+1) prepare googletest environment
+>> wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
+>> tar -xvzf release-1.8.0.tar.gz
+>> cd googletest-release-1.8.0/googletest
+>> cmake .
+>> make
+
+2) build test binaries (from cpp directory)
+>> make tests
+
+3) run tests
+>> ./runtests
+
+[TESTING - JAVA]

@@ -31,7 +31,7 @@ class vector2{
 public:
 	double e1,e2;
 	vector2(){};
-	vector2(double x,double y){
+	vector2(double x, double y){
 		e1=x;
 		e2=y;
 	}

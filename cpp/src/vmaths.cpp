@@ -24,21 +24,21 @@ of a vector and normalize a vector.*/
 //Functions - vector operators*******************************
 
 //Addition and subtraction
-vector2 vector2::operator+ (vector2 param){
+vector2 vector2::operator + (vector2 param){
 	vector2 temp;
 	temp.e1=e1+param.e1;
 	temp.e2=e2+param.e2;
 	return(temp);
 }
 
-vector2 vector2::operator -(vector2 param){
+vector2 vector2::operator - (vector2 param){
 	vector2 temp;
 	temp.e1=e1-param.e1;
 	temp.e2=e2-param.e2;
 	return(temp);
 }
 
-vector3 vector3::operator+ (vector3 param){
+vector3 vector3::operator + (vector3 param){
 	vector3 temp;
 	temp.e1=e1+param.e1;
 	temp.e2=e2+param.e2;
@@ -46,7 +46,7 @@ vector3 vector3::operator+ (vector3 param){
 	return(temp);
 }
 
-vector3 vector3::operator -(vector3 param){
+vector3 vector3::operator - (vector3 param){
 	vector3 temp;
 	temp.e1=e1-param.e1;
 	temp.e2=e2-param.e2;
@@ -54,7 +54,7 @@ vector3 vector3::operator -(vector3 param){
 	return(temp);
 }
 
-quaternion quaternion::operator+ (quaternion param){
+quaternion quaternion::operator + (quaternion param){
 	quaternion temp;
 	temp.e1=e1+param.e1;
 	temp.e2=e2+param.e2;
@@ -63,7 +63,7 @@ quaternion quaternion::operator+ (quaternion param){
 	return(temp);
 }
 
-quaternion quaternion::operator -(quaternion param){
+quaternion quaternion::operator - (quaternion param){
 	quaternion temp;
 	temp.e1=e1-param.e1;
 	temp.e2=e2-param.e2;
