@@ -29,6 +29,10 @@ class bearing{
 		double bea,range;
 		bearing(){};
 		bearing(double a,double b){
+			/*
+			a : bearing [degrees]
+			b : range [magnitude]
+			*/
 			bea=a;
 			range=b;
 		}

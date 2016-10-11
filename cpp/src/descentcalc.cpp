@@ -186,7 +186,7 @@ EqMotionData2 descent::EqMotionSolve(double tt, vector<double> z){
   return(Output);
 };
 
-bool floatdown::stop_flag(double t,vector<double> z){
+bool floatdown::stop_flag(double t, vector<double> z){
 	/*
 	\brief sets when to stop
 
@@ -197,9 +197,16 @@ bool floatdown::stop_flag(double t,vector<double> z){
 
 	\return bool
 	*/
+
 	bool temp;
-	if (z[2] < 0.001)temp=true;
-	else temp=false;
+
+	if (z[2] < 0.0) {
+		temp=true;
+	}
+	else {
+		temp=false;
+	}
+
 	return(temp);
 }
 

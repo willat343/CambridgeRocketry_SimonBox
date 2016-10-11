@@ -63,6 +63,9 @@ gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 2) compile binary in <main folder>/cpp/
 >> make
 
+3) copy binary to simulator/ folder
+>> make copy
+
 [Python - LINUX]
 
 1) install Python 2.7 (no compiling required)
@@ -113,4 +116,8 @@ Finish
 3) run tests
 >> ./runtests
 
-[TESTING - JAVA]
+[TESTING - JAVA] via Eclipse
+
+1) select OpenRocket Core
+
+2) (top) Run -> Run as -> JUnit Test

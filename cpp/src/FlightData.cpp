@@ -124,7 +124,6 @@ void OutputData::InitializePropertyTree(std::string Function){
 }
 
 void OutputData::FillPropertyTree(vector<FlightData *> TRun,int RN){
-
 		boost::property_tree::ptree TempTree1 = TRun[0]->BuildPropertyTree(RN);
 		boost::property_tree::ptree TempTree2 = TRun[1]->BuildPropertyTree(RN);
 		boost::property_tree::ptree Temp;
@@ -132,16 +131,12 @@ void OutputData::FillPropertyTree(vector<FlightData *> TRun,int RN){
 		Temp.add_child("LowerStage",TempTree1);
 		Temp.add_child("UpperStage",TempTree2);
 		PropTree.add_child("SimulationOutput.Runs.Run",Temp);
-
-
 }
-void OutputData::FillPropertyTree(FlightData * Run,int RN){
 
+void OutputData::FillPropertyTree(FlightData * Run,int RN){
 		boost::property_tree::ptree TempTree = Run->BuildPropertyTree(RN);
 		PropTree.add_child("SimulationOutput.Runs.Run",TempTree);
 		RN++;
-
-
 }
 
 

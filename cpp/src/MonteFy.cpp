@@ -234,10 +234,7 @@ INTAB MonteFy::WiggleProtect(INTAB thisIntab){
 
 	// LandA
 
-
-	// TODO: create this function
 	return thisIntab;
-
 }
 
 boost::numeric::ublas::vector<double> MonteFy::gsamp(void){

@@ -10,15 +10,16 @@
 in class "vector". For interp1::one(x,y,v) the renturned value is interpolated
 in vector y at the point corresponding to the interpolated location of v in
 vector x. For interp::two(x,y,z,p,q) z is vector containing a two dimentional
-data with rows of the data appended row1<<row2<<row3 etc. x is a vector containing
-title values for the rows of z and y is a vector containing title values for the
-columns of z. p and q are the variables that are interpolated in x and y
-respectively and the corresponing interpolated value from z is returned*/
+data with rows of the data appended row1<<row2<<row3 etc. x is a vector containing title values for the rows of z and y is a vector containing title values for the columns of z. p and q are the variables that are interpolated in x and y respectively and the corresponing interpolated value from z is returned*/
 
 #include "interpolation.h"
 
 double interp::one(vector<double> x,vector<double> y,double v){
-	// interpolates a single dimension
+	/*
+	interp1::one(x,y,v) the renturned value is interpolated
+	in vector y at the point corresponding to the interpolated location of v in
+	vector x
+	*/
 	vector<double>::pointer x_it,y_it;
 	x_it=&x.front();
 	y_it=&y.front();
@@ -41,16 +42,17 @@ double interp::one(vector<double> x,vector<double> y,double v){
 }
 
 double interp::two(vector<double> x, vector<double> y, vector<vector<double> > z, double p, double q) {
-	// interpolates in two dimensions
+	/*
+	interp::two(x,y,z,p,q) z is vector containing a two dimentional
+	data with rows of the data appended row1<<row2<<row3 etc. x is a vector containing title values for the rows of z and y is a vector containing title values for the columns of z. p and q are the variables that are interpolated in x and y respectively and the corresponing interpolated value from z is returned
+	*/
 	vector<double>::pointer x_it, y_it;
 
 	x_it=&x.front();
 	y_it=&y.front();
 
-
 	do{x_it++;}while(*x_it<p);
 	do{y_it++;}while(*y_it<q);
-
 
 	double xu=*x_it;
 	double xl=*(--x_it);

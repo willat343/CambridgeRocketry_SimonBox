@@ -1,19 +1,16 @@
-CPP_FILES = $(wildcard src/*.cpp)
-OBJ_FILES = $(CPP_FILES:.cpp=.o)
-
-TEST_CPP_FILES = $(wildcard tests/*.cpp)
-TEST_OBJ_FILES = $(TEST_CPP_FILES:.cpp=.o)
-
+CPP_FILES=$(wildcard src/*.cpp)
+OBJ_FILES=$(CPP_FILES:.cpp=.o)
+CPP_MAIN=main.cpp
+TEST_CPP_FILES=$(wildcard test/*.cpp)
+TEST_OBJ_FILES=$(TEST_CPP_FILES:.cpp=.o)
 GTEST_DIR=googletest-release-1.8.0
-#GTEST_DIR_UP=../$(GTEST_DIR)
 GTEST=$(GTEST_DIR)/googletest
 GTEST_HEADERS=$(GTEST)/include
+TARGET_BIN=rocketc
+TARGET_TEST=runtests
+CC=g++
 
-TARGET_BIN = rocketc
-TARGET_TEST = runtests
-CC = g++
-
-all: build copy
+all: rocketc
 
 test_%.o : test_%.cpp
 	$(CC) -pthread -I$(GTEST_HEADERS) -L$(GTEST) -lgtest -c $< -o $@
@@ -21,12 +18,16 @@ test_%.o : test_%.cpp
 %.o: %.cpp
 	$(CC) -O2 -c -o $@ $<
 
-tests: build $(TEST_OBJ_FILES)
-	$(CC) -pthread -I$(GTEST_HEADERS) -L$(GTEST) $(OBJ_FILES) -o $(TARGET_TEST) $(TEST_OBJ_FILES) -lgtest
+test: tests
+
+tests: rocketc runtests
 	./$(TARGET_TEST)
 
-build: $(OBJ_FILES) main.cpp
-	$(CC) -O2 $(OBJ_FILES) main.cpp -o $(TARGET_BIN)
+runtests: $(TEST_OBJ_FILES)
+	$(CC) -pthread -I$(GTEST_HEADERS) -L$(GTEST) $(OBJ_FILES) -o $(TARGET_TEST) $(TEST_OBJ_FILES) -lgtest
+
+rocketc: $(OBJ_FILES) $(CPP_MAIN)
+	$(CC) -O2 $(CPP_MAIN) $(OBJ_FILES) -o $(TARGET_BIN)
 
 debug: $(OBJ_FILES)
 	$(CC) -g $(OBJ_FILES) -o $(TARGET_BIN)
