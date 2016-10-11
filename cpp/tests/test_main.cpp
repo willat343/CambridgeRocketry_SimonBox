@@ -1,3 +1,5 @@
+// main file for googletest
+
 #include <gtest/gtest.h>
 
 int main(int argc, char **argv) {

@@ -10,12 +10,11 @@
 //#include"vmaths.h"
 //#include<cmath>
 //#include"intabread.h"
-#include"ascentcalc.h"
-#include"descentcalc.h"
-#include"RocketFlight.h"
-#include"MonteFy.h"
-#include"HandleInputFile.h"
-
+#include"src/ascentcalc.h"
+#include"src/descentcalc.h"
+#include"src/RocketFlight.h"
+#include"src/MonteFy.h"
+#include"src/HandleInputFile.h"
 
 using namespace std;
 

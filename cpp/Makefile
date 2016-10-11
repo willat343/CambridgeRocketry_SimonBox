@@ -9,7 +9,8 @@ GTEST_DIR=googletest-release-1.8.0
 GTEST=$(GTEST_DIR)/googletest
 GTEST_HEADERS=$(GTEST)/include
 
-TARGET = rocketc
+TARGET_BIN = rocketc
+TARGET_TEST = runtests
 CC = g++
 
 all: build copy
@@ -20,20 +21,19 @@ test_%.o : test_%.cpp
 %.o: %.cpp
 	$(CC) -O2 -c -o $@ $<
 
-tests: $(TEST_OBJ_FILES)
-	$(CC) -pthread -I$(GTEST_HEADERS) -L$(GTEST) -o runtests $(TEST_OBJ_FILES) -lgtest
+tests: build $(TEST_OBJ_FILES)
+	$(CC) -pthread -I$(GTEST_HEADERS) -L$(GTEST) $(OBJ_FILES) -o $(TARGET_TEST) $(TEST_OBJ_FILES) -lgtest
+	./$(TARGET_TEST)
 
-build: $(OBJ_FILES)
-	$(CC) -O2 $(OBJ_FILES) -o $(TARGET)
+build: $(OBJ_FILES) main.cpp
+	$(CC) -O2 $(OBJ_FILES) main.cpp -o $(TARGET_BIN)
 
 debug: $(OBJ_FILES)
-	$(CC) -g $(OBJ_FILES) -o $(TARGET)
+	$(CC) -g $(OBJ_FILES) -o $(TARGET_BIN)
 
 copy:
 	mkdir -p ../simulator/
-	cp -f $(TARGET) ../simulator/$(TARGET)
+	cp -f $(TARGET_BIN) ../simulator/$(TARGET_BIN)
 
 clean:
-	rm -f $(OBJ_FILES)
-	rm -f $(TEST_OBJ_FILES)
-	rm -f $(TARGET)
+	rm -f $(OBJ_FILES) $(TEST_OBJ_FILES) $(TARGET_BIN) $(TARGET_TEST)
