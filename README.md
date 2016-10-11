@@ -53,9 +53,13 @@ gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 
 ***
 
-[[[BUILD INFORMATION]]]
+***************
+*** [LINUX] ***
+***************
 
-[CPP - LINUX]
+[BUILD INFORMATION]
+
+[c++]
 
 1) install Boost library (if required, this method is Ubuntu specific)
 >> sudo apt-get install libboost-all-dev
@@ -66,27 +70,11 @@ gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 3) copy binary to simulator/ folder
 >> make copy
 
-[Python - LINUX]
+[Python]
 
 1) install Python 2.7 (no compiling required)
 
-[CPP - WINDOWS] via Visual Studio
-
-1) install Visual Studio
-
-2) install boost library (boost.org)
-
-2) compile binary in <main folder>/cpp/ , by typing in the Developer Command Prompt (installed with Visual Studio)
->> cl /EHsc /I "<BOOST LIBRARY>" *.cpp
-
-3) rename output file to rocketc.exe
-
-[Python - Windows]
-
-1) in <main folder>\Plotter
->> pyinstaller.exe --onefile --windowed FlightPlotter.py
-
-[JAVA] - [LINUX & WINDOWS] via Eclipse
+[Java] via Eclipse
 
 The JAR file is build via Eclipse (eclipse.org) by selecting
 
@@ -99,9 +87,13 @@ Library handling: Extract required libraries into generated JAR
 
 Finish
 
-***
+[building an installer]
 
-[TESTING - CPP]
+!!! TODO
+
+[TESTING]
+
+[c++]
 
 1) prepare googletest environment
 >> wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
@@ -116,8 +108,49 @@ Finish
 3) run tests
 >> ./runtests
 
-[TESTING - JAVA] via Eclipse
+[Java] via Eclipse
 
 1) select OpenRocket Core
 
 2) (top) Run -> Run as -> JUnit Test
+
+*****************
+*** [WINDOWS] ***
+*****************
+
+[BUILD INFORMATION]
+
+[c++] via Visual Studio
+
+1) install Visual Studio Community (http://www.visualstudio.com)
+
+2) install boost library (http://www.boost.org/)
+
+2) compile binary in <main folder>/cpp/ , by typing in the Developer Command Prompt (installed with Visual Studio)
+>> cl /EHsc /I "<BOOST LIBRARY>" *.cpp
+
+3) rename output file to rocketc.exe
+
+[Python]
+
+1) download PyInstaller (http://www.pyinstaller.org/)
+
+2) in <main folder>\Plotter execute:
+>> pyinstaller.exe --onefile --windowed FlightPlotter.py
+
+[Java] via Eclipse
+
+The JAR file is build via Eclipse (eclipse.org) by selecting
+
+File -> Export, Java/Runnable JAR file
+
+and input these data:
+Launch configuration: SwingStartup - OpenRocket Swing
+Export destination: <user choice>
+Library handling: Extract required libraries into generated JAR
+
+Finish
+
+[building an installer]
+
+!!! TODO
