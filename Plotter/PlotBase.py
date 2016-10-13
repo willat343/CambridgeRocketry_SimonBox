@@ -9,7 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.pyplot as plt
 import Rdata
-import scipy.linalg as la
+# import scipy.linalg as la
 
 class PlotBase:
     """This class produces the plots using matplotlib
@@ -189,10 +189,17 @@ class PlotBase:
         xe = r*np.cos(theta)
         ye = r*np.sin(theta)
         Xe = np.column_stack([xe,ye])
-        Ze = np.dot(Xe,la.sqrtm(covariance))
+
+        # temp = la.sqrtm(covariance);
+        U, s, V = np.linalg.svd(covariance, full_matrices=True);
+        S = np.diag(np.sqrt(s));
+        temp = np.dot(U, np.dot(S, V));
+        temp = np.array(temp);
+
+        Ze = np.dot(Xe,temp)
         Q1 = mean[0]*np.ones(n)
         Q2 = mean[1]*np.ones(n)
-        Q = np.column_stack([Q1,Q2])
+        Q = np.column_stack([Q1, Q2])
         Z = Ze+Q
         ax.plot(Z[:,0],Z[:,1])
         return(ax,Z)
