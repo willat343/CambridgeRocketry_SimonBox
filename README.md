@@ -23,33 +23,34 @@ The Cambridge rocketry simulator needs users, developers, students and rocketeer
 
 [FOLDER STRUCTURE]
 
-Data/
-Contains the information exchange, including atmospheres, simulation input and output.
-
-simulator/
-this folder contains the binary, to be compiled via running "make" in cpp/
-"
-
-Plotter/
-This holds the Python code that provides the user with information. When writing an extension on the analysis or want to do anything with the data, this would be the best place to do so, leaving the Java and c++ code as it is.
-
 cpp/
-This holds the c++ code, the simulation core of the project. The simulator  model has been peer-reviewed and published in a scientific journal.
+contains the c++ code, the simulation core of the project. The simulator  model has been peer-reviewed and published in a scientific journal.
 ( free copy found at http://eprints.soton.ac.uk/73938/ )
 
+Data/
+contains example atmospheres and motors (rocket engines). Also holds Uncertainty.xml, which holds default stochastic conditions.
+
+doc/
+contains the user manual, including .tex source for editing
 
 gui/
 This holds all the Java code related to the GUI - most of this work comes from OpenRocket and additional functions have been added to suit the format for camrocksim. Several extra functions have been removed, as camrocksim doesn't model these or they were simply redundant because of the modifications. The starting file is located at:
 gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 
+help_build_files/
+contains additional files, useful when building a release for Windows and Linux.
+
+Plotter/
+This holds the Python code that provides the user with information. When writing an extension on the analysis or want to do anything with the data, this would be the best place to do so, leaving the Java and c++ code as it is.
+
+simulator/
+this folder contains the binary of the simulator, to be compiled via running "make" in cpp/
 
 ***
 
 [NOTES]
 
-- These two folders are essential to executing the program, to execute the program in eclipse, please run "prepare_linux.sh" included in this folder.
-
-- if determined to develop the program in Windows, please consult SystemInfo.java on where the Installation/Application folder is located on the computer.
+- when developing (assumed Linux), the folders Data/, Plotter/, and simulator/ are required. Therefore, please run  "prepare_linux.sh" to prepare the program.
 
 ***
 
@@ -64,15 +65,15 @@ gui/swing/src/net/sf/openrocket/startup/SwingStartup.java
 1) install Boost library (if required, this method is Ubuntu specific)
 >> sudo apt-get install libboost-all-dev
 
-2) compile binary in <main folder>/cpp/
+2) compile binary in <camrocsim-code>/cpp/
 >> make
 
-3) copy binary to simulator/ folder
+3) copy binary to <camrocsim-code>/simulator/ folder
 >> make copy
 
 [Python]
 
-1) install Python 2.7 (no compiling required)
+1) install Python 2.7+ (no compiling required)
 
 [Java] via Eclipse
 
@@ -82,14 +83,43 @@ File -> Export, Java/Runnable JAR file
 
 and input these data:
 Launch configuration: SwingStartup - OpenRocket Swing
-Export destination: <user choice>
+Export destination: <user choice>/camrocsim.jar
 Library handling: Extract required libraries into generated JAR
 
 Finish
 
 [building an installer]
 
-!!! TODO
+1) prepare a folder structure:
+- Data (copy from repo)
+- Plotter (.py files)
+- simulator (compiled rocketc simulator)
+camrocsim.jar
+
+2) include a simple start script camrocsim, found at help_build_files/camrocsim
+>> java -jar ~/.camrocsim/camrocsim.jar
+
+3) start creating a .deb via Debreate, include the folder structure as in step (1), the default install directory is /usr/lib/camrocsim. The setup file is available at help_build_files/Debreate_CRS_v31
+
+4) set-up the following scripts
+
+Post-Install:
+#! /bin/bash -e
+ln -fs "/usr/lib/camrocsim/camrocsim" "/usr/bin/camrocsim"
+cd /home
+for i in $(echo */); do mkdir -p -m 777 ${i%/}/.camrocsim;cp -rf /usr/lib/camrocsim/* ${i%/}/.camrocsim; chmod -R 777 ${i%/}/.camrocsim; done
+
+Pre-Remove:
+#! /bin/bash -e
+rm "/usr/bin/camrocsim"
+
+Post-Remove:
+#! /bin/bash -e
+rm -rf /usr/lib/camrocsim
+cd /home
+for i in $(echo */); do rm -rf ${i%/}/.camrocsim; done
+
+5) build the .deb, and ready for release **
 
 [TESTING]
 
@@ -126,17 +156,26 @@ Finish
 
 2) install boost library (http://www.boost.org/)
 
-2) compile binary in <main folder>/cpp/ , by typing in the Developer Command Prompt (installed with Visual Studio)
->> cl /EHsc /I "<BOOST LIBRARY>" *.cpp
+2) compile binary in <camrocsim-code>/cpp/ , by typing in the Developer Command Prompt (installed with Visual Studio)
+>> cl /EHsc /I "C:\Boost\boost_1_62_0" /OUT rocketc.exe src/*.cpp main.cpp
 
-3) rename output file to rocketc.exe
+** note that "C:\Boost\boost_1_62_0" is to be replaced by the relevant boost library location
+
+3) copy rocketc.exe to the simulator/ folder
 
 [Python]
 
-1) download PyInstaller (http://www.pyinstaller.org/)
+1) set-up a suitable Python environment, e.g. via Anaconda
+>> conda create -n py2 matplotlib pywin32
+>> activate py2
 
-2) in <main folder>\Plotter execute:
->> pyinstaller.exe --onefile --windowed FlightPlotter.py
+2) download PyInstaller (http://www.pyinstaller.org/) from GitHub repo (https://github.com/pyinstaller/pyinstaller/commit/b78bfe530cdc2904f65ce098bdf2de08c9037abb), note this is from the development branch. Navigate to the folder with setup.py and install PyInstaller
+>> python setup.py install
+
+3) in <camrocsim-code>\Plotter execute:
+>> pyinstaller.exe --onefile --noconsole FlightPlotter.py
+
+4) the FlightPlotter.exe is found in /dist, copy this to the /Plotter folder
 
 [Java] via Eclipse
 
@@ -153,4 +192,13 @@ Finish
 
 [building an installer]
 
-!!! TODO
+1) Download and install Advanced Installer (www.advancedinstaller.com, free version available)
+
+2) prepare a folder structure
+- Data (copy from repo)
+- Plotter (FlightPlotter.exe)
+- simulator (rocketc.exe)
+camrocsim.jar
+camrocsim.bat (found in help_build_files) >> java -jar ./camrocsim.jar
+
+3) in help_build_files, AdvanedInstaller_CRS_v31.aip is included to show how the installer is created. Also CR_logo.ico is available.
