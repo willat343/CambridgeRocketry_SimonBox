@@ -1384,26 +1384,16 @@ public class panelCamRockSim extends JPanel {
 		 * there is no output, put the output is written to SimulationOutput.xml
 		 */
 		
-		// use relative paths
-		// Path jarPath = SystemInfo.getJarLocation();
-		
-		File fileSimulationInput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
-		
-		
 		// run program
 		try{
 
 			// create dialog
 			final RunningDialog dialog = new RunningDialog();
 			
-			File fileRocketc = new File(SystemInfo.getInstallationDirectory(),  SystemInfo.SIMULATOR_FOLDER + File.separator + SystemInfo.CPP_CODE);
+			// obtain command via SystemInfo ( system specific Windows / unix & OSX )
+			String thisCommand= SystemInfo.getRunCommand();
 			
-			// System.out.println(fileRocketc.toString());
-			
-			String thisCommand= fileRocketc.toString() + " " + fileSimulationInput.toString(); // location binary root/Data
-			
-			// System.out.println(thisCommand);
-			
+			// run command!
 			final Process thisProcess = Runtime.getRuntime().exec(thisCommand, null);
 			
 			Timer timer = new Timer(100, new ActionListener() {

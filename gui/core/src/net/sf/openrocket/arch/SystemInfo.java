@@ -805,8 +805,53 @@ public class SystemInfo {
 		return dir;
 	}
 	
-	public static Path getJarLocation() {
+	public static String getRunCommand() {
+		/**
+		 * Return command to run to user. Depends on current platform.
+		 * <p>
+		 * The directory will not be created by this method.
+		 * 
+		 * @return	the jar directory for camrocsim
+		 */
 		
+		// data
+		File fileSimulationInput = new File(SystemInfo.getUserApplicationDirectory(), (SystemInfo.DATA_FOLDER + File.separator + SystemInfo.INPUT_SIMULATION));
+		
+		// rocketc (binary)
+		File fileRocketc = new File(SystemInfo.getInstallationDirectory(), SystemInfo.SIMULATOR_FOLDER + File.separator + SystemInfo.CPP_CODE);
+		
+		// command to run
+		String thisCommand = "";
+		
+		switch (getPlatform()) {
+		case WINDOWS:
+			thisCommand = fileRocketc.toString() + " \"" + fileSimulationInput.getPath() + "\""; // location binary root/Data
+			break;
+		
+		case MAC_OS:
+			thisCommand = fileRocketc.toString() + " " + fileSimulationInput.getPath(); // location binary root/Data
+			break;
+		
+		case UNIX:
+			thisCommand = fileRocketc.toString() + " " + fileSimulationInput.getPath(); // location binary root/Data
+			break;
+		
+		default:
+			throw new BugException("Not implemented for platform " + getPlatform());
+		}
+		
+		return thisCommand;
+	}
+	
+	public static Path getJarLocation() {
+		/**
+		 * Return jar directory of this user.  The location depends
+		 * on the current platform.
+		 * <p>
+		 * The directory will not be created by this method.
+		 * 
+		 * @return	the jar directory for camrocsim
+		 */
 		Path path = null;
 		
 		try {
@@ -818,7 +863,6 @@ public class SystemInfo {
 		}
 		
 		return path;
-		
 	}
 	
 }
