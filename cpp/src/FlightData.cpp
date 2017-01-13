@@ -9,6 +9,9 @@
 
 
 FlightDataShort FlightDataShort::operator + (FlightDataShort added){
+	/*
+		methods adds FlightDataShort data to the end and returns result
+	*/
 	FlightDataShort Temp = *this;
 	Temp.time.insert(Temp.time.end(), added.time.begin(), added.time.end());
 	Temp.events.insert(Temp.events.end(), added.events.begin(), added.events.end());
@@ -17,7 +20,9 @@ FlightDataShort FlightDataShort::operator + (FlightDataShort added){
 }
 
 FlightDataLong FlightDataLong::operator + (FlightDataLong added){
-
+  	/*
+			methods adds FlightDataLong data to the end and returns result
+		*/
 	FlightDataLong Temp = *this;
 	Temp.time.insert(Temp.time.end(), added.time.begin(), added.time.end());
 	Temp.X.insert(Temp.X.end(), added.X.begin(), added.X.end());
@@ -40,8 +45,10 @@ FlightDataLong FlightDataLong::operator + (FlightDataLong added){
 }
 
 
-
 boost::property_tree::ptree FlightDataShort::BuildPropertyTree(int RN){
+	/*
+	 returns an XML property tree from FlightDataShort data
+	*/
 	boost::property_tree::ptree TempTree;
 	TempTree.put<int>("Number",RN);
 
@@ -65,7 +72,9 @@ boost::property_tree::ptree FlightDataShort::BuildPropertyTree(int RN){
 
 
 boost::property_tree::ptree FlightDataLong::BuildPropertyTree(int RN){
-
+ 	/*
+ 	 returns an XML property tree from FlightDataLong data
+ 	*/
 	boost::property_tree::ptree TempTree;
 	TempTree.put<int>("Number",RN);
 
@@ -111,10 +120,16 @@ boost::property_tree::ptree FlightDataLong::BuildPropertyTree(int RN){
 }
 
 void OutputData::WriteToXML(string FileName){
+	/*
+	 writes a PropertyTree (as generated with previous functions), to a file
+	*/
 	boost::property_tree::xml_parser::write_xml(FileName,PropTree);
 }
 
 void OutputData::InitializePropertyTree(std::string Function){
+	/*
+	 initialise a PropertyTree with variables
+	*/
 	PropTree.put("SimulationOutput.Version","Cambridge Rocketry Simulator v0.1");
         time_t rawtime;
         time(&rawtime);
@@ -124,23 +139,32 @@ void OutputData::InitializePropertyTree(std::string Function){
 }
 
 void OutputData::FillPropertyTree(vector<FlightData *> TRun,int RN){
-		boost::property_tree::ptree TempTree1 = TRun[0]->BuildPropertyTree(RN);
-		boost::property_tree::ptree TempTree2 = TRun[1]->BuildPropertyTree(RN);
-		boost::property_tree::ptree Temp;
-		Temp.put<int>("Number",RN);
-		Temp.add_child("LowerStage",TempTree1);
-		Temp.add_child("UpperStage",TempTree2);
-		PropTree.add_child("SimulationOutput.Runs.Run",Temp);
+	/*
+		Fill PropertyTree with FlightData (Short/Long) for a two-stage rocket
+	*/
+	boost::property_tree::ptree TempTree1 = TRun[0]->BuildPropertyTree(RN);
+	boost::property_tree::ptree TempTree2 = TRun[1]->BuildPropertyTree(RN);
+	boost::property_tree::ptree Temp;
+	Temp.put<int>("Number",RN);
+	Temp.add_child("LowerStage",TempTree1);
+	Temp.add_child("UpperStage",TempTree2);
+	PropTree.add_child("SimulationOutput.Runs.Run",Temp);
 }
 
 void OutputData::FillPropertyTree(FlightData * Run,int RN){
-		boost::property_tree::ptree TempTree = Run->BuildPropertyTree(RN);
-		PropTree.add_child("SimulationOutput.Runs.Run",TempTree);
-		RN++;
+	/*
+		Fill PropertyTree with FlightData (Short/Long) for a single-stage rocket
+	*/
+	boost::property_tree::ptree TempTree = Run->BuildPropertyTree(RN);
+	PropTree.add_child("SimulationOutput.Runs.Run",TempTree);
+	RN++;
 }
 
 
 void FlightData::ApogeeLanding(std::vector<double> * ApoP, std::vector<double> * LandP, double * AtP){
+	/*
+		store state when apogee is reached
+	*/
 	double apogee[3] = {0.0,0.0,0.0};
 	double Apotime = 0.0;
 
@@ -169,6 +193,9 @@ void FlightData::ApogeeLanding(std::vector<double> * ApoP, std::vector<double> *
 }
 
 void FlightData::TreeIfy(boost::property_tree::ptree * pPtree, std::vector<double> data, string Address){
+	/*
+		produce a string of data from PropertyTree, vector<double>
+	*/
 	stringstream Line;
 	for(vector<double>::iterator D_it = data.begin(); D_it != (data.end()-1); D_it++){
 		Line<<*D_it<<", ";
@@ -179,6 +206,9 @@ void FlightData::TreeIfy(boost::property_tree::ptree * pPtree, std::vector<doubl
 }
 
 void FlightData::TreeIfy(boost::property_tree::ptree * pPtree, std::vector<vector3> data, std::string Address){
+	/*
+		produce a string of data from PropertyTree, vector<vector3>
+	*/
 	stringstream Line1;
 	stringstream Line2;
 	stringstream Line3;
